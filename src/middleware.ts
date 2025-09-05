@@ -1,54 +1,44 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { NextRequest, NextResponse } from "next/server";
+import { JwtPayloadSchema, verifyToken } from "@/server/services/authServices";
 
 export async function middleware(request: NextRequest) {
-  // Paths that require authentication
-  const protectedPaths = ["/admin"];
   const { pathname } = request.nextUrl;
+  const token = request.cookies.get("auth_token")?.value;
 
-  // Check if the current path is protected
-  const isProtectedPath = protectedPaths.some((path) =>
-    pathname.startsWith(path)
-  );
 
-  // If not a protected path, continue
-  if (!isProtectedPath) {
-    return NextResponse.next();
-  }
+  const adminPaths = ["/notelogs/add", "/notelogs/edit/:id"];
 
-  // Get token from cookies
-  const token = await getToken({
-    req: request as any,
-    secret: process.env.JWT_SECRET,
-  });
-
-  // If no token, redirect to login
   if (!token) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(loginUrl);
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // Check if user is admin
-  if (token.role !== "admin") {
-    return NextResponse.redirect(new URL("/unauthorized", request.url));
-  }
+  try {
+    const decoded = verifyToken(token);
 
-  // Continue if authenticated and authorized
-  return NextResponse.next();
+    const parsedPayload = JwtPayloadSchema.safeParse(decoded);
+
+    if (!parsedPayload.success) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+
+    const { role } = parsedPayload.data;
+
+    if (adminPaths.includes(pathname)) {
+      if (role === "admin") {
+        return NextResponse.redirect(new URL("/notelogs/add", request.url));
+      } else if (role === "user") {
+        return NextResponse.redirect(new URL("/notelogs", request.url));
+      } else {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
+    }
+
+    return NextResponse.next();
+  } catch (error) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico|auth|public).*)",
-  ],
+  matcher: ["/notelogs/add", "/notelogs/edit/:id"],
 };
