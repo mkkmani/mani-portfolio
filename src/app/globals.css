@@ -133,14 +133,263 @@
   }
 }
 
+/* README Style Components */
+.readme-container {
+  max-width: 56rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  font-family: 'Fira Code', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', monospace;
+}
+
+.readme-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.readme-title {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+@media (min-width: 768px) {
+  .readme-title {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+}
+
+.readme-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-family: 'Fira Code', monospace;
+  font-weight: 500;
+  background-color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.readme-section {
+  margin-bottom: 2rem;
+}
+
+.readme-section-title {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.readme-section-title::before {
+  content: '## ';
+  color: var(--muted-foreground);
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+  .tech-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .tech-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.tech-card {
+  padding: 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border);
+  background-color: var(--background);
+  transition: background-color 0.2s;
+}
+
+.tech-card:hover {
+  background-color: var(--muted);
+  opacity: 0.5;
+}
+
+.tech-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.tech-icon {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  background-color: var(--muted);
+  color: var(--primary);
+}
+
+.tech-name {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+}
+
+.tech-desc {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--muted-foreground);
+  margin-top: 0.5rem;
+}
+
+.fun-fact {
+  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.375rem;
+  border-left: 4px solid var(--primary);
+  background-color: color-mix(in srgb, var(--muted) 30%, transparent);
+  font-style: italic;
+}
+
+.fun-fact::before {
+  content: '💡';
+  margin-right: 0.5rem;
+}
+
+/* Terminal-like styles */
+.terminal {
+  padding: 1rem;
+  border-radius: 0.375rem;
+  background-color: color-mix(in srgb, var(--muted) 50%, transparent);
+  border: 1px solid var(--border);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  overflow-x: auto;
+}
+
+.terminal-command {
+  color: var(--success);
+}
+
+.terminal-comment {
+  color: var(--muted-foreground);
+}
+
+/* About Section Animations */
 @keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes techPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes chaiSteam {
+  0% { transform: translateY(0) scaleX(1); opacity: 0.2; }
+  50% { transform: translateY(-10px) scaleX(1.1); opacity: 0.5; }
+  100% { transform: translateY(-20px) scaleX(1); opacity: 0; }
+}
+
+/* Tech Stack Grid */
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.tech-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  animation: float 6s ease-in-out infinite;
+}
+
+.tech-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.tech-item:nth-child(2n) {
+  animation-delay: 1s;
+}
+
+.tech-item:nth-child(3n) {
+  animation-delay: 2s;
+}
+
+/* Chai Animation */
+.chai-steam {
+  position: relative;
+  display: inline-block;
+}
+
+.chai-steam::after {
+  content: '☕';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  animation: chaiSteam 3s ease-out infinite;
+}
+
+/* Fun Fact Styling */
+.fun-fact {
+  position: relative;
+  padding: 1rem;
+  border-radius: var(--radius);
+  background: var(--muted);
+  border-left: 4px solid var(--primary);
+}
+
+.fun-fact::before {
+  content: '💡';
+  position: absolute;
+  left: -15px;
+  top: -15px;
+  font-size: 1.5rem;
+  background: var(--background);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @keyframes gradientShift {

@@ -1,4 +1,5 @@
 export type InputStep =
+  | "welcome"
   | "verification"
   | "name"
   | "email"
