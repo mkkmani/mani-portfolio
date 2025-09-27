@@ -16,7 +16,7 @@ export const getNotelogs = async () => {
     const notelogs = await Notelog.find({
       status: "approved",
       published: true,
-    });
+    }).sort({ createdAt: -1 });
     return notelogs;
   } catch (error) {
     throw new Error("Error fetching Notelogs: " + error);

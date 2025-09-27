@@ -3,9 +3,8 @@
 
 import { SectionWrapper } from "@/components/sections/SectionWrapper";
 import { BlogCard } from "@/components/pages/Notelogs/BlogCard";
-import { ENV_CONFIG } from "@/config/envConfig";
 
-type NotelogType = {
+export type NotelogType = {
   _id: string;
   title: string;
   slug: string;
@@ -21,12 +20,12 @@ type NotelogType = {
   summary?: string;
 };
 
-export const BlogSection = async () => {
-  const notelogs = await fetch(
-    `${ENV_CONFIG.NEXT_PUBLIC_APP_URL}/api/notelogs`
-  ).then((res) => res.json());
+interface BlogSectionProps {
+  posts: NotelogType[];
+}
 
-  if (!notelogs || notelogs.length === 0) {
+export const BlogSection = async ({ posts }: BlogSectionProps) => {
+  if (!posts || posts.length === 0) {
     return (
       <SectionWrapper id="blog">
         <div className="text-center py-12">
@@ -36,7 +35,7 @@ export const BlogSection = async () => {
     );
   }
 
-  const blogPosts = notelogs.map((notelog: NotelogType) => ({
+  const blogPosts = posts.map((notelog) => ({
     title: notelog.title,
     content: notelog.content,
     summary: notelog.summary,

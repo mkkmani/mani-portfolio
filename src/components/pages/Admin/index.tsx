@@ -30,7 +30,6 @@ const AdminLogin = () => {
 
     try {
       setIsLoading(true);
-      console.log("Logging in with:", { email });
       await new Promise((resolve) => setTimeout(resolve, 1500));
     } catch (err) {
       setError("Invalid credentials. Please try again.");

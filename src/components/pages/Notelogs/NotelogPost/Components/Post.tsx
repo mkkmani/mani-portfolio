@@ -9,6 +9,7 @@ import Image from "next/image";
 import EditorComponent from "@/components/editor/EditorComponent";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface NoteLog {
   title: string;
@@ -21,6 +22,7 @@ interface NoteLog {
 export default function NoteLogPost() {
   const [note, setNote] = useState<NoteLog | null>(null);
   const { slug } = useParams();
+  const router = useRouter();
 
   const editorInstance = useEditor({
     immediatelyRender: false,
@@ -32,10 +34,14 @@ export default function NoteLogPost() {
   const getNoteLog = async () => {
     try {
       const res = await fetch(`/api/notelogs/${slug}`);
+      if (!res.ok) {
+        throw new Error('Failed to fetch note');
+      }
       const data = await res.json();
       setNote(data);
     } catch (error) {
       console.error("Error fetching note:", error);
+      router.push("/notelogs");
     }
   };
 

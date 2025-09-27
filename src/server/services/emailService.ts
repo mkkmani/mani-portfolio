@@ -11,8 +11,6 @@ export const sendEmail = async (emailData: ContactFormData) => {
     },
   });
 
-  console.log({ emailData });
-
   const mailOptions = {
     from: emailData.email,
     to: ENV_CONFIG.GMAIL_USER,

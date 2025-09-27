@@ -21,7 +21,7 @@ const title =
   "Mani | Full Stack MERN Developer | Building Scalable Web Applications";
 const description =
   "Experienced Full Stack MERN Developer specializing in building high-performance, scalable web applications. Expert in MongoDB, Express.js, React.js, and Node.js.";
-const siteUrl = "https://yourportfolio.com"; // Replace with your actual domain
+const siteUrl = "https://manikantaketha.in";
 
 export const metadata: Metadata = {
   title: {
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: `${siteUrl}/images/og-image.jpg`, // Replace with your actual OG image
+        url: `${siteUrl}/images/og-image.jpg`,
         width: 1200,
         height: 630,
         alt: "Mani - MERN Stack Developer",
@@ -68,8 +68,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: title,
     description: description,
-    creator: "@yourtwitter", // Replace with your Twitter handle
-    images: [`${siteUrl}/images/twitter-card.jpg`], // Replace with your Twitter card image
+    creator: "@yourtwitter",
+    images: [`${siteUrl}/images/twitter-card.jpg`],
   },
   robots: {
     index: true,
@@ -83,16 +83,15 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: "YOUR_GOOGLE_VERIFICATION_CODE", // Add Google Search Console verification
-    yandex: "YOUR_YANDEX_VERIFICATION_CODE", // Add Yandex verification if needed
+    google: "YOUR_GOOGLE_VERIFICATION_CODE",
+    yandex: "YOUR_YANDEX_VERIFICATION_CODE",
   },
   icons: {
     icon: [
-      { url: "/favicon.ico" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/mani.jpg" },
+      { url: "/mani.jpg", sizes: "192x192", type: "image/jpeg" },
     ],
-    apple: [{ url: "/apple-touch-icon.png" }],
+    apple: [{ url: "/mani.jpg" }],
     other: [
       {
         rel: "mask-icon",
@@ -109,9 +108,6 @@ export const metadata: Metadata = {
   },
   formatDetection: {
     telephone: false,
-  },
-  other: {
-    "msapplication-TileColor": "#ffffff",
   },
 };
 

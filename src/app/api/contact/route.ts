@@ -7,7 +7,6 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const parsedData = contactFormSchema.parse(body);
-    console.log({ parsedData });
     await sendEmail(parsedData);
 
     return NextResponse.json(

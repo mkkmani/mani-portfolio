@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("authToken")?.value;
   if (!token) {
-    console.log("token not found");
     return NextResponse.redirect(new URL("/identify-me", req.url));
   }
 }

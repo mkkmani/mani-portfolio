@@ -15,26 +15,10 @@ Disallow: /*?*
 Disallow: /*?$
 Disallow: /*/$
 
-# Allow all search engines to index the following directories
 Allow: /notelogs/
 Allow: /about/
 Allow: /contact/
+Sitemap: https://manikantaketha.in/sitemap.xml
 
-# Sitemap location
-Sitemap: https://maniportfolio.com/sitemap.xml
-
-# Crawl-delay: 10  # Uncomment and adjust if needed for server load
-
-# Mobile sitemap (uncomment if you have one)
-# Sitemap: https://maniportfolio.com/sitemap-mobile.xml
-
-# Image sitemap (uncomment if you have one)
-# Sitemap: https://maniportfolio.com/sitemap-image.xml
-
-# Video sitemap (uncomment if you have one)
-# Sitemap: https://maniportfolio.com/sitemap-video.xml
 Allow: /assets/
 Allow: /images/
-
-# Crawl-delay can be adjusted based on server load
-# Crawl-delay: 10

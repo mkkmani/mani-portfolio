@@ -1,11 +1,10 @@
-// import Editor from "@/components/editor";
+import Editor from "@/components/editor";
 
 export default function AddNoteLog() {
-  return <div>Coming soon</div>;
 
-  // return (
-  //   <div>
-  //     <Editor />
-  //   </div>
-  // );
+  return (
+    <div>
+      <Editor />
+    </div>
+  );
 }

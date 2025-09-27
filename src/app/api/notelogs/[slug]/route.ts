@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getNotelogBySlug } from "@/server/services/noteLogServices";
 import connectToDB from "@/server/db/mongoDb";
+import { Notelog } from "@/server/models/Notelog";
 
 export async function GET(
   _request: NextRequest,
@@ -13,6 +14,13 @@ export async function GET(
     }
 
     await connectToDB();
+
+    await Notelog.findOneAndUpdate(
+      { slug },
+      { $inc: { views: 1 } },
+      { new: true }
+    );
+
     const notelog = await getNotelogBySlug(slug);
     if (!notelog) {
       return NextResponse.json(

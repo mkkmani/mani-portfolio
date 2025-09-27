@@ -59,8 +59,6 @@ export const verifyToken = (token: string): JwtPayload => {
   try {
     const decoded = jwt.verify(token, ENV_CONFIG.JWT_SECRET) as JwtPayload;
 
-    console.log("Decoded token:", decoded);
-
     const validationResult = JwtPayloadSchema.safeParse(decoded);
 
     if (!validationResult.success) {
