@@ -1,94 +1,65 @@
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { FileText, PencilLine } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import Markdown from "markdown-it";
-import { useEffect, useState } from "react";
-import "./editor.css";
+import { useEditor } from "@tiptap/react";
 
-interface PreviewNoteProps {
-  title: string;
-  summary: string;
-  tags: string[];
-  content: string;
-  onBackToEdit: () => void;
-}
+import React from "react";
+import { baseExtensions } from "./extensions";
+import { Badge, Button } from "@/components/ui";
+import EditorComponent from "./EditorComponent";
+import { ArrowLeft } from "lucide-react";
+import Image from "next/image";
 
-export function PreviewNote({
+export const PreviewNote = ({
+  content,
   title,
   summary,
   tags,
-  content,
+  coverImage,
   onBackToEdit,
-}: PreviewNoteProps) {
-  const [isMounted, setIsMounted] = useState(false);
-  const [markdownContent, setMarkdownContent] = useState("");
-
-  useEffect(() => {
-    setIsMounted(true);
-    // Initialize Markdown parser
-    const md = new Markdown({
-      html: true,
-      linkify: true,
-      typographer: true,
-    });
-
-    // Process the content
-    if (content) {
-      setMarkdownContent(md.render(content));
-    }
-  }, [content]);
-
-  if (!isMounted) return null;
-
+}: {
+  content: string;
+  title: string;
+  summary: string;
+  tags: string[];
+  coverImage: string;
+  onBackToEdit: () => void;
+}) => {
+  const editorInstance = useEditor({
+    immediatelyRender: false,
+    editable: false,
+    extensions: baseExtensions,
+    content,
+  });
   return (
-    <div className="flex flex-col h-full bg-background border rounded-lg overflow-hidden">
-      <div className="border-b bg-muted/20 p-3 flex justify-between items-center">
-        <div className="text-sm font-medium text-muted-foreground flex items-center">
-          <FileText className="h-4 w-4 mr-2" />
-          Preview
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onBackToEdit}
-          className="gap-2"
-        >
-          <PencilLine className="h-4 w-4 mr-2" />
-          Edit
+    <div className="flex flex-col h-full max-w-4xl mx-auto w-full space-y-6 pt-10">
+      <div>
+        <Button variant="ghost" onClick={onBackToEdit}>
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Edit
         </Button>
       </div>
-      <ScrollArea className="flex-1 p-6">
-        <article className="prose prose-slate dark:prose-invert prose-headings:font-bold prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl max-w-4xl mx-auto">
-          <h1 className="mb-2">{title}</h1>
-
-          {summary && (
-            <p className="text-lg text-muted-foreground mb-6 border-l-4 border-primary/20 pl-4 py-1">
-              {summary}
-            </p>
-          )}
-
-          {tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-8">
-              {tags.map((tag, index) => (
-                <Badge
-                  key={index}
-                  variant="secondary"
-                  className="text-sm font-normal"
-                >
-                  #{tag}
-                </Badge>
-              ))}
-            </div>
-          )}
-
-          <div
-            className="prose prose-slate dark:prose-invert max-w-none"
-            dangerouslySetInnerHTML={{ __html: markdownContent }}
-          />
-        </article>
-      </ScrollArea>
+      <div>
+        {coverImage && (
+          <div className="relative w-full aspect-video h-auto max-h-[50vh] mb-6 rounded-lg overflow-hidden">
+            <Image
+              src={coverImage}
+              alt={title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 50vw"
+              priority
+            />
+          </div>
+        )}
+        <h1>{title}</h1>
+        <p>{summary}</p>
+        <div>
+          {tags.map((tag) => (
+            <Badge key={tag} className="mr-2">
+              {tag}
+            </Badge>
+          ))}
+        </div>
+      </div>
+      <EditorComponent editor={editorInstance} />
     </div>
   );
-}
+};

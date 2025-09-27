@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useEditorStore, Editor } from "@/store/useEditorStore";
+import { useEditorStore } from "@/store/useEditorStore";
 import { Editor as EditorType } from "@tiptap/core";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import {
   Bold,
   Italic,
@@ -14,7 +14,6 @@ import {
   Heading1,
   Heading2,
   Heading3,
-  Image,
   Link,
   Quote,
   Code,
@@ -32,8 +31,7 @@ const TOOLBAR_OPTIONS: ToolbarOption[] = [
   {
     toolName: "Paragraph",
     toolIcon: <Pilcrow />,
-    action: (editor: EditorType) => 
-      editor.chain().focus().setParagraph().run(),
+    action: (editor: EditorType) => editor.chain().focus().setParagraph().run(),
   },
   {
     toolName: "Bold",
@@ -113,54 +111,23 @@ const TOOLBAR_OPTIONS: ToolbarOption[] = [
 
 const Toolbar = () => {
   const { editor } = useEditorStore();
-  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
-  const [linkUrl, setLinkUrl] = useState("");
 
-  if (!editor) {
-    return null;
-  }
-
-  // Handle button clicks and maintain editor focus
   const handleButtonClick = (action: (editor: EditorType) => void) => {
+    if (!editor) return;
     action(editor);
     editor.commands.focus();
   };
 
-  const handleLinkAction = () => {
-    if (!editor) return;
-
-    if (!linkUrl) {
-      editor.chain().focus().extendMarkRange("link").unsetLink().run();
-    } else {
-      editor
-        .chain()
-        .focus()
-        .extendMarkRange("link")
-        .setLink({ 
-          href: linkUrl,
-          target: "_blank",
-          rel: "noopener noreferrer nofollow" 
-        })
-        .run();
-    }
-    setLinkUrl("");
-    setIsLinkModalOpen(false);
-  };
-
-  // Add markdown shortcuts
   useEffect(() => {
     if (!editor) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Don't handle if pressing a modifier key
       if (event.ctrlKey || event.altKey || event.metaKey) return;
 
-      // Handle markdown shortcuts
-      if (event.key === ' ' && event.shiftKey) {
+      if (event.key === " " && event.shiftKey) {
         const { from, to } = editor.state.selection;
-        const text = editor.state.doc.textBetween(from - 2, to, ' ');
-        
-        // Handle markdown headers
+        const text = editor.state.doc.textBetween(from - 2, to, " ");
+
         if (text.match(/^#\s$/)) {
           event.preventDefault();
           editor.chain().focus().setHeading({ level: 1 }).run();
@@ -174,11 +141,15 @@ const Toolbar = () => {
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [editor]);
+
+  if (!editor) {
+    return null;
+  }
 
   return (
     <div className="sticky top-0 z-10 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -195,7 +166,7 @@ const Toolbar = () => {
                 const isActive = (() => {
                   switch (option.toolName) {
                     case "Paragraph":
-                      return editor.isActive('paragraph');
+                      return editor.isActive("paragraph");
                     case "Bold":
                       return editor.isActive("bold");
                     case "Italic":

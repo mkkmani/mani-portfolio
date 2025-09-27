@@ -3,6 +3,7 @@ import { Inter, Fira_Code } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -101,7 +102,6 @@ export const metadata: Metadata = {
     ],
   },
   manifest: "/site.webmanifest",
-  themeColor: "#ffffff",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -173,6 +173,7 @@ export default function RootLayout({
             <Navbar />
           </div>
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );

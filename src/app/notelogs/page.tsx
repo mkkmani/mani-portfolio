@@ -43,16 +43,6 @@ export const metadata = {
 };
 
 export default function BlogPage() {
-  // Define the type for a blog post
-  interface BlogPost {
-    slug: string;
-    title: string;
-    // Add other post properties as needed
-  }
-
-  // In a real app, you would fetch blog posts here
-  const blogPosts: BlogPost[] = [];
-
   return (
     <>
       <Seo
@@ -68,9 +58,7 @@ export default function BlogPage() {
   );
 }
 
-// Generate static params for blog posts
 export async function generateStaticParams() {
-  // In a real app, you would fetch blog post slugs from your CMS
   const posts: Array<{ slug: string }> = [];
   return posts.map((post) => ({
     slug: post.slug,

@@ -1,0 +1,5 @@
+import Post from "@/components/pages/Notelogs/NotelogPost/Components/Post";
+
+export default function NoteLogPost() {
+  return <Post />;
+}

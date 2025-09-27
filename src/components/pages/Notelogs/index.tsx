@@ -1,38 +1,57 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable prefer-const */
+
 import { SectionWrapper } from "@/components/sections/SectionWrapper";
-import { CalendarDays, Clock, Tag } from "lucide-react";
-import { BlogCard } from "./BlogCard";
+import { BlogCard } from "@/components/pages/Notelogs/BlogCard";
+import { ENV_CONFIG } from "@/config/envConfig";
 
-const blogPosts = [
-  {
-    title: "Getting Started with Next.js 14",
-    excerpt:
-      "Learn the basics of Next.js 14 and how to build modern web applications with the latest features.",
-    date: "2023-10-15",
-    readTime: "5 min read",
-    tags: ["Next.js", "React", "Web Development"],
-    slug: "getting-started-with-nextjs-14",
-  },
-  {
-    title: "Mastering TypeScript in 2023",
-    excerpt:
-      "Advanced TypeScript patterns and best practices for building type-safe applications at scale.",
-    date: "2023-09-28",
-    readTime: "8 min read",
-    tags: ["TypeScript", "JavaScript", "Programming"],
-    slug: "mastering-typescript-2023",
-  },
-  {
-    title: "The Future of Web Development",
-    excerpt:
-      "Exploring the latest trends and technologies shaping the future of web development.",
-    date: "2023-09-10",
-    readTime: "6 min read",
-    tags: ["Web Development", "Trends", "Technology"],
-    slug: "future-of-web-dev",
-  },
-];
+type NotelogType = {
+  _id: string;
+  title: string;
+  slug: string;
+  content: string;
+  tags: string[];
+  status: "pending" | "approved" | "rejected";
+  published: boolean;
+  coverImage?: string | null;
+  views: number;
+  isDiscarded: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  summary?: string;
+};
 
-export const BlogSection = () => {
+export const BlogSection = async () => {
+  const notelogs = await fetch(
+    `${ENV_CONFIG.NEXT_PUBLIC_APP_URL}/api/notelogs`
+  ).then((res) => res.json());
+
+  if (!notelogs || notelogs.length === 0) {
+    return (
+      <SectionWrapper id="blog">
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">No articles found.</p>
+        </div>
+      </SectionWrapper>
+    );
+  }
+
+  const blogPosts = notelogs.map((notelog: NotelogType) => ({
+    title: notelog.title,
+    content: notelog.content,
+    summary: notelog.summary,
+    excerpt:
+      notelog.content?.substring(0, 150) +
+        (notelog.content?.length > 150 ? "..." : "") || "No content available",
+    date: notelog.createdAt || new Date().toISOString(),
+    readTime: Math.ceil(notelog?.content?.length / 2000) + " min read",
+    tags: notelog.tags || [],
+    slug: notelog.slug,
+    coverImage: notelog.coverImage,
+    createdAt: notelog.createdAt,
+    updatedAt: notelog.updatedAt,
+  }));
+
   return (
     <SectionWrapper id="blog">
       <div className="text-center mb-12">
@@ -47,18 +66,9 @@ export const BlogSection = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {blogPosts.map((post, index) => (
-       <BlogCard key={index} post={post} />
+        {blogPosts.map((post: any, index: number) => (
+          <BlogCard key={index} post={post} />
         ))}
-      </div>
-
-      <div className="text-center mt-12">
-        <a
-          href="/blog"
-          className="inline-flex items-center px-6 py-3 border border-primary text-primary rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
-        >
-          View All Articles
-        </a>
       </div>
     </SectionWrapper>
   );

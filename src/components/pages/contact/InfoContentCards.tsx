@@ -33,10 +33,10 @@ export const InfoContentCards = () => {
       <div className="hidden lg:flex flex-col justify-center w-full max-w-md space-y-6">
         <div className="text-left space-y-1">
           <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
-            Let's Chat! 💬
+            Let&apos;s Chat! 💬
           </h2>
           <p className="text-muted-foreground">
-            Have something in mind? I'm all ears (or should I say, all
+            Have something in mind? I&apos;m all ears (or should I say, all
             processors?).
           </p>
         </div>

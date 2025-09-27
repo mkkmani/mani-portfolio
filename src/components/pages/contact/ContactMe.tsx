@@ -22,6 +22,7 @@ import {
   getRandomWelcomeMessage,
 } from "./utils";
 import { InputStep } from "./types";
+import { toast } from "sonner";
 
 type Message = {
   text: string;
@@ -101,8 +102,9 @@ const BotMessage = ({
               Does everything look good?
             </p>
             <p className="mt-1 font-medium text-foreground">
-              Type <span className="text-primary">'yes'</span> to send or{" "}
-              <span className="text-primary">'no'</span> to start over
+              Type <span className="text-primary">&apos;yes&apos;</span> to send
+              or <span className="text-primary">&apos;no&apos;</span> to start
+              over
             </p>
           </div>
         </div>
@@ -455,6 +457,7 @@ const ContactMe = () => {
               newConfirmationMessage,
             ]);
             setCurrentStep("goodbye");
+            handleSubmitMessage();
           } else {
             setUserResponse("");
             setMessages([]);
@@ -471,6 +474,26 @@ const ContactMe = () => {
       messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
     }
   }, [messages, isTyping]);
+
+  const handleSubmitMessage = async () => {
+    if (!userResponse) return;
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userDetails),
+    });
+    if (!res.ok) {
+      toast.error("Failed to send message Please try again");
+    }
+    if (res.ok) {
+      toast.success("Message sent successfully");
+    }
+    setUserResponse("");
+    setMessages([]);
+    beginChat();
+  };
 
   if (!isChatOpen) {
     return <BeginChat onClick={beginChat} />;
@@ -498,7 +521,7 @@ const ContactMe = () => {
                   </span>
                   <span className="inline-flex items-center gap-1">
                     <span className="animate-pulse">•</span>
-                    <span>Let's build something amazing together!</span>
+                    <span>Let&apos;s build something amazing together!</span>
                   </span>
                 </p>
               </div>

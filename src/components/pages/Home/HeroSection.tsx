@@ -43,7 +43,7 @@ export const HeroSection = () => {
             <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-none">
               <span className="block">HELLO,</span>
               <span className="block text-7xl sm:text-8xl md:text-9xl lg:text-[10rem] text-primary">
-                I'M MANI
+                I&apos;M MANI
               </span>
             </h1>
 
@@ -72,7 +72,7 @@ export const HeroSection = () => {
               <span className="mr-2">🤔</span> {randomFact}
             </div>
 
-            <div className="pt-6">
+            {/* <div className="pt-6">
               <div className="flex flex-wrap gap-4">
                 {socialLinks.map((social) => {
                   const Icon = social.icon;
@@ -90,7 +90,7 @@ export const HeroSection = () => {
                   );
                 })}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

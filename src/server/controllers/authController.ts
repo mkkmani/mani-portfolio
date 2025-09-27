@@ -6,11 +6,11 @@ import {
   generateToken,
   hashPassword,
 } from "@/server/services/authServices";
-import { ENV_CONFIG } from "@/config/envConfig";
+import connectToDB from "@/server/db/mongoDb";
 
 export const registerUser = async (req: NextRequest) => {
   const { email, password } = await req.json();
-
+  await connectToDB();
   try {
     validateUser(email, password);
   } catch (error) {
@@ -38,7 +38,7 @@ export const registerUser = async (req: NextRequest) => {
 
 export const loginUser = async (req: NextRequest) => {
   const { email, password } = await req.json();
-
+  await connectToDB();
   const user = await User.findOne({ email });
   if (!user) {
     return NextResponse.json({ message: "User not found" }, { status: 404 });
@@ -52,7 +52,10 @@ export const loginUser = async (req: NextRequest) => {
     );
   }
 
-  const token = generateToken({ id: user._id, expiresIn: 60 * 60 });
+  const token = generateToken({
+    payload: { id: user._id, role: user.role },
+    expiresIn: 60 * 60,
+  });
 
   const response = NextResponse.json(
     { message: "Login successful" },
@@ -61,7 +64,7 @@ export const loginUser = async (req: NextRequest) => {
 
   response.cookies.set("authToken", token, {
     httpOnly: true,
-    secure: ENV_CONFIG.NODE_ENV === "production",
+    secure: true,
     path: "/",
     maxAge: 60 * 60,
   });

@@ -30,7 +30,6 @@ export const TitleSummaryTags: React.FC<TitleSummaryTagsProps> = ({
 }) => {
   const [showTagInput, setShowTagInput] = useState(false);
   const [titleFocused, setTitleFocused] = useState(false);
-  const [summaryFocused, setSummaryFocused] = useState(false);
   const maxTags = 4;
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -109,8 +108,6 @@ export const TitleSummaryTags: React.FC<TitleSummaryTagsProps> = ({
           <Input
             value={summary}
             onChange={(e) => onSummaryChange(e.target.value)}
-            onFocus={() => setSummaryFocused(true)}
-            onBlur={() => setSummaryFocused(false)}
             placeholder="Write a brief summary of your blog post..."
             maxLength={200}
             className={cn(

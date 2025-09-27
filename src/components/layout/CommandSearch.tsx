@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import {
   Command,
   Search,
-  X,
   Home,
   User,
   Briefcase,
@@ -237,7 +236,7 @@ export const CommandPalette = () => {
                       {group}
                     </div>
                     <div className="space-y-1">
-                      {commands.map((cmd, index) => {
+                      {commands.map((cmd) => {
                         const commandIndex = filteredCommands.findIndex(
                           (c) => c.id === cmd.id
                         );

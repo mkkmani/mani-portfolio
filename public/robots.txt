@@ -1,23 +1,38 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Allow: /
+
+# Disallow directories that don't need to be indexed
 Disallow: /api/
 Disallow: /_next/
-Disallow: /*.json$
 Disallow: /_error
 Disallow: /404
 Disallow: /500
-
-# Sitemaps
-Sitemap: https://yourportfolio.com/sitemap.xml
-
-# Crawl-delay: 10  # Uncomment and adjust if needed
-
-# Block specific files
 Disallow: /admin/
 Disallow: /private/
+Disallow: /*.json$
+Disallow: /*?*
+Disallow: /*?$
+Disallow: /*/$
 
 # Allow all search engines to index the following directories
+Allow: /notelogs/
+Allow: /about/
+Allow: /contact/
+
+# Sitemap location
+Sitemap: https://maniportfolio.com/sitemap.xml
+
+# Crawl-delay: 10  # Uncomment and adjust if needed for server load
+
+# Mobile sitemap (uncomment if you have one)
+# Sitemap: https://maniportfolio.com/sitemap-mobile.xml
+
+# Image sitemap (uncomment if you have one)
+# Sitemap: https://maniportfolio.com/sitemap-image.xml
+
+# Video sitemap (uncomment if you have one)
+# Sitemap: https://maniportfolio.com/sitemap-video.xml
 Allow: /assets/
 Allow: /images/
 

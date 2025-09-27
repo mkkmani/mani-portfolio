@@ -21,7 +21,7 @@ const Navbar = () => {
   const navItems = [
     { id: "home", name: "Home", href: "/", icon: Home },
     { id: "about", name: "About", href: "/about", icon: User },
-    { id: "projects", name: "Projects", href: "/projects", icon: Briefcase },
+    // { id: "projects", name: "Projects", href: "/projects", icon: Briefcase },
     { id: "notelogs", name: "Notelogs", href: "/notelogs", icon: FileText },
     { id: "contact", name: "Contact", href: "/contact", icon: Mail },
   ];
@@ -31,7 +31,7 @@ const Navbar = () => {
       item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)
     );
     setActiveIndex(activeItem >= 0 ? activeItem : 0);
-  }, [pathname]);
+  }, [pathname,navItems]);
 
   if (!mounted || pathname === "/notelogs/add") return null;
 
