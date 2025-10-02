@@ -2,6 +2,10 @@
 User-agent: *
 Allow: /
 
+User-agent: Googlebot
+Allow: /sitemap.xml
+
+
 # Disallow directories that don't need to be indexed
 Disallow: /api/
 Disallow: /_next/

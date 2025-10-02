@@ -10,6 +10,8 @@ import EditorComponent from "@/components/editor/EditorComponent";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Head from "next/head";
+import { ENV_CONFIG } from "@/config/envConfig";
 
 interface NoteLog {
   title: string;
@@ -66,7 +68,27 @@ export default function NoteLogPost() {
   }
 
   return (
-    <div className="flex flex-col h-full max-w-4xl mx-auto w-full space-y-6 pt-10">
+    <>
+      <Head>
+        <title>{note.title} | NoteLogs</title>
+        <meta name="description" content={note.summary || 'A detailed note'} />
+        
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={note.title} />
+        <meta property="og:description" content={note.summary || 'A detailed note'} />
+        {note.coverImage && <meta property="og:image" content={note.coverImage} />}
+        <meta property="og:url" content={`${ENV_CONFIG.NEXT_PUBLIC_APP_URL}/notelogs/${slug}`} />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={note.title} />
+        <meta name="twitter:description" content={note.summary || 'A detailed note'} />
+        {note.coverImage && <meta name="twitter:image" content={note.coverImage} />}
+        
+        <meta name="keywords" content={note.tags ? note.tags.join(', ') : ''} />
+        <meta name="author" content="Your Name" />
+      </Head>
+      
+      <div className="flex flex-col h-full max-w-4xl mx-auto w-full space-y-6 pt-10">
       <div>
         <Link href="/notelogs" className="flex items-center gap-2">
           <ArrowLeftIcon className="w-4 h-4" />
@@ -111,6 +133,7 @@ export default function NoteLogPost() {
 
         <EditorComponent editor={editorInstance} />
       </article>
-    </div>
+      </div>
+    </>
   );
 }

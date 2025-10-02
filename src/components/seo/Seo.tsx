@@ -1,3 +1,4 @@
+import { ENV_CONFIG } from "@/config/envConfig";
 import Head from "next/head";
 
 interface SeoProps {
@@ -30,8 +31,7 @@ export const Seo = ({
   modifiedTime,
   author = "Mani",
 }: SeoProps) => {
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://yourportfolio.com";
+  const siteUrl = ENV_CONFIG.NEXT_PUBLIC_APP_URL;
   const fullUrl = `${siteUrl}${path}`;
   const fullImageUrl = image.startsWith("http") ? image : `${siteUrl}${image}`;
 
