@@ -1,23 +1,10 @@
-import { z } from "zod";
+const envConfig = {
+  MONGODB_URI: process.env.MONGODB_URI,
+  MONGODB_DB: process.env.MONGODB_DB,
+  JWT_SECRET: process.env.JWT_SECRET,
+  NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+  GMAIL_USER: process.env.GMAIL_USER,
+  GMAIL_PASS: process.env.GMAIL_PASS,
+};
 
-const EnvConfigSchema = z.object({
-  MONGODB_URI: z.string().min(1, "MONGODB_URI is required"),
-  MONGODB_DB: z.string().min(1, "MONGODB_DB is required"),
-  JWT_SECRET: z.string().min(1, "JWT_SECRET is required"),
-  NEXT_PUBLIC_EMAIL: z.email().min(1, "EMAIL is required"),
-  GMAIL_USER: z.string().min(1, "GMAIL_USER is required"),
-  GMAIL_PASS: z.string().min(1, "GMAIL_PASS is required"),
-  NEXT_PUBLIC_APP_URL: z.string().min(1, "NEXT_PUBLIC_APP_URL is required"),
-});
-
-const envConfig = EnvConfigSchema.safeParse(process.env);
-
-if (!envConfig.success) {
-  console.error(
-    "Invalid environment variables:",
-    z.treeifyError(envConfig.error)
-  );
-  throw new Error("Invalid environment variables");
-}
-
-export const ENV_CONFIG = envConfig.data;
+export const ENV_CONFIG = envConfig;

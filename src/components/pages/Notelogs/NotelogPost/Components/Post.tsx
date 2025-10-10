@@ -37,7 +37,7 @@ export default function NoteLogPost() {
     try {
       const res = await fetch(`/api/notelogs/${slug}`);
       if (!res.ok) {
-        throw new Error('Failed to fetch note');
+        throw new Error("Failed to fetch note");
       }
       const data = await res.json();
       setNote(data);
@@ -71,68 +71,81 @@ export default function NoteLogPost() {
     <>
       <Head>
         <title>{note.title} | NoteLogs</title>
-        <meta name="description" content={note.summary || 'A detailed note'} />
-        
+        <meta name="description" content={note.summary || "A detailed note"} />
+
         <meta property="og:type" content="article" />
         <meta property="og:title" content={note.title} />
-        <meta property="og:description" content={note.summary || 'A detailed note'} />
-        {note.coverImage && <meta property="og:image" content={note.coverImage} />}
-        <meta property="og:url" content={`${ENV_CONFIG.NEXT_PUBLIC_APP_URL}/notelogs/${slug}`} />
-        
+        <meta
+          property="og:description"
+          content={note.summary || "A detailed note"}
+        />
+        {note.coverImage && (
+          <meta property="og:image" content={note.coverImage} />
+        )}
+        <meta
+          property="og:url"
+          content={`${ENV_CONFIG.NEXT_PUBLIC_APP_URL}/notelogs/${slug}`}
+        />
+
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={note.title} />
-        <meta name="twitter:description" content={note.summary || 'A detailed note'} />
-        {note.coverImage && <meta name="twitter:image" content={note.coverImage} />}
-        
-        <meta name="keywords" content={note.tags ? note.tags.join(', ') : ''} />
+        <meta
+          name="twitter:description"
+          content={note.summary || "A detailed note"}
+        />
+        {note.coverImage && (
+          <meta name="twitter:image" content={note.coverImage} />
+        )}
+
+        <meta name="keywords" content={note.tags ? note.tags.join(", ") : ""} />
         <meta name="author" content="Your Name" />
       </Head>
-      
+
       <div className="flex flex-col h-full max-w-4xl mx-auto w-full space-y-6 pt-10">
-      <div>
-        <Link href="/notelogs" className="flex items-center gap-2">
-          <ArrowLeftIcon className="w-4 h-4" />
-          <span>Back to Notelogs</span>
-        </Link>
-      </div>
-      <article>
-        <div className="flex flex-col gap-6 p-4">
-          {note.coverImage && (
-            <div className="relative w-full aspect-video h-auto max-h-[50vh] mb-6 rounded-lg overflow-hidden">
-              <Image
-                src={note.coverImage}
-                alt={note.title}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 50vw"
-                priority
-              />
-            </div>
-          )}
-
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">
-            {note.title}
-          </h1>
-
-          {note.summary && <p>{note.summary}</p>}
-
-          {note.tags && note.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
-              {note.tags.map((tag: string, index: number) => (
-                <Badge
-                  key={index}
-                  variant="secondary"
-                  className="text-xs sm:text-sm font-normal py-1 px-2"
-                >
-                  #{tag}
-                </Badge>
-              ))}
-            </div>
-          )}
+        <div>
+          <Link href="/notelogs" className="flex items-center gap-2">
+            <ArrowLeftIcon className="w-4 h-4" />
+            <span>Back to Notelogs</span>
+          </Link>
         </div>
+        <article>
+          <div className="flex flex-col gap-6 p-4">
+            {note.coverImage && (
+              <div className="relative w-full aspect-video h-auto max-h-[50vh] mb-6 rounded-lg overflow-hidden">
+                <Image
+                  src={note.coverImage}
+                  alt={note.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 50vw"
+                  priority
+                />
+              </div>
+            )}
 
-        <EditorComponent editor={editorInstance} />
-      </article>
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">
+              {note.title}
+            </h1>
+
+            {note.summary && <p>{note.summary}</p>}
+
+            {note.tags && note.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
+                {note.tags.map((tag: string, index: number) => (
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="text-xs sm:text-sm font-normal py-1 px-2"
+                  >
+                    #{tag}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <EditorComponent editor={editorInstance} />
+        </article>
       </div>
     </>
   );
