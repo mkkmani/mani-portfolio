@@ -1,16 +1,17 @@
 import { Seo } from "@/components/seo/Seo";
 import { BlogSection } from "@/components/pages/Notelogs";
-import { ENV_CONFIG } from "@/config/envConfig";
+import { getNotelogs } from "@/server/services/noteLogServices";
+import connectToDB from "@/server/db/mongoDb";
 
 async function getPosts() {
-  const response = await fetch(
-    `${ENV_CONFIG.NEXT_PUBLIC_APP_URL}/api/notelogs`,
-    { next: { revalidate: 60 } }
-  );
-  if (!response.ok) {
-    throw new Error('Failed to fetch posts');
+  try {
+    await connectToDB();
+    const posts = await getNotelogs();
+    return posts;
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return [];
   }
-  return response.json();
 }
 
 export const metadata = {
@@ -53,6 +54,9 @@ export const metadata = {
     canonical: "/blog",
   },
 };
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default async function BlogPage() {
   const posts = await getPosts();

@@ -1,15 +1,12 @@
 import { ENV_CONFIG } from "@/config/envConfig";
 import { MetadataRoute } from "next";
+import { getNotelogs as getNotelogsFromDB } from "@/server/services/noteLogServices";
+import connectToDB from "@/server/db/mongoDb";
 
 async function getNotelogs() {
   try {
-    const baseUrl =
-     ENV_CONFIG.NEXT_PUBLIC_APP_URL;
-    const response = await fetch(`${baseUrl}/api/notelogs`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch notelogs");
-    }
-    const data = await response.json();
+    await connectToDB();
+    const data = await getNotelogsFromDB();
     return data || [];
   } catch (error) {
     console.error("Error fetching notelogs:", error);
@@ -18,7 +15,7 @@ async function getNotelogs() {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = ENV_CONFIG.NEXT_PUBLIC_APP_URL;
+  const baseUrl = ENV_CONFIG.NEXT_PUBLIC_APP_URL || 'https://manikantaketha.in';
   const currentDate = new Date();
 
   const notelogs = await getNotelogs();
