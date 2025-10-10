@@ -56,8 +56,13 @@ export const verifyToken = (token: string): JwtPayload => {
     throw new Error("No token provided");
   }
 
+  const secret = ENV_CONFIG.JWT_SECRET as Secret;
+  if (!secret) {
+    throw new Error("JWT secret is missing. Set ENV_CONFIG.JWT_SECRET.");
+  }
+
   try {
-    const decoded = jwt.verify(token, ENV_CONFIG.JWT_SECRET) as JwtPayload;
+    const decoded = jwt.verify(token, secret);
 
     const validationResult = JwtPayloadSchema.safeParse(decoded);
 
@@ -66,7 +71,7 @@ export const verifyToken = (token: string): JwtPayload => {
       throw new Error("Invalid token structure");
     }
 
-    return decoded;
+    return validationResult.data;
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError) {
       throw new Error("Token has expired");
