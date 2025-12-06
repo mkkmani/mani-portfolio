@@ -69,11 +69,6 @@ export default function Footer() {
                   Interview Prep
                 </Link>
               </li>
-              <li>
-                <Link href="/get-access" className="text-foreground/60 hover:text-accent transition-colors">
-                  Get Access
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -81,8 +76,8 @@ export default function Footer() {
             <h4 className="font-bold text-lg mb-4 text-white">Get In Touch</h4>
             <ul className="space-y-3 text-foreground/60">
               <li>
-                <a href="mailto:contact@manikanta.dev" className="hover:text-accent transition-colors">
-                  contact@manikanta.dev
+                <a href="mailto:manikantaketha1@gmail.com" className="hover:text-accent transition-colors">
+                  manikantaketha1@gmail.com
                 </a>
               </li>
               <li>Available for freelance</li>
