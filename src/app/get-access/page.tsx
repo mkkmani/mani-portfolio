@@ -64,13 +64,11 @@ export default function AdminDashboard() {
   const router = useRouter();
   const [currentView, setCurrentView] = useState<View>('home');
 
-  // Data States
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [preparations, setPreparations] = useState<IPreparation[]>([]);
 
-  // UI States
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'project' | 'blog' | null>(null);
@@ -79,12 +77,10 @@ export default function AdminDashboard() {
   const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [previewMode, setPreviewMode] = useState(false);
 
-  // Form States
   const [formData, setFormData] = useState<any>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // Check authentication status
     checkAuth();
   }, []);
 
@@ -220,7 +216,6 @@ export default function AdminDashboard() {
   };
 
   const handleTogglePublish = async (id: string, type: 'project' | 'blog', currentStatus: boolean) => {
-    // Optimistic update could be done here, but for simplicity we'll just reload
     try {
       const endpoint = type === 'project' ? '/api/projects' : '/api/blogs';
       const res = await fetch(endpoint, {
