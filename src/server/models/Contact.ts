@@ -1,0 +1,47 @@
+import mongoose from 'mongoose';
+
+const contactSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  contactMethod: {
+    type: String,
+    enum: ['email', 'phone'],
+    required: true,
+  },
+  contactValue: {
+    type: String,
+    required: true,
+  },
+  message: {
+    type: String,
+    required: true,
+  },
+  otp: {
+    type: String,
+  },
+  otpExpiry: {
+    type: Date,
+  },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
+  replied: {
+    type: Boolean,
+    default: false,
+  },
+  adminReply: {
+    type: String,
+  },
+  repliedAt: {
+    type: Date,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+export default mongoose.models.Contact || mongoose.model('Contact', contactSchema);

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="100%" style="stop-color:#1a1a1a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="80%" cy="20%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:0.08"/>
+      <stop offset="70%" style="stop-color:#60a5fa;stop-opacity:0"/>
+    </radialGradient>
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/>
+      <feComponentTransfer>
+        <feFuncA type="discrete" tableValues="0 0 0 0 1"/>
+      </feComponentTransfer>
+      <feColorMatrix type="matrix" values="0 0 0 0 1
+                                           0 0 0 0 1
+                                           0 0 0 0 1
+                                           0 0 0 0.012 0"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Noise texture -->
+  <rect width="1200" height="630" filter="url(#noise)" opacity="0.4"/>
+  
+  <!-- Accent glow -->
+  <ellipse cx="1100" cy="100" rx="400" ry="400" fill="url(#glow)"/>
+  
+  <!-- Grid lines -->
+  <line x1="80" y1="0" x2="80" y2="630" stroke="rgba(255,255,255,0.02)" stroke-width="1"/>
+  <line x1="0" y1="550" x2="1200" y2="550" stroke="rgba(255,255,255,0.02)" stroke-width="1"/>
+  
+  <!-- Corner accents -->
+  <polyline points="40,80 40,40 80,40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <polyline points="1160,590 1160,590 1120,590" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <polyline points="1160,550 1160,590" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  
+  <!-- Status badge -->
+  <rect x="80" y="183" width="238" height="28" rx="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <circle cx="97" cy="197" r="3" fill="#60a5fa" opacity="1">
+    <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <text x="110" y="202" font-family="Arial, sans-serif" font-size="12" font-weight="500" fill="rgba(255,255,255,0.6)" letter-spacing="0.5">OPEN TO OPPORTUNITIES</text>
+  
+  <!-- Main name -->
+  <text x="80" y="300" font-family="Arial, sans-serif" font-size="110" font-weight="700" fill="#ffffff" letter-spacing="-4">Mani Kanta</text>
+  
+  <!-- Subtitle -->
+  <text x="80" y="345" font-family="Arial, sans-serif" font-size="28" font-weight="400" fill="rgba(255,255,255,0.4)" letter-spacing="-0.5">Engineer × Designer crafting exceptional</text>
+  <text x="80" y="380" font-family="Arial, sans-serif" font-size="28" font-weight="400" fill="rgba(255,255,255,0.4)" letter-spacing="-0.5">web experiences</text>
+  
+  <!-- Tech stack -->
+  <text x="80" y="460" font-family="Arial, sans-serif" font-size="15" font-weight="500" fill="rgba(255,255,255,0.5)" letter-spacing="0.3">MongoDB</text>
+  <circle cx="176" cy="455" r="1.5" fill="rgba(255,255,255,0.2)"/>
+  <text x="192" y="460" font-family="Arial, sans-serif" font-size="15" font-weight="500" fill="rgba(255,255,255,0.5)" letter-spacing="0.3">Express</text>
+  <circle cx="277" cy="455" r="1.5" fill="rgba(255,255,255,0.2)"/>
+  <text x="293" y="460" font-family="Arial, sans-serif" font-size="15" font-weight="500" fill="rgba(255,255,255,0.5)" letter-spacing="0.3">React</text>
+  <circle cx="358" cy="455" r="1.5" fill="rgba(255,255,255,0.2)"/>
+  <text x="374" y="460" font-family="Arial, sans-serif" font-size="15" font-weight="500" fill="rgba(255,255,255,0.5)" letter-spacing="0.3">Node.js</text>
+</svg>

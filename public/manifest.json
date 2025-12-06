@@ -1,0 +1,24 @@
+{
+  "name": "Mani Kanta - Full Stack Developer",
+  "short_name": "Mani Kanta",
+  "description": "Full-stack MERN developer specializing in building exceptional digital experiences with modern web technologies.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00ff00",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": [
+    "portfolio",
+    "developer",
+    "technology"
+  ],
+  "lang": "en-US",
+  "dir": "ltr"
+}
