@@ -1,6 +1,5 @@
 import Navbar from '@/components/Common/Navbar';
-import dbConnect from '@/server/db';
-import Blog from '@/server/models/Blog';
+import { getBlogBySlugServer } from '@/services/api';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
@@ -25,9 +24,8 @@ async function verifyAdmin(): Promise<boolean> {
 }
 
 export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {
-  await dbConnect();
   const { slug } = await params;
-  const blog = await Blog.findOne({ slug });
+  const blog = await getBlogBySlugServer(slug);
 
   if (!blog) {
     notFound();
@@ -63,7 +61,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
               </span>
             )}
           </div>
-          <Image src={blog.image} alt={blog.title} layout="responsive"
+          <Image src={blog.image || ''} alt={blog.title} layout="responsive"
             width={1200}
             height={800} />
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight">{blog.title}</h1>

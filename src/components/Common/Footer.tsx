@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { Github, Linkedin, Mail, ArrowUp } from 'lucide-react';
+import { SOCIAL_LINKS } from '@/lib/config';
+import { getSiteConfig } from '@/lib/seo-config';
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -22,23 +24,26 @@ export default function Footer() {
             </p>
             <div className="flex gap-4">
               <a
-                href="https://github.com"
+                href={SOCIAL_LINKS.github}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Visit GitHub profile"
                 className="p-3 border-2 border-white/10 hover:border-accent hover:text-accent transition-all"
               >
                 <Github size={20} />
               </a>
               <a
-                href="https://linkedin.com"
+                href={SOCIAL_LINKS.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Visit LinkedIn profile"
                 className="p-3 border-2 border-white/10 hover:border-accent hover:text-accent transition-all"
               >
                 <Linkedin size={20} />
               </a>
               <a
-                href="mailto:manikantaketha1@gmail.com"
+                href={`mailto:${SOCIAL_LINKS.email}`}
+                aria-label="Send email"
                 className="p-3 border-2 border-white/10 hover:border-accent hover:text-accent transition-all"
               >
                 <Mail size={20} />
@@ -76,8 +81,8 @@ export default function Footer() {
             <h4 className="font-bold text-lg mb-4 text-white">Get In Touch</h4>
             <ul className="space-y-3 text-foreground/60">
               <li>
-                <a href="mailto:manikantaketha1@gmail.com" className="hover:text-accent transition-colors">
-                  manikantaketha1@gmail.com
+                <a href={`mailto:${SOCIAL_LINKS.email}`} className="hover:text-accent transition-colors">
+                  {SOCIAL_LINKS.email}
                 </a>
               </li>
               <li>Available for freelance</li>

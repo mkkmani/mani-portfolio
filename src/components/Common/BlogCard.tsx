@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 
@@ -16,13 +15,9 @@ interface BlogCardProps {
 }
 
 export default function BlogCard({ blog, index }: BlogCardProps) {
+  const delay = index * 100;
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.05, duration: 0.4 }}
-    >
+    <article className={`animate-fade-in-up animation-delay-${delay}`}>
       <Link
         href={`/notelogs/${blog.slug}`}
         className="group block h-full bg-black border border-white/10 p-6 hover:border-accent/50 transition-all duration-300 relative overflow-hidden"
@@ -67,6 +62,6 @@ export default function BlogCard({ blog, index }: BlogCardProps) {
           </div>
         </div>
       </Link>
-    </motion.article>
+    </article>
   );
 }

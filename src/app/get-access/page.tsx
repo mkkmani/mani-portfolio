@@ -20,7 +20,6 @@ import {
 } from 'lucide-react';
 import PreparationView from '@/components/pages/admin/dashboard/PreparationView';
 import { IPreparation } from '@/services/api/preparation';
-import { motion, AnimatePresence } from 'framer-motion';
 
 type View = 'home' | 'projects' | 'blogs' | 'contacts' | 'preparation';
 
@@ -319,10 +318,8 @@ export default function AdminDashboard() {
               { id: 'blogs', label: 'Notelogs', icon: FileText, desc: 'Write thoughts' },
               { id: 'preparation', label: 'Preparation', icon: FileText, desc: 'Write thoughts' },
             ].map((item) => (
-              <motion.button
+              <button
                 key={item.id}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
                 onClick={() => setCurrentView(item.id as View)}
                 className="flex flex-col items-center justify-center p-12 bg-white/5 border border-white/10  hover:border-accent/50 hover:bg-white/10 transition-all group text-center"
               >
@@ -331,7 +328,7 @@ export default function AdminDashboard() {
                 </div>
                 <h2 className="text-2xl font-bold mb-2">{item.label}</h2>
                 <p className="text-foreground/60">{item.desc}</p>
-              </motion.button>
+              </button>
             ))}
           </div>
         )}
@@ -576,18 +573,12 @@ export default function AdminDashboard() {
       </main>
 
       {/* Create Modal */}
-      <AnimatePresence>
+      <>
         {modalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <div
             className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
           >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
+            <div
               className="bg-background border border-white/20  w-full max-w-2xl max-h-[90vh] overflow-y-auto"
             >
               <div className="p-6 border-b border-white/10 flex items-center justify-between sticky top-0 bg-background z-10">
@@ -762,10 +753,10 @@ export default function AdminDashboard() {
                   </button>
                 </div>
               </form>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         )}
-      </AnimatePresence>
+      </>
     </div>
   );
 }

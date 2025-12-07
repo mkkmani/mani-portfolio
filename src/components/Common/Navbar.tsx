@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -67,9 +66,7 @@ export default function Navbar() {
       </div>
 
       {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
+        <div
           className="md:hidden absolute top-24 left-6 right-6 bg-black border-2 border-white/20 p-6 flex flex-col gap-4"
         >
           {navItems.map((item) => (
@@ -83,7 +80,7 @@ export default function Navbar() {
               {item.name}
             </Link>
           ))}
-        </motion.div>
+        </div>
       )}
     </nav>
   );

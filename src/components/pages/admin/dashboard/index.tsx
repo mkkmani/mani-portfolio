@@ -18,7 +18,6 @@ import {
   ArrowRight,
   Star
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import DashboardHeader from './DashboardHeader';
 import AdminHomeView from './HomeView';
 import ContactsView from './ContactsView';
@@ -368,18 +367,12 @@ export default function AdminDashboard() {
       </main>
 
       {/* Create Modal */}
-      <AnimatePresence>
+      <>
         {modalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <div
             className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
           >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
+            <div
               className="bg-background border border-white/20  w-full max-w-2xl max-h-[90vh] overflow-y-auto"
             >
               <div className="p-6 border-b border-white/10 flex items-center justify-between sticky top-0 bg-background z-10">
@@ -554,10 +547,10 @@ export default function AdminDashboard() {
                   </button>
                 </div>
               </form>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         )}
-      </AnimatePresence>
+      </>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { Code2, Cpu, Terminal, GitBranch } from 'lucide-react';
 
 const experiences = [
@@ -72,14 +71,11 @@ export default function Experience() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {experiences.map((exp, index) => {
             const Icon = exp.icon;
+            const delay = index * 100;
             return (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className={`group relative bg-white/[0.02] border border-white/10 hover:border-accent/50 transition-colors duration-300 p-8 ${exp.colSpan}`}
+                className={`group relative bg-white/[0.02] border border-white/10 hover:border-accent/50 transition-colors duration-300 p-8 ${exp.colSpan} animate-fade-in-up animation-delay-${delay}`}
               >
                 {/* Corner Accents */}
                 <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/20 group-hover:border-accent transition-colors" />
@@ -125,7 +121,7 @@ export default function Experience() {
                     ))}
                   </div>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>

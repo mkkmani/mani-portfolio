@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
-import dbConnect from '@/server/db';
-import Blog from '@/server/models/Blog';
+import { getBlogBySlugServer } from '@/services/api';
 import { getSiteConfig } from '@/lib/seo-config';
 import { generateBlogPostingSchema } from '@/lib/structured-data';
 
@@ -13,9 +12,7 @@ export async function generateMetadata({
 
   try {
     const { slug } = await params;
-
-    await dbConnect();
-    const blog = await Blog.findOne({ slug }).lean();
+    const blog = await getBlogBySlugServer(slug);
 
     if (!blog) {
       return {
@@ -80,8 +77,8 @@ export async function generateMetadata({
             alt: blog.title,
           },
         ],
-        publishedTime: blog.createdAt?.toISOString(),
-        modifiedTime: blog.updatedAt?.toISOString(),
+        publishedTime: blog.createdAt,
+        modifiedTime: blog.updatedAt,
         authors: [config.author.name],
         tags: blog.tags,
       },
@@ -123,18 +120,15 @@ export default async function NotelogLayout({
 
   try {
     const { slug } = await params;
-
-    await dbConnect();
-
-    const blog = await Blog.findOne({ slug }).lean();
+    const blog = await getBlogBySlugServer(slug);
 
     if (blog) {
       structuredData = generateBlogPostingSchema(
         {
           ...blog,
           _id: blog._id.toString(),
-          createdAt: blog.createdAt?.toISOString() || new Date().toISOString(),
-          updatedAt: blog.updatedAt?.toISOString() || new Date().toISOString(),
+          createdAt: blog.createdAt || new Date().toISOString(),
+          updatedAt: blog.updatedAt || new Date().toISOString(),
         },
         config
       );

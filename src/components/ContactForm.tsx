@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Send, CheckCircle, Loader } from 'lucide-react';
 
 export default function ContactForm() {
@@ -105,17 +104,13 @@ export default function ContactForm() {
     return (
       <section className="py-20 px-6 bg-background min-h-[60vh] flex items-center justify-center">
         <div className="max-w-xl w-full">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-12 border border-accent/30 bg-accent/5 "
-          >
+          <div className="text-center py-12 border border-accent/30 bg-accent/5 ">
             <CheckCircle className="mx-auto mb-4 text-accent" size={48} />
             <h3 className="text-2xl font-bold mb-2">Message Sent!</h3>
             <p className="text-foreground/60 max-w-sm mx-auto">
               Thank you for reaching out. I'll get back to you shortly.
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
     );
@@ -126,11 +121,7 @@ export default function ContactForm() {
       <div className="max-w-4xl mx-auto w-full">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Text Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-          >
+          <div>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Let's work <br />
               <span className="text-accent">together</span>
@@ -143,14 +134,10 @@ export default function ContactForm() {
               <p>Based in India, available worldwide.</p>
               <p>Specialized in MERN Stack & Next.js</p>
             </div>
-          </motion.div>
+          </div>
 
           {/* Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-          >
+          <div>
             {step === 'form' ? (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -271,7 +258,7 @@ export default function ContactForm() {
                 </div>
               </form>
             )}
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

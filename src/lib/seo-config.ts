@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { SOCIAL_LINKS } from './config';
 
 /**
  * Site configuration interface
@@ -45,14 +46,14 @@ const siteConfig: SiteConfig = {
   ogImage: '/og/og-image.svg',
   author: {
     name: 'Mani Kanta',
-    email: 'manikantaketha1@gmail.com',
+    email: SOCIAL_LINKS.email,
     url: process.env.NEXT_PUBLIC_APP_URL || 'https://manikantaketha.in',
     jobTitle: 'Software Engineer | Full Stack Developer',
   },
   social: {
-    twitter: 'https://x.com/manikantaketh1',
-    github: 'https://github.com/mkkmani',
-    linkedin: 'https://www.linkedin.com/in/manikanta-ketha-225b70158',
+    twitter: SOCIAL_LINKS.twitter,
+    github: SOCIAL_LINKS.github,
+    linkedin: SOCIAL_LINKS.linkedin,
   },
 };
 

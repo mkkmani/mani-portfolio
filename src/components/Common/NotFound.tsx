@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { Home, ArrowLeft } from 'lucide-react';
 
 export default function NotFound() {
@@ -12,29 +11,16 @@ export default function NotFound() {
       <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent/50 to-transparent opacity-50" />
 
       <div className="relative z-10 text-center max-w-2xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8 relative"
-        >
+        <div className="mb-8 relative">
           <h1 className="text-[150px] md:text-[200px] font-black leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 select-none">
             404
           </h1>
-          <motion.div
-            animate={{ rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-accent font-mono text-sm tracking-[1em] uppercase bg-black px-4 border border-accent/20"
-          >
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-accent font-mono text-sm tracking-[1em] uppercase bg-black px-4 border border-accent/20">
             System_Failure
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
+        <div>
           <h2 className="text-2xl md:text-3xl font-bold mb-4">
             Lost in the Digital Void?
           </h2>
@@ -63,7 +49,7 @@ export default function NotFound() {
               </span>
             </Link>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       <div className="absolute top-6 left-6 w-4 h-4 border-t border-l border-white/20" />

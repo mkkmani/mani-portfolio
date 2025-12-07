@@ -44,6 +44,16 @@ export async function getBlogBySlug(slug: string): Promise<IBlog | null> {
   }
 }
 
+// Server-side function for fetching blog data in Server Components
+export async function getBlogBySlugServer(slug: string): Promise<IBlog | null> {
+  try {
+    return await apiRequest<IBlog>(`/api/blogs/${slug}`);
+  } catch (error) {
+    console.error(`Error fetching blog ${slug}:`, error);
+    return null;
+  }
+}
+
 
 export async function getFeaturedBlogs(): Promise<IPaginatedResponse<IBlog>> {
   try {

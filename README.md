@@ -38,7 +38,6 @@ Framework: Next.js 16.0.5 (App Router)
 UI Library: React 19.2.0
 Styling: Tailwind CSS v4
 Language: TypeScript 5
-Animations: Framer Motion
 ```
 
 </td>
@@ -142,7 +141,7 @@ mani-portfolio/
 <td align="center" width="33%">
 <br>
 <b>🎨 Stunning UI</b><br>
-<sub>Premium design with<br>Framer Motion animations</sub>
+<sub>Premium designs</sub>
 </td>
 <td align="center" width="33%">
 <br>

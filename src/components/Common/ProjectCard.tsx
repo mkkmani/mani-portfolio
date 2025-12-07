@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { ExternalLink, Github, ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 
@@ -23,14 +22,9 @@ export default function ProjectCard({
   github,
   index,
 }: ProjectCardProps) {
+  const delay = index * 100;
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1 }}
-      className="h-full"
-    >
+    <div className={`h-full animate-fade-in-up animation-delay-${delay}`}>
       <div className="h-full flex flex-col bg-background border border-foreground/10 overflow-hidden">
 
         <div className="relative h-[220px] bg-foreground/5">
@@ -90,6 +84,6 @@ export default function ProjectCard({
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

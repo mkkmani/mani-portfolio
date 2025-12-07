@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
 
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
@@ -35,9 +34,9 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-6">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
+      <div
+
+
         className="w-full max-w-md p-8 bg-white/5 border border-white/10 "
       >
         <h1 className="text-3xl font-bold mb-2 text-center">Get Access<span className="text-accent">.</span></h1>
@@ -77,7 +76,7 @@ export default function AdminLogin() {
             Login
           </button>
         </form>
-      </motion.div>
+      </div>
     </div>
   );
 }

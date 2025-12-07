@@ -30,6 +30,13 @@ export const TOKEN_CONFIG = {
 } as const;
 
 
+export const SOCIAL_LINKS = {
+  github: process.env.NEXT_PUBLIC_GITHUB_LINK || '',
+  linkedin: process.env.NEXT_PUBLIC_LINKEDIN_LINK || '',
+  twitter: process.env.NEXT_PUBLIC_TWITTER_LINK || '',
+  email: process.env.NEXT_PUBLIC_PERSONAL_EMAIL || '',
+} as const;
+
 export function getAppUrl(): string {
   if (typeof window === 'undefined') {
     if (process.env.NEXT_PUBLIC_APP_URL) {

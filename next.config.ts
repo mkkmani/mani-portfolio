@@ -26,11 +26,12 @@ const nextConfig: NextConfig = {
     ];
   },
   experimental: {
-    staleTimes: {
-      dynamic: 30,
-      static: 30,
-    },
+    optimizePackageImports: ['lucide-react', 'react-syntax-highlighter'],
   },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  reactStrictMode: true,
 };
 
 export default nextConfig;

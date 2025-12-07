@@ -1,17 +1,14 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { ArrowRight, Github, Linkedin, Mail } from 'lucide-react';
+import { SOCIAL_LINKS } from '@/lib/config';
 
 export default function Hero() {
   return (
     <section className="min-h-screen flex flex-col justify-center px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto w-full relative z-10 relative">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="max-w-4xl"
+        <div
+          className="max-w-4xl animate-fade-in-up"
         >
           <div className="flex items-center gap-4 mb-6">
             <div className="h-[1px] w-12 bg-accent" />
@@ -38,24 +35,38 @@ export default function Hero() {
             </a>
 
             <div className="flex items-center gap-4 px-6 py-4 border border-white/10 bg-white/5 backdrop-blur-sm">
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="p-2 hover:text-accent transition-colors">
+              <a
+                href={SOCIAL_LINKS.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Visit GitHub profile"
+                className="p-2 hover:text-accent transition-colors"
+              >
                 <Github size={20} />
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="p-2 hover:text-accent transition-colors">
+              <a
+                href={SOCIAL_LINKS.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Visit LinkedIn profile"
+                className="p-2 hover:text-accent transition-colors"
+              >
                 <Linkedin size={20} />
               </a>
-              <a href="mailto:hello@example.com" className="p-2 hover:text-accent transition-colors">
+              <a
+                href={`mailto:${SOCIAL_LINKS.email}`}
+                aria-label="Send email"
+                className="p-2 hover:text-accent transition-colors"
+              >
                 <Mail size={20} />
               </a>
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2"
+        <div
+          className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 animate-fade-in"
+          style={{ animationDelay: '0.5s', animationFillMode: 'backwards' }}
         >
           <div className="flex flex-col gap-8 text-right">
             <div className="space-y-2">
@@ -67,7 +78,7 @@ export default function Hero() {
               <span className="block text-lg text-accent">Freelance Projects</span>
             </div>
           </div>
-        </motion.div>
+        </div>
 
       </div>
 
