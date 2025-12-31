@@ -19,10 +19,16 @@ async function verifyAdmin(req: NextRequest): Promise<boolean> {
 
 async function sendReplyEmail(to: string, reply: string, originalMessage: string) {
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: SMTP_CONFIG.host,
+    port: SMTP_CONFIG.port,
+    secure: false,
+    requireTLS: true,
     auth: {
       user: SMTP_CONFIG.user,
       pass: SMTP_CONFIG.pass,
+    },
+    tls: {
+      rejectUnauthorized: true,
     },
   });
 

@@ -3,6 +3,7 @@ import dbConnect from '@/server/db';
 import Preparation from '@/server/models/Preparation';
 import { jwtVerify } from 'jose';
 import { JWT_SECRET, COOKIE_CONFIG } from '@/lib/config';
+import { auth } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,24 +24,35 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const slug = searchParams.get('slug');
     const isAdmin = await verifyAdmin(req);
+
     if (slug) {
-      const preparation = await Preparation.findOne({ slug });
+      const preparation = await Preparation.findOne({ slug }).lean();
       if (!preparation) {
         return NextResponse.json({ error: 'Topic not found' }, { status: 404 });
       }
-      if (!preparation.published && !isAdmin) {
+
+      const session = await auth();
+      const isOwner = session?.user?.id && preparation.userId?.toString() === session.user.id;
+
+      const canAccess = preparation.published || isOwner || isAdmin;
+
+      if (!canAccess) {
         return NextResponse.json({ error: 'Topic not found' }, { status: 404 });
       }
+
       return NextResponse.json(preparation);
     }
 
     if (isAdmin) {
-      const preparations = await Preparation.find({}).sort({ createdAt: -1 });
+      const preparations = await Preparation.find({})
+        .sort({ published: 1, createdAt: -1 })
+        .lean();
       return NextResponse.json(preparations);
     }
 
-    const filter = { published: true };
-    const preparations = await Preparation.find(filter).sort({ createdAt: -1 });
+    const preparations = await Preparation.find({ published: true })
+      .sort({ createdAt: -1 })
+      .lean();
 
     return NextResponse.json(preparations);
   } catch (error) {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/server/db';
 import Contact from '@/server/models/Contact';
 import nodemailer from 'nodemailer';
+import { SMTP_CONFIG } from '@/lib/config';
 
 function generateOTP(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -9,15 +10,21 @@ function generateOTP(): string {
 
 async function sendOTPEmail(email: string, otp: string) {
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: SMTP_CONFIG.host,
+    port: SMTP_CONFIG.port,
+    secure: false,
+    requireTLS: true,
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+      user: SMTP_CONFIG.user,
+      pass: SMTP_CONFIG.pass,
+    },
+    tls: {
+      rejectUnauthorized: true,
     },
   });
 
   await transporter.sendMail({
-    from: process.env.SMTP_FROM || 'noreply@manikanta.dev',
+    from: SMTP_CONFIG.from,
     to: email,
     subject: 'Resend: Verify Your Contact Request',
     html: `

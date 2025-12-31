@@ -143,8 +143,57 @@ export default function AIInteraction({ initialData, readOnly = false }: AIInter
     }
   }, [messages, streamingContent, readOnly]);
 
+  useEffect(() => {
+    if (!initialData && !readOnly) {
+      const pendingSession = sessionStorage.getItem('pendingInterviewSession');
+      if (pendingSession) {
+        try {
+          const sessionData = JSON.parse(pendingSession);
+          setTopic(sessionData.topic);
+          setDifficulty(sessionData.difficulty);
+          setInterviewType(sessionData.interviewType);
+          setFocusArea(sessionData.focusArea);
+
+          // Clear the stored data
+          sessionStorage.removeItem('pendingInterviewSession');
+
+          // Auto-start the session
+          setTimeout(() => {
+            handleSend();
+          }, 500);
+        } catch (error) {
+          console.error('Error restoring session:', error);
+          sessionStorage.removeItem('pendingInterviewSession');
+        }
+      }
+    }
+  }, []);
+
   const handleSend = async () => {
     if (!input.trim() && !(!initialData && topic)) return;
+
+    // Check authentication before starting new session
+    if (!initialData && messages.length === 0) {
+      // Check if user is authenticated by checking session
+      const sessionCheckResponse = await fetch('/api/auth/session');
+      const sessionData = await sessionCheckResponse.json();
+
+      if (!sessionData || !sessionData.user) {
+        // Store session data for auto-start after login
+        sessionStorage.setItem('pendingInterviewSession', JSON.stringify({
+          topic,
+          difficulty,
+          interviewType,
+          focusArea,
+        }));
+
+        // Redirect to sign-in
+        const currentPath = window.location.pathname;
+        const signInUrl = `/sign-in?callbackUrl=${encodeURIComponent(currentPath)}`;
+        router.push(signInUrl);
+        return;
+      }
+    }
 
     const userMessage: IMessage = {
       role: 'user',
@@ -171,7 +220,20 @@ export default function AIInteraction({ initialData, readOnly = false }: AIInter
         }),
       });
 
-      if (!response.ok) throw new Error('Generation failed');
+      // Handle authentication error (backup check)
+      if (response.status === 401) {
+        // Redirect to sign-in with callback URL to auto-start session after login
+        const currentPath = window.location.pathname;
+        const signInUrl = `/sign-in?callbackUrl=${encodeURIComponent(currentPath)}`;
+        router.push(signInUrl);
+        return;
+      }
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Generation failed');
+      }
+
       if (!response.body) throw new Error('No response body');
 
       const reader = response.body.getReader();
@@ -199,6 +261,12 @@ export default function AIInteraction({ initialData, readOnly = false }: AIInter
 
     } catch (error) {
       console.error('Error:', error);
+
+      // Remove the user message on error
+      setMessages(prev => prev.slice(0, -1));
+
+      // Show user-friendly error
+      alert(error instanceof Error ? error.message : 'Failed to generate response. Please try again.');
     } finally {
       setLoading(false);
     }

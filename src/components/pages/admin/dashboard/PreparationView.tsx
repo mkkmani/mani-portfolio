@@ -55,7 +55,10 @@ export default function PreparationView({ preparations, filter, handleTogglePubl
             <div className="flex items-center gap-4">
               <button
                 onClick={() => handleTogglePublish(prep._id, prep.published)}
-                className="text-xs font-bold uppercase tracking-wider hover:text-accent text-foreground/60"
+                className={`text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded transition-all ${prep.published
+                    ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20'
+                    : 'bg-green-500/10 text-green-400 hover:bg-green-500/20 border border-green-500/20'
+                  }`}
               >
                 {prep.published ? 'Unpublish' : 'Publish'}
               </button>

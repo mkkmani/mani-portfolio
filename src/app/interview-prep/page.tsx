@@ -1,13 +1,21 @@
 import { getPreparations } from '@/services/api/preparation';
 import Link from 'next/link';
-import { BrainCircuit, ArrowRight, BookOpen } from 'lucide-react';
+import { BrainCircuit, ArrowRight, BookOpen, User } from 'lucide-react';
 import FAQSection from '@/components/FAQ/FAQSection';
 import { interviewPrepFAQs } from '@/lib/faq-data';
+import { auth } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
 export default async function PreparationPage() {
-  const preparations = await getPreparations();
+  const session = await auth();
+  const allPreparations = await getPreparations();
+
+  const preparations = session?.user
+    ? allPreparations.filter((prep: any) =>
+      prep.userId?.toString() === session.user.id
+    )
+    : allPreparations.filter((prep: any) => !prep.userId); // Show only anonymous preps when not logged in
 
   return (
     <main className="max-w-7xl mx-auto px-6 md:px-0 py-24 md:py-32">
@@ -22,21 +30,38 @@ export default async function PreparationPage() {
         <p className="text-xl text-foreground/60 max-w-2xl mx-auto leading-relaxed">
           Explore curated preparation guides or start a new interactive session with our AI interviewer.
         </p>
+
+        {/* Auth Status */}
+        {session?.user ? (
+          <div className="mt-6 flex items-center justify-center gap-2 text-sm text-foreground/60">
+            <User size={16} className="text-accent" />
+            <span>Signed in as <span className="text-accent font-semibold">{session.user.email}</span></span>
+            <span className="mx-2">•</span>
+            <Link href="/profile" className="text-accent hover:underline">
+              View Profile
+            </Link>
+          </div>
+        ) : (
+          <div className="mt-6">
+            <Link href="/sign-in" className="text-sm text-foreground/60 hover:text-accent transition-colors">
+              Sign in to save and track your sessions →
+            </Link>
+          </div>
+        )}
       </div>
 
       {preparations.length > 0 && (
         <div className="mb-16">
           <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
             <BookOpen size={24} className="text-accent" />
-            Your Study Guides & Sessions
+            {session?.user ? 'Your Study Guides & Sessions' : 'Public Study Guides'}
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {preparations.map((prep) => (
+            {preparations.map((prep: any) => (
               <Link
                 key={prep._id}
                 href={`/interview-prep/${prep.slug}`}
-                className="group bg-white/5 border border-white/10 p-8 flex flex-col justify-between min-h-[280px] hover:border-accent/50 hover:bg-white/10 transition-all"
-              >
+                className="group bg-white/5 border border-white/10 p-8 flex flex-col justify-between min-h-[280px] hover:border-accent/50 hover:bg-white/10 transition-all">
                 <div>
                   <div className="flex items-center justify-between mb-6">
                     <div className="w-10 h-10 bg-white/5 flex items-center justify-center group-hover:text-accent transition-colors">
