@@ -13,6 +13,19 @@ jobs:
     name: Install & Build
     runs-on: ubuntu-latest
     
+    env:
+      # Dummy environment variables for CI build
+      # These are only needed for the build process to succeed, not for running the app
+      MONGODB_URI: "mongodb://dummy:27017/test"
+      NEXTAUTH_SECRET: "dummy-secret-for-ci-build-only"
+      NEXTAUTH_URL: "http://localhost:3000"
+      JWT_SECRET: "dummy-jwt-secret-for-ci"
+      GITHUB_CLIENT_ID: "dummy-github-client-id"
+      GITHUB_CLIENT_SECRET: "dummy-github-secret"
+      GOOGLE_CLIENT_ID: "dummy-google-client-id"
+      GOOGLE_CLIENT_SECRET: "dummy-google-secret"
+      NEXT_PUBLIC_APP_URL: "http://localhost:3000"
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
