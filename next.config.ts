@@ -39,7 +39,7 @@ const nextConfig: NextConfig = {
     ];
   },
   experimental: {
-    optimizePackageImports: ['lucide-react', 'react-syntax-highlighter'],
+    optimizePackageImports: ['lucide-react'],
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',

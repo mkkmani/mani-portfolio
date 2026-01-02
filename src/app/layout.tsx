@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Common/Navbar";
 import Footer from "@/components/Common/Footer";
 import Breadcrumbs from "@/components/Common/Breadcrumbs";
+import Providers from "@/components/Providers";
 import { getSiteConfig } from "@/lib/seo-config";
 import { generatePersonSchema, generateOrganizationSchema, generateWebsiteSchema, generateProfessionalServiceSchema, generateNavigationSchema } from "@/lib/structured-data";
 
@@ -131,10 +132,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="alternate" type="application/rss+xml" title="Notelogs by Manikanta Ketha" href="/feed.xml" />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="alternate" type="application/rss+xml" title="Notelogs by Manikanta Ketha" href="/feed.xml" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
@@ -157,10 +155,12 @@ export default function RootLayout({
         />
       </head>
       <body className={`${cormorant.variable} ${inter.variable} antialiased`}>
-        <Navbar />
-        <Breadcrumbs />
-        {children}
-        <Footer />
+        <Providers>
+          <Navbar />
+          <Breadcrumbs />
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
