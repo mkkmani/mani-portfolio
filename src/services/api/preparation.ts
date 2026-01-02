@@ -1,4 +1,5 @@
 import { apiRequest } from './base';
+import type { IPublishRequest } from '@/types/api';
 
 export interface IMessage {
   role: 'user' | 'assistant' | 'system';
@@ -17,8 +18,15 @@ export interface IPreparation {
   messages: IMessage[];
   published: boolean;
   userId?: string;
+  publishRequests?: IPublishRequest[];
   createdAt: string;
   updatedAt: string;
+  // Access metadata (returned by API)
+  userRole?: 'admin' | 'owner' | 'viewer';
+  canPublish?: boolean;
+  canRequestPublish?: boolean;
+  hasPublishRequest?: boolean;
+  publishRequestStatus?: 'pending' | 'approved' | 'rejected';
 }
 
 export async function getPreparations(all: boolean = false): Promise<IPreparation[]> {
@@ -62,5 +70,43 @@ export async function submitFeedback(id: string, messageIndex: number, feedback:
   } catch (error) {
     console.error('Error submitting feedback:', error);
     return null;
+  }
+}
+
+export async function requestPublish(id: string): Promise<void> {
+  try {
+    await apiRequest(`/api/publish-requests`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contentType: 'preparation',
+        contentId: id,
+      }),
+    });
+  } catch (error) {
+    console.error('Request publish error:', error);
+    throw error;
+  }
+}
+
+export async function discardPreparation(id: string): Promise<void> {
+  try {
+    await apiRequest(`/api/interview-prep?id=${id}&type=discard`, {
+      method: 'DELETE',
+    });
+  } catch (error) {
+    console.error('Discard preparation error:', error);
+    throw error;
+  }
+}
+
+export async function permanentDeletePreparation(id: string): Promise<void> {
+  try {
+    await apiRequest(`/api/interview-prep?id=${id}&type=permanent`, {
+      method: 'DELETE',
+    });
+  } catch (error) {
+    console.error('Permanent delete preparation error:', error);
+    throw error;
   }
 }

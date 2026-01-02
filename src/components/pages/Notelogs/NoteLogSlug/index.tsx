@@ -1,27 +1,14 @@
 import Navbar from '@/components/Common/Navbar';
-import { getBlogBySlugServer } from '@/services/api';
+import { getBlogBySlugServer } from '@/services/api/blogs.server';
+import ClientPrivateSession from '@/components/pages/Content/ClientPrivateSession';
+import ClientPublishActionBar from '@/components/pages/Content/ClientPublishActionBar';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { Calendar, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { cookies } from 'next/headers';
-import { jwtVerify } from 'jose';
-import { JWT_SECRET, COOKIE_CONFIG } from '@/lib/config';
 import Image from 'next/image';
-
-async function verifyAdmin(): Promise<boolean> {
-  try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get(COOKIE_CONFIG.name)?.value;
-    if (!token) return false;
-    await jwtVerify(token, JWT_SECRET);
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -31,15 +18,42 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
     notFound();
   }
 
-  const isAdmin = await verifyAdmin();
-  if (!blog.published && !isAdmin) {
-    notFound();
+  // Check if user can access content
+  const canAccess = blog.published || blog.userRole === 'admin' || blog.userRole === 'owner';
+
+  // If user cannot access unpublished content, show PrivateSession
+  if (!canAccess) {
+    return (
+      <ClientPrivateSession
+        contentType="blog"
+        contentId={blog._id}
+        hasExistingRequest={blog.hasPublishRequest || false}
+        requestStatus={blog.publishRequestStatus}
+        canRequestPublish={blog.canRequestPublish || false}
+      />
+    );
   }
 
   return (
     <main className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <article className="max-w-4xl mx-auto px-6 pt-32 pb-20">
+
+      {/* Show publish action bar for admin/owner viewing unpublished content */}
+      {!blog.published && blog.userRole && (
+        <ClientPublishActionBar
+          userRole={blog.userRole}
+          published={blog.published}
+          contentType="blog"
+          contentId={blog._id}
+          contentSlug={blog.slug}
+          canRequestPublish={blog.canRequestPublish || false}
+          hasPublishRequest={blog.hasPublishRequest || false}
+          publishRequestStatus={blog.publishRequestStatus}
+          canPublish={blog.canPublish || false}
+        />
+      )}
+
+      <article className="max-w-4xl mx-auto px-6 pt-4 pb-20">
         <Link href="/notelogs" className="inline-flex items-center gap-2 text-foreground/60 hover:text-accent transition-colors mb-12 group">
           <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
           Back to Notelogs
@@ -55,7 +69,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                 <span key={tag} className="text-accent/80">#{tag}</span>
               ))}
             </div>
-            {!blog.published && isAdmin && (
+            {!blog.published && (
               <span className="text-[10px] font-bold px-2 py-1 bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 uppercase tracking-wider ml-auto">
                 Draft
               </span>

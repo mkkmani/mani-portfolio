@@ -17,9 +17,10 @@ interface BlogCardProps {
 export default function BlogCard({ blog, index }: BlogCardProps) {
   const delay = index * 100;
   return (
-    <article className={`animate-fade-in-up animation-delay-${delay}`}>
+    <article className={`animate-fade-in-up animation-delay-${delay}`} itemScope itemType="https://schema.org/BlogPosting">
       <Link
         href={`/notelogs/${blog.slug}`}
+        title={`${blog.title} - Notelog by Manikanta Ketha`}
         className="group block h-full bg-black border border-white/10 p-6 hover:border-accent/50 transition-all duration-300 relative overflow-hidden"
       >
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -35,11 +36,11 @@ export default function BlogCard({ blog, index }: BlogCardProps) {
             })}
           </div>
 
-          <h3 className="text-xl font-bold mb-3 leading-tight group-hover:text-accent transition-colors line-clamp-2">
+          <h3 className="text-xl font-bold mb-3 leading-tight group-hover:text-accent transition-colors line-clamp-2" itemProp="headline">
             {blog.title}
           </h3>
 
-          <p className="text-sm text-foreground/60 leading-relaxed mb-6 line-clamp-3 flex-grow">
+          <p className="text-sm text-foreground/60 leading-relaxed mb-6 line-clamp-3 flex-grow" itemProp="description">
             {blog.excerpt}
           </p>
 

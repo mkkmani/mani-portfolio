@@ -7,6 +7,7 @@
   --card-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.08);
 }
+
 /* #14532d #15803d */
 
 @theme inline {
@@ -15,7 +16,8 @@
   --color-accent: var(--accent);
   --color-card-bg: var(--card-bg);
   --color-glass-border: var(--glass-border);
-  --font-sans: var(--font-cormorant);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-cormorant);
 
   --radius-xl: 1.5rem;
   --radius-2xl: 2rem;
@@ -37,6 +39,15 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-sans), sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-serif), serif;
 }
 
 button {
@@ -156,6 +167,7 @@ button {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -166,6 +178,7 @@ button {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -176,6 +189,7 @@ button {
     opacity: 0;
     transform: translateX(50px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);

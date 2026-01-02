@@ -31,9 +31,10 @@ export default function ProjectCard({
           {image && (
             <Image
               src={image}
-              alt={title}
+              alt={`${title} project by Manikanta Ketha - Full Stack Developer`}
               fill
               className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           )}
         </div>
@@ -65,6 +66,8 @@ export default function ProjectCard({
                 href={link}
                 target="_blank"
                 rel="noopener noreferrer"
+                title={`Visit ${title} - Manikanta Ketha Project`}
+                aria-label={`Visit ${title} live demo`}
                 className="text-sm text-foreground/70 hover:text-foreground flex items-center gap-1"
               >
                 View Project
@@ -76,6 +79,8 @@ export default function ProjectCard({
                 href={github}
                 target="_blank"
                 rel="noopener noreferrer"
+                title={`GitHub Repository for ${title}`}
+                aria-label={`View ${title} source code on GitHub`}
                 className="text-foreground/50 hover:text-foreground"
               >
                 <Github size={16} />

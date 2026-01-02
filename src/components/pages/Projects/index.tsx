@@ -6,7 +6,7 @@ export default async function Projects() {
   const projects = await getProjects();
 
   return (
-    <main className="min-h-screen bg-background pt-24 px-6">
+    <main className="min-h-screen bg-background pt-4 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-12 opacity-0 animate-[fadeInUp_0.5s_ease-out_forwards]">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Projects</h1>

@@ -44,17 +44,6 @@ export async function getBlogBySlug(slug: string): Promise<IBlog | null> {
   }
 }
 
-// Server-side function for fetching blog data in Server Components
-export async function getBlogBySlugServer(slug: string): Promise<IBlog | null> {
-  try {
-    return await apiRequest<IBlog>(`/api/blogs/${slug}`);
-  } catch (error) {
-    console.error(`Error fetching blog ${slug}:`, error);
-    return null;
-  }
-}
-
-
 export async function getFeaturedBlogs(): Promise<IPaginatedResponse<IBlog>> {
   try {
     const response = await apiRequest<IPaginatedResponse<IBlog>>('/api/blogs', {
@@ -98,5 +87,43 @@ export async function getFeaturedBlogs(): Promise<IPaginatedResponse<IBlog>> {
         hasMore: false,
       },
     };
+  }
+}
+
+export async function requestPublish(id: string): Promise<void> {
+  try {
+    await apiRequest(`/api/publish-requests`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contentType: 'blog',
+        contentId: id,
+      }),
+    });
+  } catch (error) {
+    console.error('Request publish error:', error);
+    throw error;
+  }
+}
+
+export async function discardBlog(slug: string): Promise<void> {
+  try {
+    await apiRequest(`/api/blogs/${slug}?type=discard`, {
+      method: 'DELETE',
+    });
+  } catch (error) {
+    console.error('Discard blog error:', error);
+    throw error;
+  }
+}
+
+export async function permanentDeleteBlog(slug: string): Promise<void> {
+  try {
+    await apiRequest(`/api/blogs/${slug}?type=permanent`, {
+      method: 'DELETE',
+    });
+  } catch (error) {
+    console.error('Permanent delete blog error:', error);
+    throw error;
   }
 }

@@ -12,6 +12,24 @@ export interface IProject {
   updatedAt?: string;
 }
 
+export interface IPublishRequest {
+  userId: string;
+  userName: string;
+  userEmail: string;
+  status: 'pending' | 'approved' | 'rejected';
+  requestedAt: string;
+  resolvedAt?: string;
+  resolvedBy?: string;
+}
+
+export interface IContentAccessInfo {
+  userRole: 'admin' | 'owner' | 'viewer';
+  canPublish: boolean;
+  canRequestPublish: boolean;
+  hasPublishRequest: boolean;
+  publishRequestStatus?: 'pending' | 'approved' | 'rejected';
+}
+
 export interface IBlog {
   _id: string;
   title: string;
@@ -24,6 +42,14 @@ export interface IBlog {
   tags: string[];
   published: boolean;
   favourite?: boolean;
+  userId?: string;
+  publishRequests?: IPublishRequest[];
+  // Access metadata (returned by API)
+  userRole?: 'admin' | 'owner' | 'viewer';
+  canPublish?: boolean;
+  canRequestPublish?: boolean;
+  hasPublishRequest?: boolean;
+  publishRequestStatus?: 'pending' | 'approved' | 'rejected';
 }
 
 export interface IPaginatedResponse<T> {

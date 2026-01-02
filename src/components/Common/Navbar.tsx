@@ -37,6 +37,7 @@ export default function Navbar() {
     { name: 'Projects', path: '/projects' },
     { name: 'Notelogs', path: '/notelogs' },
     { name: 'Interview Prep', path: '/interview-prep' },
+    { name: 'Contact', path: '/contact' },
   ];
 
   return (

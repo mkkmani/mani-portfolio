@@ -9,11 +9,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = siteConfig.url;
 
   const routes = [
-    { path: '', changeFreq: 'weekly' as const, priority: 1 },
-    { path: '/projects', changeFreq: 'monthly' as const, priority: 0.9 },
-    { path: '/contact', changeFreq: 'yearly' as const, priority: 0.5 },
-    { path: '/notelogs', changeFreq: 'daily' as const, priority: 0.8 },
-    { path: '/interview-prep', changeFreq: 'daily' as const, priority: 0.8 },
+    { path: '', changeFreq: 'daily' as const, priority: 1.0 },
+    { path: '/projects', changeFreq: 'weekly' as const, priority: 0.9 },
+    { path: '/notelogs', changeFreq: 'daily' as const, priority: 0.9 },
+    { path: '/notelogs/search', changeFreq: 'daily' as const, priority: 0.6 },
+    { path: '/interview-prep', changeFreq: 'daily' as const, priority: 1.0 },
+    { path: '/contact', changeFreq: 'monthly' as const, priority: 0.8 },
   ].map((route) => ({
     url: `${baseUrl}${route.path}`,
     lastModified: new Date(),
