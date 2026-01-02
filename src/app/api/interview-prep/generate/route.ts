@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
         await dbConnect();
 
         const newMessage = {
-          role: 'assistant',
+          role: 'assistant' as const,
           content: fullResponse,
           createdAt: new Date(),
         };
@@ -94,9 +94,8 @@ export async function POST(req: NextRequest) {
         const now = new Date();
 
         if (existingId) {
-          // Update existing preparation
+          // Update existing preparation - just update metadata
           await Preparation.findByIdAndUpdate(existingId, {
-            $push: { messages: newMessage },
             $set: {
               'sessionMetadata.lastActivityAt': now,
             },
@@ -139,14 +138,14 @@ export async function POST(req: NextRequest) {
           const newPrep = await Preparation.create({
             topic,
             slug,
-            title: `${topic} Preparation Guide`,
             excerpt,
             difficulty,
             userId: session.user.id,
-            messages: [
-              ...messages,
-              newMessage
-            ],
+            preparationData: {
+              coreTopics: messages.filter((m: any) => m.role === 'user'),
+              commonQuestions: [],
+              practicalExamples: [newMessage],
+            },
             sessionMetadata: {
               startedAt: now,
               lastActivityAt: now,
