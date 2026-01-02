@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Protected routes that require authentication
+  // Protected routes that require authentication for interview prep and profile
   const protectedRoutes = ['/interview-prep/new', '/profile'];
 
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
