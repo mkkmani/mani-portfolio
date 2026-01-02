@@ -109,7 +109,7 @@ export default async function PreparationPage() {
 
             <div className="flex items-center justify-center md:justify-start gap-3 font-bold mt-6 text-accent uppercase tracking-wider text-sm">
               <span className="bg-accent text-black px-5 py-2.5 hover:bg-white transition-colors flex items-center gap-2">
-                Begin Setup <ArrowRight size={16} />
+                Start Session <ArrowRight size={16} />
               </span>
             </div>
           </div>
