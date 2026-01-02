@@ -38,12 +38,26 @@ function generateOTP(length = 6): string {
 
 async function sendOTPEmail(email: string, otp: string) {
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: SMTP_CONFIG.host,
+    port: SMTP_CONFIG.port,
+    secure: false,
+    requireTLS: true,
     auth: {
       user: SMTP_CONFIG.user,
       pass: SMTP_CONFIG.pass,
     },
+    tls: {
+      rejectUnauthorized: false,
+    },
   });
+
+  try {
+    await transporter.verify();
+    console.log('SMTP connection verified successfully');
+  } catch (verifyError) {
+    console.error('SMTP verification failed:', verifyError);
+    throw verifyError;
+  }
 
   await transporter.sendMail({
     from: SMTP_CONFIG.from,

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, User } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 
@@ -10,6 +10,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 
   useEffect(() => {
@@ -19,6 +20,15 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    fetch('/api/auth/session')
+      .then(res => res.json())
+      .then(data => {
+        setIsAuthenticated(!!data?.user);
+      })
+      .catch(() => setIsAuthenticated(false));
+  }, [pathname]);
 
   if (pathname?.startsWith('/get-access')) return null;
 
@@ -55,6 +65,18 @@ export default function Navbar() {
               {item.name}
             </Link>
           ))}
+
+          {/* Show Profile Link when authenticated */}
+          {isAuthenticated && (
+            <Link
+              href="/profile"
+              className={`flex items-center gap-2 px-4 py-2 bg-accent/10 hover:bg-accent/20 border border-accent/20 transition-all ${pathname === '/profile' ? 'bg-accent/20 border-accent/40' : ''
+                }`}
+            >
+              <User size={16} className="text-accent" />
+              <span className="text-xs font-bold uppercase tracking-wider text-accent">Profile</span>
+            </Link>
+          )}
         </div>
 
         <button
@@ -80,6 +102,19 @@ export default function Navbar() {
               {item.name}
             </Link>
           ))}
+
+          {/* Mobile Profile Link */}
+          {isAuthenticated && (
+            <Link
+              href="/profile"
+              onClick={() => setIsOpen(false)}
+              className={`text-lg font-bold uppercase flex items-center gap-2 ${pathname === '/profile' ? 'text-accent' : 'text-foreground/70 hover:text-accent'
+                }`}
+            >
+              <User size={20} />
+              Profile
+            </Link>
+          )}
         </div>
       )}
     </nav>

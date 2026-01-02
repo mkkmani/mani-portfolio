@@ -2,17 +2,21 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/server/db';
 import Preparation from '@/server/models/Preparation';
 import { INTERVIEW_PREP_SYSTEM_PROMPT } from '@/lib/prompts/interview-prep';
+import { OPENROUTER_CONFIG } from '@/lib/config';
+import { auth } from '@/lib/auth';
+
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
-    const { topic, messages, difficulty, existingId, interviewType, focusArea } = await req.json();
-    const apiKey = process.env.OPENROUTER_API_KEY;
+    const session = await auth();
 
-    if (!apiKey) {
-      return NextResponse.json({ error: 'OpenRouter API key not configured' }, { status: 500 });
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized. Please sign in to continue.' }, { status: 401 });
     }
+
+    const { topic, messages, difficulty, existingId, interviewType, focusArea } = await req.json();
 
     const systemPrompt = INTERVIEW_PREP_SYSTEM_PROMPT
       .replace('{{TOPIC}}', topic)
@@ -28,13 +32,13 @@ export async function POST(req: NextRequest) {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${OPENROUTER_CONFIG.apiKey}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://mani-portfolio.com',
-        'X-Title': 'Mani Portfolio Interview Prep',
+        'HTTP-Referer': 'https://manikantaketha.in',
+        'X-Title': 'Manikanta Ketha',
       },
       body: JSON.stringify({
-        model: 'amazon/nova-2-lite-v1:free',
+        model: OPENROUTER_CONFIG.model,
         messages: apiMessages,
         stream: true,
       }),
@@ -87,25 +91,41 @@ export async function POST(req: NextRequest) {
           createdAt: new Date(),
         };
 
+        const now = new Date();
+
         if (existingId) {
+          // Update existing preparation
           await Preparation.findByIdAndUpdate(existingId, {
-            $push: { messages: newMessage }
+            $push: { messages: newMessage },
+            $set: {
+              'sessionMetadata.lastActivityAt': now,
+            },
+            $inc: {
+              'sessionMetadata.messageCount': 1,
+            },
           });
         } else {
+          // Create new preparation linked to authenticated user
           let baseSlug = topic.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
           const uniqueId = Math.random().toString(36).substring(2, 8);
           let slug = `${baseSlug}-${uniqueId}`;
 
-          await Preparation.create({
+          const newPrep = await Preparation.create({
             topic,
             slug,
             title: `${topic} Preparation Guide`,
             excerpt: `AI-generated preparation guide for ${topic} (${difficulty})`,
             difficulty,
+            userId: session.user.id,
             messages: [
               ...messages,
               newMessage
             ],
+            sessionMetadata: {
+              startedAt: now,
+              lastActivityAt: now,
+              messageCount: messages.length + 1,
+            },
             published: false,
           });
         }

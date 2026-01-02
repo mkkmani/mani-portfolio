@@ -16,6 +16,7 @@ export interface IPreparation {
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
   messages: IMessage[];
   published: boolean;
+  userId?: string;
   createdAt: string;
   updatedAt: string;
 }

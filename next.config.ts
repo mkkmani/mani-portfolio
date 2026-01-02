@@ -23,6 +23,16 @@ const nextConfig: NextConfig = {
         destination: '/notelogs',
         permanent: true,
       },
+      {
+        source: '/login',
+        destination: '/sign-in',
+        permanent: true,
+      },
+      {
+        source: '/signup',
+        destination: '/sign-in',
+        permanent: true,
+      },
     ];
   },
   experimental: {

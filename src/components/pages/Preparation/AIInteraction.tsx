@@ -143,8 +143,57 @@ export default function AIInteraction({ initialData, readOnly = false }: AIInter
     }
   }, [messages, streamingContent, readOnly]);
 
+  useEffect(() => {
+    if (!initialData && !readOnly) {
+      const pendingSession = sessionStorage.getItem('pendingInterviewSession');
+      if (pendingSession) {
+        try {
+          const sessionData = JSON.parse(pendingSession);
+          setTopic(sessionData.topic);
+          setDifficulty(sessionData.difficulty);
+          setInterviewType(sessionData.interviewType);
+          setFocusArea(sessionData.focusArea);
+
+          // Clear the stored data
+          sessionStorage.removeItem('pendingInterviewSession');
+
+          // Auto-start the session
+          setTimeout(() => {
+            handleSend();
+          }, 500);
+        } catch (error) {
+          console.error('Error restoring session:', error);
+          sessionStorage.removeItem('pendingInterviewSession');
+        }
+      }
+    }
+  }, []);
+
   const handleSend = async () => {
     if (!input.trim() && !(!initialData && topic)) return;
+
+    // Check authentication before starting new session
+    if (!initialData && messages.length === 0) {
+      // Check if user is authenticated by checking session
+      const sessionCheckResponse = await fetch('/api/auth/session');
+      const sessionData = await sessionCheckResponse.json();
+
+      if (!sessionData || !sessionData.user) {
+        // Store session data for auto-start after login
+        sessionStorage.setItem('pendingInterviewSession', JSON.stringify({
+          topic,
+          difficulty,
+          interviewType,
+          focusArea,
+        }));
+
+        // Redirect to sign-in
+        const currentPath = window.location.pathname;
+        const signInUrl = `/sign-in?callbackUrl=${encodeURIComponent(currentPath)}`;
+        router.push(signInUrl);
+        return;
+      }
+    }
 
     const userMessage: IMessage = {
       role: 'user',
@@ -171,7 +220,20 @@ export default function AIInteraction({ initialData, readOnly = false }: AIInter
         }),
       });
 
-      if (!response.ok) throw new Error('Generation failed');
+      // Handle authentication error (backup check)
+      if (response.status === 401) {
+        // Redirect to sign-in with callback URL to auto-start session after login
+        const currentPath = window.location.pathname;
+        const signInUrl = `/sign-in?callbackUrl=${encodeURIComponent(currentPath)}`;
+        router.push(signInUrl);
+        return;
+      }
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Generation failed');
+      }
+
       if (!response.body) throw new Error('No response body');
 
       const reader = response.body.getReader();
@@ -199,6 +261,12 @@ export default function AIInteraction({ initialData, readOnly = false }: AIInter
 
     } catch (error) {
       console.error('Error:', error);
+
+      // Remove the user message on error
+      setMessages(prev => prev.slice(0, -1));
+
+      // Show user-friendly error
+      alert(error instanceof Error ? error.message : 'Failed to generate response. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -225,8 +293,8 @@ export default function AIInteraction({ initialData, readOnly = false }: AIInter
           language={match[1]}
           PreTag="div"
           customStyle={{
-            background: 'rgba(0, 0, 0, 0.5)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: 'rgba(0, 0, 0, 0.7)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
             borderRadius: '0.5rem',
             padding: '1.5rem',
             fontSize: '0.95rem',
@@ -237,44 +305,44 @@ export default function AIInteraction({ initialData, readOnly = false }: AIInter
           {String(children).replace(/\n$/, '')}
         </SyntaxHighlighter>
       ) : (
-        <code className="bg-white/10 text-yellow-300 px-2 py-1 rounded text-sm font-mono border border-white/5" {...props}>
+        <code className="bg-white/15 text-yellow-200 px-2 py-1 rounded text-sm font-mono border border-white/20" {...props}>
           {children}
         </code>
       );
     },
     h1: ({ children }: any) => (
-      <h1 className="text-3xl md:text-4xl font-bold mt-10 mb-6 text-white border-b border-white/10 pb-3">
+      <h1 className="text-3xl md:text-4xl font-bold mt-10 mb-6 text-white border-b border-white/20 pb-3">
         {children}
       </h1>
     ),
     h2: ({ children }: any) => (
-      <h2 className="text-2xl md:text-3xl font-bold mt-8 mb-5 text-white/95 flex items-center gap-3">
+      <h2 className="text-2xl md:text-3xl font-bold mt-8 mb-5 text-white flex items-center gap-3">
         <span className="w-1.5 h-8 bg-accent "></span>
         {children}
       </h2>
     ),
     h3: ({ children }: any) => (
-      <h3 className="text-xl md:text-2xl font-semibold mt-6 mb-4 text-white/90">
+      <h3 className="text-xl md:text-2xl font-semibold mt-6 mb-4 text-white">
         {children}
       </h3>
     ),
     h4: ({ children }: any) => (
-      <h4 className="text-lg md:text-xl font-semibold mt-5 mb-3 text-white/85">
+      <h4 className="text-lg md:text-xl font-semibold mt-5 mb-3 text-white">
         {children}
       </h4>
     ),
     p: ({ children }: any) => (
-      <p className="mb-5 leading-[1.8] text-[1.05rem] text-gray-200">
+      <p className="mb-5 leading-[1.8] text-[1.05rem] text-white">
         {children}
       </p>
     ),
     ul: ({ children }: any) => (
-      <ul className="mb-6 space-y-3 text-gray-200">
+      <ul className="mb-6 space-y-3 text-white">
         {children}
       </ul>
     ),
     ol: ({ children }: any) => (
-      <ol className="mb-6 space-y-3 text-gray-200 list-decimal pl-6">
+      <ol className="mb-6 space-y-3 text-white list-decimal pl-6">
         {children}
       </ol>
     ),
@@ -289,7 +357,7 @@ export default function AIInteraction({ initialData, readOnly = false }: AIInter
       </a>
     ),
     blockquote: ({ children }: any) => (
-      <blockquote className="border-l-4 border-accent/50 bg-white/[0.03] pl-6 pr-4 py-4 my-6 italic text-gray-300 rounded-r-lg text-[1.02rem] leading-[1.7]">
+      <blockquote className="border-l-4 border-accent bg-white/[0.05] pl-6 pr-4 py-4 my-6 italic text-white rounded-r-lg text-[1.02rem] leading-[1.7]">
         {children}
       </blockquote>
     ),
@@ -316,12 +384,12 @@ export default function AIInteraction({ initialData, readOnly = false }: AIInter
       </tr>
     ),
     th: ({ children }: any) => (
-      <th className="px-4 py-3 text-left font-semibold text-white/90 border border-white/10">
+      <th className="px-4 py-3 text-left font-semibold text-white border border-white/20">
         {children}
       </th>
     ),
     td: ({ children }: any) => (
-      <td className="px-4 py-3 text-gray-200 border border-white/10">
+      <td className="px-4 py-3 text-white border border-white/20">
         {children}
       </td>
     ),
@@ -356,7 +424,7 @@ export default function AIInteraction({ initialData, readOnly = false }: AIInter
                 {initialData ? initialData.difficulty : difficulty}
               </span>
               {!initialData && (
-                <span className="text-xs">Setup your session</span>
+                <span className="text-xs">Start your session</span>
               )}
             </div>
           </div>
@@ -367,10 +435,10 @@ export default function AIInteraction({ initialData, readOnly = false }: AIInter
       </div>
 
       {!initialData && messages.length === 0 && (
-        <div className="max-w-xl mx-auto w-full flex-1 flex flex-col justify-center">
+        <div className="max-w-xl mx-auto w-full flex flex-col">
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center w-12 h-12  bg-accent/20 text-accent mb-4">
-              <BrainCircuit size={20} />
+              <BrainCircuit size={20} className='rotate-90' />
             </div>
             <h1 className="text-2xl md:text-3xl font-bold mb-2">Start Interview Prep</h1>
             <p className="text-sm text-foreground/60">Choose your topic and difficulty level</p>
@@ -598,15 +666,14 @@ export default function AIInteraction({ initialData, readOnly = false }: AIInter
               </div>
             )}
 
-            {(initialData || messages.length > 0) && (
+            {(initialData || messages.length > 0) && !loading && !streamingContent && (
               <div className="flex justify-center my-8 print:hidden">
                 <button
                   onClick={handleDownloadPDF}
-                  disabled={loading}
-                  className="flex items-center gap-2 px-6 py-3 bg-accent/10 hover:bg-accent/20 text-accent border border-accent/30  transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-6 py-3 bg-accent/10 hover:bg-accent/20 text-accent border border-accent/30  transition-all hover:scale-105"
                 >
-                  {loading ? <Loader size={18} className="animate-spin" /> : <Download size={18} />}
-                  <span className="font-bold">{loading ? 'Generating PDF...' : 'Download Session PDF'}</span>
+                  <Download size={18} />
+                  <span className="font-bold">Download Session PDF</span>
                 </button>
               </div>
             )}

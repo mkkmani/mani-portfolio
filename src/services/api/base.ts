@@ -32,7 +32,7 @@ export async function apiRequest<T>(
         'Content-Type': 'application/json',
         ...fetchOptions.headers,
       },
-      next: { revalidate: 3600 }, // Revalidate every 1 hour (3600 seconds)
+      next: { revalidate: 3600 },
     });
 
     if (!response.ok) {
