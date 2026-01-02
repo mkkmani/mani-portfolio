@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { getBlogBySlugServer } from '@/services/api/blogs.server';
-import { getSiteConfig } from '@/lib/seo-config';
+import { getSiteConfig, getAbsoluteUrl } from '@/lib/seo-config';
 import { generateBlogPostingSchema, generateBreadcrumbSchema } from '@/lib/structured-data';
 
 export async function generateMetadata({
@@ -23,7 +23,7 @@ export async function generateMetadata({
           follow: false,
         },
         alternates: {
-          canonical: `/notelogs/${slug}`,
+          canonical: getAbsoluteUrl(`/notelogs/${slug}`),
         },
       };
     }
@@ -66,7 +66,7 @@ export async function generateMetadata({
       openGraph: {
         type: 'article',
         locale: 'en_US',
-        url: `/notelogs/${slug}`,
+        url: getAbsoluteUrl(`/notelogs/${slug}`),
         siteName: config.name,
         title: blog.title,
         description,
@@ -92,7 +92,7 @@ export async function generateMetadata({
       },
       robots,
       alternates: {
-        canonical: `/notelogs/${slug}`,
+        canonical: getAbsoluteUrl(`/notelogs/${slug}`),
       },
     };
   } catch (error) {

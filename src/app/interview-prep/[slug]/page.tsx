@@ -5,7 +5,7 @@ import AIInteraction from '@/components/pages/Preparation/AIInteraction';
 import ClientPrivateSession from '@/components/pages/Content/ClientPrivateSession';
 import ClientPublishActionBar from '@/components/pages/Content/ClientPublishActionBar';
 import { Metadata } from 'next';
-import { getSiteConfig } from '@/lib/seo-config';
+import { getSiteConfig, getAbsoluteUrl } from '@/lib/seo-config';
 import { generateBreadcrumbSchema, generateQAPageSchema } from '@/lib/structured-data';
 
 export const dynamic = 'force-dynamic';
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: description.substring(0, 160),
     keywords: [preparation.topic, 'interview preparation', preparation.difficulty, 'Manikanta Ketha', 'AI interview coach'],
     alternates: {
-      canonical: `/interview-prep/${slug}`,
+      canonical: getAbsoluteUrl(`/interview-prep/${slug}`),
     },
   };
 }

@@ -66,6 +66,35 @@ export function getSiteConfig(): SiteConfig {
 }
 
 /**
+ * Get the base URL without trailing slash
+ * @returns {string} The base URL
+ */
+export function getBaseUrl(): string {
+  const url = getSiteConfig().url;
+  return url.endsWith('/') ? url.slice(0, -1) : url;
+}
+
+/**
+ * Generate an absolute URL from a path
+ * @param {string} path - The path to convert to absolute URL (can start with or without /)
+ * @returns {string} The absolute URL
+ */
+export function getAbsoluteUrl(path: string): string {
+  const baseUrl = getBaseUrl();
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${baseUrl}${cleanPath}`;
+}
+
+/**
+ * Validate if a URL is absolute
+ * @param {string} url - The URL to validate
+ * @returns {boolean} True if the URL is absolute
+ */
+export function isAbsoluteUrl(url: string): boolean {
+  return url.startsWith('http://') || url.startsWith('https://');
+}
+
+/**
  * Generate Next.js Metadata object for static pages
  * @param {PageMetadata} page - Page metadata configuration
  * @returns {Metadata} Next.js Metadata object

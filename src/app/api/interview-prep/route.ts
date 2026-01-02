@@ -4,6 +4,8 @@ import Preparation from '@/server/models/Preparation';
 import { jwtVerify } from 'jose';
 import { JWT_SECRET, COOKIE_CONFIG } from '@/lib/config';
 import { auth } from '@/lib/auth';
+import { revalidateContentAndSitemap } from '@/lib/revalidate-sitemap';
+import { notifyGooglePrepIndexing } from '@/lib/google-indexing';
 
 export const dynamic = 'force-dynamic';
 
@@ -182,6 +184,28 @@ export async function PATCH(req: NextRequest) {
         { published },
         { new: true }
       );
+
+      // If preparation is being published, trigger sitemap revalidation and notify Google
+      if (published === true && preparation?.slug) {
+        console.log(`[SEO] Preparation published: ${preparation.slug}`);
+
+        // Revalidate sitemap and preparation page (async, don't wait)
+        revalidateContentAndSitemap('preparation', preparation.slug).catch(err =>
+          console.error('[SEO] Revalidation error:', err)
+        );
+
+        // Notify Google Indexing API (async, don't wait)
+        notifyGooglePrepIndexing(preparation.slug).then(result => {
+          if (result.success) {
+            console.log(`[SEO] Google notified for preparation: ${preparation.slug}`);
+          } else {
+            console.log(`[SEO] Google indexing skipped: ${result.message}`);
+          }
+        }).catch(err =>
+          console.error('[SEO] Google indexing error:', err)
+        );
+      }
+
       return NextResponse.json(preparation);
     }
 
@@ -191,3 +215,4 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
   }
 }
+
