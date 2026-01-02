@@ -10,6 +10,9 @@ import Preparation from '@/server/models/Preparation';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getBaseUrl();
 
+  // Skip database queries during CI builds
+  const isCIBuild = process.env.CI === 'true' || process.env.MONGODB_URI?.includes('dummy');
+
   const routes = [
     { path: '', changeFreq: 'daily' as const, priority: 1.0 },
     { path: '/projects', changeFreq: 'weekly' as const, priority: 0.9 },
@@ -25,37 +28,45 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   let blogRoutes: MetadataRoute.Sitemap = [];
-  try {
-    await dbConnect();
-    const blogs = await Blog.find({ published: true })
-      .select('slug updatedAt createdAt')
-      .sort({ updatedAt: -1 });
 
-    blogRoutes = blogs.map((blog) => ({
-      url: `${baseUrl}/notelogs/${blog.slug}`,
-      lastModified: blog.updatedAt || blog.createdAt || new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    }));
-  } catch (error) {
-    console.error('Error generating blog sitemap:', error);
+  // Only fetch blogs if not in CI build
+  if (!isCIBuild) {
+    try {
+      await dbConnect();
+      const blogs = await Blog.find({ published: true })
+        .select('slug updatedAt createdAt')
+        .sort({ updatedAt: -1 });
+
+      blogRoutes = blogs.map((blog) => ({
+        url: `${baseUrl}/notelogs/${blog.slug}`,
+        lastModified: blog.updatedAt || blog.createdAt || new Date(),
+        changeFrequency: 'monthly' as const,
+        priority: 0.7,
+      }));
+    } catch (error) {
+      console.error('Error generating blog sitemap:', error);
+    }
   }
 
   let preparationRoutes: MetadataRoute.Sitemap = [];
-  try {
-    await dbConnect();
-    const preparations = await Preparation.find({ published: true })
-      .select('slug updatedAt createdAt')
-      .sort({ updatedAt: -1 });
 
-    preparationRoutes = preparations.map((prep) => ({
-      url: `${baseUrl}/interview-prep/${prep.slug}`,
-      lastModified: prep.updatedAt || prep.createdAt || new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    }));
-  } catch (error) {
-    console.error('Error generating preparation sitemap:', error);
+  // Only fetch preparations if not in CI build
+  if (!isCIBuild) {
+    try {
+      await dbConnect();
+      const preparations = await Preparation.find({ published: true })
+        .select('slug updatedAt createdAt')
+        .sort({ updatedAt: -1 });
+
+      preparationRoutes = preparations.map((prep) => ({
+        url: `${baseUrl}/interview-prep/${prep.slug}`,
+        lastModified: prep.updatedAt || prep.createdAt || new Date(),
+        changeFrequency: 'monthly' as const,
+        priority: 0.7,
+      }));
+    } catch (error) {
+      console.error('Error generating preparation sitemap:', error);
+    }
   }
 
   return [...routes, ...blogRoutes, ...preparationRoutes];

@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
+      # Mark as CI build to skip database connections during build
+      CI: "true"
       # Dummy environment variables for CI build
       # These are only needed for the build process to succeed, not for running the app
       MONGODB_URI: "mongodb://dummy:27017/test"
