@@ -17,9 +17,9 @@ export default async function AllNotelogs({ searchParams }: PageProps) {
   const { data: blogs, pagination } = response;
 
   return (
-    <main className="min-h-screen bg-background pt-24 px-6">
+    <main className="min-h-screen bg-background pt-4 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-16 pt-20">
+        <div className="mb-16 pt-8">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
             Notelogs<span className="text-accent">.</span>
           </h1>

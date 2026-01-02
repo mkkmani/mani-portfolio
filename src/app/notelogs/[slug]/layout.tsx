@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
-import { getBlogBySlugServer } from '@/services/api';
+import { getBlogBySlugServer } from '@/services/api/blogs.server';
 import { getSiteConfig } from '@/lib/seo-config';
-import { generateBlogPostingSchema } from '@/lib/structured-data';
+import { generateBlogPostingSchema, generateBreadcrumbSchema } from '@/lib/structured-data';
 
 export async function generateMetadata({
   params,
@@ -29,9 +29,10 @@ export async function generateMetadata({
     }
 
     const description =
-      blog.excerpt ||
-      blog.content?.substring(0, 160).trim() ||
-      'Read this article on Mani Kanta\'s blog';
+      blog.excerpt?.length >= 120
+        ? blog.excerpt
+        : blog.content?.substring(0, 160).trim() ||
+        `Read "${blog.title}" - An in-depth technical article by Manikanta Ketha on web development and modern technologies.`;
 
     const ogImage = blog.image || config.ogImage;
 
@@ -53,9 +54,9 @@ export async function generateMetadata({
       };
 
     return {
-      title: blog.title,
-      description,
-      keywords: blog.tags,
+      title: `${blog.title.substring(0, 50)} | Notelogs`,
+      description: description.substring(0, 160),
+      keywords: [...blog.tags, 'Manikanta Ketha', 'Mani Kanta', 'technical blog'],
       authors: [
         {
           name: config.author.name,
@@ -137,8 +138,27 @@ export default async function NotelogLayout({
     console.error('Error generating structured data:', error);
   }
 
+  let breadcrumbSchema = null;
+  try {
+    const { slug } = await params;
+    const blog = await getBlogBySlugServer(slug);
+    if (blog) {
+      breadcrumbSchema = generateBreadcrumbSchema([
+        { name: 'Home', url: '/' },
+        { name: 'Notelogs', url: '/notelogs' },
+        { name: blog.title, url: `/notelogs/${slug}` }
+      ], config);
+    }
+  } catch (e) { }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
       {structuredData && (
         <script
           type="application/ld+json"

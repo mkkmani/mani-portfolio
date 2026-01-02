@@ -18,6 +18,16 @@ interface Person extends Thing {
   jobTitle?: string;
   email?: string;
   sameAs?: string[];
+  worksFor?: Organization[];
+  hasOccupation?: {
+    '@type': 'Occupation';
+    name: string;
+    description: string;
+    occupationLocation: {
+      '@type': 'City';
+      name: string;
+    };
+  };
 }
 
 interface Organization extends Thing {
@@ -34,6 +44,24 @@ interface ContactPoint {
   contactType: string;
   email?: string;
   url?: string;
+}
+
+interface ProfessionalService extends Thing {
+  '@type': 'ProfessionalService';
+  name: string;
+  url: string;
+  image?: string;
+  address?: {
+    '@type': 'PostalAddress';
+    addressLocality: string;
+    addressCountry: string;
+  };
+  priceRange: string;
+}
+
+interface SiteNavigationElement extends Thing {
+  '@type': 'SiteNavigationElement';
+  hasPart: ListItem[];
 }
 
 interface Blog extends Thing {
@@ -109,6 +137,21 @@ interface ItemList extends Thing {
   numberOfItems: number;
 }
 
+interface ProfilePage extends Thing {
+  '@type': 'ProfilePage';
+  mainEntity: Person;
+}
+
+interface SoftwareSourceCode extends Thing {
+  '@type': 'SoftwareSourceCode';
+  name: string;
+  description: string;
+  codeRepository: string;
+  runtimePlatform?: string;
+  programmingLanguage: string | string[];
+  author: Person;
+}
+
 interface WebSite extends Thing {
   '@type': 'WebSite';
   name: string;
@@ -122,6 +165,18 @@ interface SearchAction {
   '@type': 'SearchAction';
   target: string;
   'query-input': string;
+}
+
+interface SoftwareApplication extends Thing {
+  '@type': 'SoftwareApplication';
+  name: string;
+  applicationCategory: string;
+  operatingSystem: string;
+  offers?: {
+    '@type': 'Offer';
+    price: string;
+    priceCurrency: string;
+  };
 }
 
 interface WithContext<T> {
@@ -150,11 +205,79 @@ export function generatePersonSchema(config: SiteConfig): WithContext<Person> {
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: config.author.name,
+    name: 'Manikanta Ketha',
+    alternateName: 'Mani Kanta',
     url: config.url,
     jobTitle: config.author.jobTitle,
     email: config.author.email,
+    description: config.description,
+    knowsAbout: [
+      'Full Stack Development',
+      'MERN Stack',
+      'Next.js',
+      'React',
+      'Node.js',
+      'MongoDB',
+      'TypeScript',
+      'JavaScript',
+      'Cloud Architecture',
+      'AI Integration'
+    ],
+    alumniOf: {
+      '@type': 'Organization',
+      name: 'PureCode Software'
+    },
+    worksFor: [
+      {
+        '@type': 'Organization',
+        name: 'PureCode Software',
+        url: 'https://purecode.ai'
+      }
+    ],
+    hasOccupation: {
+      '@type': 'Occupation',
+      name: 'Software Engineer',
+      description: 'Full-stack development, AI integration, and architecting scalable web solutions.',
+      occupationLocation: {
+        '@type': 'City',
+        name: 'India'
+      }
+    },
+    brand: {
+      '@type': 'Brand',
+      name: 'Manikanta Ketha'
+    },
     sameAs: sameAs.length > 0 ? sameAs : undefined,
+  };
+}
+
+export function generateProfessionalServiceSchema(config: SiteConfig): WithContext<ProfessionalService> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: config.name,
+    url: config.url,
+    image: `${config.url}${config.ogImage}`,
+    description: 'Expert Full-stack MERN development and Next.js optimization services.',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'India',
+      addressCountry: 'IN',
+    },
+    priceRange: '$$',
+  };
+}
+
+export function generateNavigationSchema(navItems: Array<{ name: string; url: string }>, config: SiteConfig): WithContext<SiteNavigationElement> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SiteNavigationElement',
+    hasPart: navItems.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      url: `${config.url}${item.url}`,
+    })),
   };
 }
 
@@ -191,6 +314,11 @@ export function generateWebsiteSchema(config: SiteConfig): WithContext<WebSite> 
       '@type': 'Person',
       name: config.author.name,
       url: config.url,
+    },
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${config.url}/notelogs?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
     },
   };
 }
@@ -355,5 +483,50 @@ export function generateProjectsSchema(
     description: 'Portfolio of web development projects showcasing expertise in modern technologies.',
     itemListElement,
     numberOfItems: projects.length,
+  };
+}
+
+export function generateProfilePageSchema(config: SiteConfig): WithContext<ProfilePage> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    name: `${config.name} Professional Profile`,
+    mainEntity: generatePersonSchema(config),
+  };
+}
+
+export function generateSoftwareSourceCodeSchema(
+  project: IProject,
+  config: SiteConfig
+): WithContext<SoftwareSourceCode> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareSourceCode',
+    name: project.title,
+    description: project.description,
+    codeRepository: project.github || '',
+    programmingLanguage: project.tags,
+    author: generatePersonSchema(config),
+    runtimePlatform: project.tags.includes('Node.js') ? 'Node.js' : undefined,
+  };
+}
+
+export function generateSoftwareApplicationSchema(
+  project: IProject,
+  config: SiteConfig
+): WithContext<SoftwareApplication> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: project.title,
+    description: project.description,
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'Any',
+    url: project.link || config.url,
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
   };
 }

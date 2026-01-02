@@ -110,11 +110,37 @@ export async function POST(req: NextRequest) {
           const uniqueId = Math.random().toString(36).substring(2, 8);
           let slug = `${baseSlug}-${uniqueId}`;
 
+          // Extract excerpt from the AI response
+          let excerpt = '';
+
+          // Try to find EXCERPT: tag first
+          const excerptMatch = fullResponse.match(/EXCERPT:\s*(.+?)(?:\n|$)/i);
+          if (excerptMatch && excerptMatch[1]) {
+            excerpt = excerptMatch[1].trim();
+          } else {
+            // Fallback: Extract from Overview section
+            const overviewMatch = fullResponse.match(/#+\s*Overview\s*\n+([\s\S]{0,300}?)(?:\n#+|$)/i);
+            if (overviewMatch && overviewMatch[1]) {
+              // Get first sentence or up to 150 characters
+              const overviewText = overviewMatch[1].trim().replace(/\*\*/g, '').replace(/\n/g, ' ');
+              const firstSentence = overviewText.match(/^[^.!?]+[.!?]/);
+              excerpt = firstSentence ? firstSentence[0] : overviewText.substring(0, 150);
+            } else {
+              // Ultimate fallback: Use topic description
+              excerpt = `Comprehensive interview preparation guide for ${topic}`;
+            }
+          }
+
+          // Ensure excerpt is not too long
+          if (excerpt.length > 160) {
+            excerpt = excerpt.substring(0, 157) + '...';
+          }
+
           const newPrep = await Preparation.create({
             topic,
             slug,
             title: `${topic} Preparation Guide`,
-            excerpt: `AI-generated preparation guide for ${topic} (${difficulty})`,
+            excerpt,
             difficulty,
             userId: session.user.id,
             messages: [

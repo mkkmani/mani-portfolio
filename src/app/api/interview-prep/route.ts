@@ -37,10 +37,30 @@ export async function GET(req: NextRequest) {
       const canAccess = preparation.published || isOwner || isAdmin;
 
       if (!canAccess) {
-        return NextResponse.json({ error: 'Topic not found' }, { status: 404 });
+        // Return limited info for unauthorized users instead of 404
+        return NextResponse.json({
+          ...preparation,
+          userRole: 'viewer',
+          canPublish: false,
+          canRequestPublish: true, // Anyone can request publish
+          hasPublishRequest: (preparation.publishRequests?.length ?? 0) > 0,
+          publishRequestStatus: preparation.publishRequests?.[0]?.status,
+        });
       }
 
-      return NextResponse.json(preparation);
+      // Determine user role and permissions
+      let userRole: 'admin' | 'owner' | 'viewer' = 'viewer';
+      if (isAdmin) userRole = 'admin';
+      else if (isOwner) userRole = 'owner';
+
+      return NextResponse.json({
+        ...preparation,
+        userRole,
+        canPublish: isAdmin,
+        canRequestPublish: isOwner && !preparation.published,
+        hasPublishRequest: (preparation.publishRequests?.length ?? 0) > 0,
+        publishRequestStatus: preparation.publishRequests?.[0]?.status,
+      });
     }
 
     if (isAdmin) {
@@ -79,8 +99,66 @@ export async function POST(req: NextRequest) {
     const preparation = await Preparation.create(body);
     return NextResponse.json(preparation, { status: 201 });
   } catch (error) {
-    console.error('Create preparation error:', error);
-    return NextResponse.json({ error: 'Failed to create session' }, { status: 500 });
+    console.error('Toggle publish error:', error);
+    return NextResponse.json({ error: 'Failed to toggle publish status' }, { status: 500 });
+  }
+}
+
+// DELETE: Discard or permanently delete preparation (admin only)
+export async function DELETE(req: NextRequest) {
+  try {
+    const isAdmin = await verifyAdmin(req);
+    if (!isAdmin) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    await dbConnect();
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+    const deleteType = searchParams.get('type'); // 'discard' or 'permanent'
+
+    if (!id) {
+      return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+    }
+
+    if (!deleteType || !['discard', 'permanent'].includes(deleteType)) {
+      return NextResponse.json(
+        { error: 'type must be either "discard" or "permanent"' },
+        { status: 400 }
+      );
+    }
+
+    if (deleteType === 'discard') {
+      // Soft delete - mark as discarded
+      const preparation = await Preparation.findByIdAndUpdate(
+        id,
+        { discarded: true },
+        { new: true }
+      );
+
+      if (!preparation) {
+        return NextResponse.json({ error: 'Preparation not found' }, { status: 404 });
+      }
+
+      return NextResponse.json({
+        message: 'Preparation discarded successfully',
+        preparation,
+      });
+    } else {
+      // Permanent delete - remove from database
+      const preparation = await Preparation.findByIdAndDelete(id);
+
+      if (!preparation) {
+        return NextResponse.json({ error: 'Preparation not found' }, { status: 404 });
+      }
+
+      return NextResponse.json({
+        message: 'Preparation permanently deleted',
+      });
+    }
+  } catch (error) {
+    console.error('Delete preparation error:', error);
+    return NextResponse.json({ error: 'Failed to delete preparation' }, { status: 500 });
   }
 }
 
@@ -88,7 +166,7 @@ export async function PATCH(req: NextRequest) {
   try {
     await dbConnect();
     const body = await req.json();
-    const { _id, published, feedback, messageIndex } = body;
+    const { _id, published } = body;
     const isAdmin = await verifyAdmin(req);
 
     if (!_id) {
@@ -105,21 +183,6 @@ export async function PATCH(req: NextRequest) {
         { new: true }
       );
       return NextResponse.json(preparation);
-    }
-
-    if (feedback !== undefined && messageIndex !== undefined) {
-      const preparation = await Preparation.findById(_id);
-      if (!preparation) {
-        return NextResponse.json({ error: 'Session not found' }, { status: 404 });
-      }
-
-      if (preparation.messages[messageIndex]) {
-        preparation.messages[messageIndex].feedback = feedback;
-        await preparation.save();
-        return NextResponse.json(preparation);
-      } else {
-        return NextResponse.json({ error: 'Message not found' }, { status: 404 });
-      }
     }
 
     return NextResponse.json({ error: 'Invalid update' }, { status: 400 });

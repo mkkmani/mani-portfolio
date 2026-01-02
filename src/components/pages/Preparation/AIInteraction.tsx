@@ -409,14 +409,14 @@ export default function AIInteraction({ initialData, readOnly = false }: AIInter
   };
 
   return (
-    <div className="min-h-screen flex flex-col max-w-7xl mx-auto px-4 py-8 lg:p-0">
+    <div className="min-h-screen flex flex-col max-w-7xl mx-auto px-4 py-4 lg:p-0">
       <div className="flex items-center justify-between mb-8 border-b border-white/5 pb-4 print:border-black print:pb-2">
         <div className="flex items-center gap-4">
           <Link href="/interview-prep" className="p-2 hover:bg-white/10  transition-colors print:hidden">
             <ArrowLeft size={20} />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold print:text-black">
+            <h1 className="text-2xl font-bold print:text-black capitalize">
               {initialData ? initialData.topic : 'New Session'}
             </h1>
             <div className="flex items-center gap-2 text-sm text-foreground/60 print:text-black/60">

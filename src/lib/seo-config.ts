@@ -39,16 +39,16 @@ export interface PageMetadata {
  * Centralized site configuration
  */
 const siteConfig: SiteConfig = {
-  name: 'Mani Kanta',
-  title: 'Mani Kanta - Full Stack Developer',
-  description: 'Full-stack MERN developer specializing in building exceptional digital experiences with modern web technologies.',
+  name: 'Manikanta Ketha',
+  title: 'Manikanta Ketha - Full Stack Developer | MERN Stack Expert',
+  description: 'Full-stack MERN developer Manikanta Ketha (Mani Kanta) specializing in building exceptional digital experiences with Next.js, React, Node.js, and MongoDB. Based in India, available worldwide.',
   url: process.env.NEXT_PUBLIC_APP_URL || 'https://manikantaketha.in',
   ogImage: '/og/og-image.svg',
   author: {
-    name: 'Mani Kanta',
+    name: 'Manikanta Ketha',
     email: SOCIAL_LINKS.email,
     url: process.env.NEXT_PUBLIC_APP_URL || 'https://manikantaketha.in',
-    jobTitle: 'Software Engineer | Full Stack Developer',
+    jobTitle: 'Software Engineer | Full Stack Developer | MERN Stack Specialist',
   },
   social: {
     twitter: SOCIAL_LINKS.twitter,
@@ -72,8 +72,9 @@ export function getSiteConfig(): SiteConfig {
  */
 export function generatePageMetadata(page: PageMetadata): Metadata {
   const config = getSiteConfig();
-  const pageUrl = page.path ? `${config.url}${page.path}` : config.url;
-  const ogImageUrl = page.ogImage || config.ogImage;
+  const cleanUrl = config.url.endsWith('/') ? config.url.slice(0, -1) : config.url;
+  const pageUrl = page.path ? `${cleanUrl}${page.path.startsWith('/') ? page.path : `/${page.path}`}` : cleanUrl;
+  const ogImageUrl = page.ogImage ? (page.ogImage.startsWith('http') ? page.ogImage : `${cleanUrl}${page.ogImage}`) : `${cleanUrl}${config.ogImage}`;
 
   return {
     title: page.title,

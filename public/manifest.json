@@ -1,7 +1,7 @@
 {
-  "name": "Mani Kanta - Full Stack Developer",
-  "short_name": "Mani Kanta",
-  "description": "Full-stack MERN developer specializing in building exceptional digital experiences with modern web technologies.",
+  "name": "Manikanta Ketha - Full Stack Developer",
+  "short_name": "Manikanta Ketha",
+  "description": "Full-stack MERN developer Manikanta Ketha (Mani Kanta) specializing in building exceptional digital experiences with Next.js, React, Node.js, and MongoDB.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
@@ -9,9 +9,31 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/favicon.ico",
+      "src": "/favicon.svg",
       "sizes": "any",
-      "type": "image/x-icon"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/og/og-image.svg",
+      "type": "image/svg+xml",
+      "sizes": "1200x630",
+      "form_factor": "wide",
+      "label": "Manikanta Ketha Portfolio Home"
     }
   ],
   "categories": [

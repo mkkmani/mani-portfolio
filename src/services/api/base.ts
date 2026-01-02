@@ -27,12 +27,12 @@ export async function apiRequest<T>(
 
   try {
     const response = await fetch(url, {
+      next: { revalidate: 3600 },
       ...fetchOptions,
       headers: {
         'Content-Type': 'application/json',
         ...fetchOptions.headers,
       },
-      next: { revalidate: 3600 },
     });
 
     if (!response.ok) {

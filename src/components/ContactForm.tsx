@@ -13,7 +13,7 @@ export default function ContactForm() {
     name: '',
     email: '',
     message: '',
-    privacyAccepted: false,
+    privacyAccepted: true,
   });
 
   const [otp, setOtp] = useState('');
@@ -117,7 +117,7 @@ export default function ContactForm() {
   }
 
   return (
-    <section className="py-20 px-6 bg-background flex items-center min-h-screen">
+    <section className="py-12 md:py-16 px-6 bg-background">
       <div className="max-w-4xl mx-auto w-full">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Text Content */}
