@@ -3,6 +3,8 @@ import dbConnect from '@/server/db';
 import Blog from '@/server/models/Blog';
 import { jwtVerify } from 'jose';
 import { JWT_SECRET, COOKIE_CONFIG } from '@/lib/config';
+import { revalidateContentAndSitemap } from '@/lib/revalidate-sitemap';
+import { notifyGoogleBlogIndexing } from '@/lib/google-indexing';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -121,8 +123,30 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Blog not found' }, { status: 404 });
     }
 
+    // If blog is being published, trigger sitemap revalidation and notify Google
+    if (published === true && blog.slug) {
+      console.log(`[SEO] Blog published: ${blog.slug}`);
+
+      // Revalidate sitemap and blog page (async, don't wait)
+      revalidateContentAndSitemap('blog', blog.slug).catch(err =>
+        console.error('[SEO] Revalidation error:', err)
+      );
+
+      // Notify Google Indexing API (async, don't wait)
+      notifyGoogleBlogIndexing(blog.slug).then(result => {
+        if (result.success) {
+          console.log(`[SEO] Google notified for blog: ${blog.slug}`);
+        } else {
+          console.log(`[SEO] Google indexing skipped: ${result.message}`);
+        }
+      }).catch(err =>
+        console.error('[SEO] Google indexing error:', err)
+      );
+    }
+
     return NextResponse.json(blog);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update blog' }, { status: 500 });
   }
 }
+

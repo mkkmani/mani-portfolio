@@ -1,12 +1,14 @@
 import { MetadataRoute } from 'next';
-import { getSiteConfig } from '@/lib/seo-config';
+import { getSiteConfig, getBaseUrl } from '@/lib/seo-config';
 import dbConnect from '@/server/db';
 import Blog from '@/server/models/Blog';
 import Preparation from '@/server/models/Preparation';
 
+// Sitemap updates only on manual trigger via /api/revalidate-sitemap
+// No automatic ISR revalidation
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteConfig = getSiteConfig();
-  const baseUrl = siteConfig.url;
+  const baseUrl = getBaseUrl();
 
   const routes = [
     { path: '', changeFreq: 'daily' as const, priority: 1.0 },

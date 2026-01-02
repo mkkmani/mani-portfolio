@@ -1,4 +1,5 @@
 import Home from "@/components/pages/LandingPage";
+import SecretAdminAccess from "@/components/Common/SecretAdminAccess";
 import { Metadata } from 'next';
 import { generatePageMetadata, getSiteConfig } from '@/lib/seo-config';
 import { generateBreadcrumbSchema, generateProfilePageSchema } from '@/lib/structured-data';
@@ -45,6 +46,7 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(profileSchema) }}
       />
+      <SecretAdminAccess />
       <Home />
     </>
   );
