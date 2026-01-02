@@ -4,13 +4,14 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, User } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 
   useEffect(() => {
@@ -21,14 +22,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    fetch('/api/auth/session')
-      .then(res => res.json())
-      .then(data => {
-        setIsAuthenticated(!!data?.user);
-      })
-      .catch(() => setIsAuthenticated(false));
-  }, [pathname]);
+  const isAuthenticated = status === 'authenticated';
 
   if (pathname?.startsWith('/get-access')) return null;
 

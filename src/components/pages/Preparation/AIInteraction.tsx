@@ -5,12 +5,32 @@ import { useRouter } from 'next/navigation';
 import { IPreparation, IMessage, submitFeedback } from '@/services/api/preparation';
 import { Send, ThumbsUp, ThumbsDown, Loader, User, Bot, ArrowLeft, BrainCircuit, Calendar, Download, ArrowRight } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import js from 'react-syntax-highlighter/dist/esm/languages/prism/javascript';
+import ts from 'react-syntax-highlighter/dist/esm/languages/prism/typescript';
+import tsx from 'react-syntax-highlighter/dist/esm/languages/prism/tsx';
+import jsx from 'react-syntax-highlighter/dist/esm/languages/prism/jsx';
+import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
+import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash';
+import markdown from 'react-syntax-highlighter/dist/esm/languages/prism/markdown';
+import css from 'react-syntax-highlighter/dist/esm/languages/prism/css';
+import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import Link from 'next/link';
+
+SyntaxHighlighter.registerLanguage('javascript', js);
+SyntaxHighlighter.registerLanguage('typescript', ts);
+SyntaxHighlighter.registerLanguage('tsx', tsx);
+SyntaxHighlighter.registerLanguage('jsx', jsx);
+SyntaxHighlighter.registerLanguage('python', python);
+SyntaxHighlighter.registerLanguage('bash', bash);
+SyntaxHighlighter.registerLanguage('markdown', markdown);
+SyntaxHighlighter.registerLanguage('css', css);
+SyntaxHighlighter.registerLanguage('json', json);
 import remarkGfm from 'remark-gfm';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { useSession } from 'next-auth/react';
 
 interface AIInteractionProps {
   initialData: IPreparation | null;
@@ -19,6 +39,7 @@ interface AIInteractionProps {
 
 export default function AIInteraction({ initialData, readOnly = false }: AIInteractionProps) {
   const router = useRouter();
+  const { data: session } = useSession();
   const [topic, setTopic] = useState(initialData?.topic || '');
   const [difficulty, setDifficulty] = useState<'Beginner' | 'Intermediate' | 'Advanced'>(
     initialData?.difficulty || 'Intermediate'
@@ -174,11 +195,7 @@ export default function AIInteraction({ initialData, readOnly = false }: AIInter
 
     // Check authentication before starting new session
     if (!initialData && messages.length === 0) {
-      // Check if user is authenticated by checking session
-      const sessionCheckResponse = await fetch('/api/auth/session');
-      const sessionData = await sessionCheckResponse.json();
-
-      if (!sessionData || !sessionData.user) {
+      if (!session || !session.user) {
         // Store session data for auto-start after login
         sessionStorage.setItem('pendingInterviewSession', JSON.stringify({
           topic,
