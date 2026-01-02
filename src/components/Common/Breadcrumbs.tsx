@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronRight, Home } from 'lucide-react';
+import { ChevronLeft,Home } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 interface BreadcrumbItem {
@@ -44,7 +44,7 @@ export default function Breadcrumbs() {
 
       {breadcrumbs.map((item, index) => (
         <div key={item.href} className="flex items-center space-x-2">
-          <ChevronRight size={14} className="text-foreground/20" />
+          <ChevronLeft size={14} className="text-accent" />
           {index === breadcrumbs.length - 1 ? (
             <span className="text-foreground/80 font-medium" aria-current="page">
               {item.label}

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ChevronRight, Home } from 'lucide-react';
+import { ChevronLeft, Home } from 'lucide-react';
 import { getSiteConfig } from '@/lib/seo-config';
 import { generateBreadcrumbSchema } from '@/lib/structured-data';
 
@@ -40,7 +40,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
 
           {items.map((item, index) => (
             <li key={index} className="flex items-center gap-2">
-              <ChevronRight size={14} className="text-foreground/40" />
+              <ChevronLeft size={14} className="text-accent" />
               {item.url && index < items.length - 1 ? (
                 <Link
                   href={item.url}
