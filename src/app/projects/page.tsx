@@ -1,4 +1,4 @@
-import Projects from '@/components/pages/Projects';
+import PublicProjects from '@/components/pages/Projects/PublicProjects';
 import { Metadata } from 'next';
 import { generatePageMetadata, getSiteConfig } from '@/lib/seo-config';
 import { generateBreadcrumbSchema, generateSoftwareSourceCodeSchema } from '@/lib/structured-data';
@@ -47,7 +47,7 @@ export default async function ProjectsPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
       ))}
-      <Projects />
+      <PublicProjects projects={projects} />
     </>
   )
 }
