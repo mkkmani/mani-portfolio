@@ -5,13 +5,16 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import BlogList from './BlogList';
+import CreateBlogModal from './CreateBlogModal';
 import type { Blog, FilterType } from './types';
+import { Plus } from 'lucide-react';
 
 export default function BlogsManagement() {
   const router = useRouter();
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterType>('all');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   useEffect(() => {
     fetchBlogs();
@@ -99,6 +102,14 @@ export default function BlogsManagement() {
               Manage your blog posts and articles ({blogs.length})
             </p>
           </div>
+
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="flex items-center gap-2 px-6 py-3 bg-accent text-background font-bold uppercase tracking-widest text-xs hover:bg-accent/90 transition-colors"
+          >
+            <Plus size={16} />
+            Add Notelog
+          </button>
         </div>
 
         {/* Filters */}
@@ -108,8 +119,8 @@ export default function BlogsManagement() {
               key={f}
               onClick={() => setFilter(f)}
               className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all ${filter === f
-                  ? 'bg-accent text-background'
-                  : 'border border-foreground/10 text-foreground/60 hover:border-foreground/30'
+                ? 'bg-accent text-background'
+                : 'border border-foreground/10 text-foreground/60 hover:border-foreground/30'
                 }`}
             >
               {f}
@@ -129,6 +140,12 @@ export default function BlogsManagement() {
             onToggleFavourite={handleToggleFavourite}
           />
         )}
+
+        <CreateBlogModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onSuccess={fetchBlogs}
+        />
       </div>
     </div>
   );

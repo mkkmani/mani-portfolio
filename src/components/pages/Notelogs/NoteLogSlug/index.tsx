@@ -81,7 +81,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         <header className="mb-16">
           <div className="flex items-center gap-3 mb-6 text-sm text-foreground/40">
             <Calendar size={16} />
-            <time>{new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</time>
+            <time>{new Date(blog.customDate || blog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</time>
             <span>•</span>
             <div className="flex gap-2">
               {blog.tags.map((tag: string) => (

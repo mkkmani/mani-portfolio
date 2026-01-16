@@ -495,6 +495,32 @@ export function generateProfilePageSchema(config: SiteConfig): WithContext<Profi
   };
 }
 
+export function generateAboutPageSchema(config: SiteConfig): WithContext<ProfilePage> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    name: `About ${config.name} - Full Stack Developer`,
+    description: `Learn more about ${config.name}, a specialized Full Stack MERN developer and software engineer.`,
+    mainEntity: generatePersonSchema(config),
+  };
+}
+
+export function generateWorkPageSchema(config: SiteConfig, experiences: any[]): WithContext<ItemList> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: `${config.name} - Professional Experience`,
+    description: 'Detailed career history and professional experience in software engineering.',
+    numberOfItems: experiences.length,
+    itemListElement: experiences.map((exp, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: `${exp.role} at ${exp.company}`,
+      description: exp.description,
+    })),
+  };
+}
+
 export function generateSoftwareSourceCodeSchema(
   project: IProject,
   config: SiteConfig

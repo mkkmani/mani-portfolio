@@ -118,6 +118,8 @@ export default function RootLayout({
   const professionalServiceSchema = generateProfessionalServiceSchema(siteConfig);
   const navigationSchema = generateNavigationSchema([
     { name: 'Home', url: '/' },
+    { name: 'About', url: '/about' },
+    { name: 'Work', url: '/work' },
     { name: 'Projects', url: '/projects' },
     { name: 'Notelogs', url: '/notelogs' },
     { name: 'Interview Prep', url: '/interview-prep' },

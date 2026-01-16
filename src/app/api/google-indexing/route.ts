@@ -81,9 +81,10 @@ export async function POST(request: NextRequest) {
       successful,
       failed,
       details: results.map(r => ({
-        url: r.urlNotification?.url || 'unknown',
+        url: r.url,
         success: r.success,
-        message: r.message
+        message: r.message,
+        error: r.error
       })),
       timestamp: new Date().toISOString()
     });

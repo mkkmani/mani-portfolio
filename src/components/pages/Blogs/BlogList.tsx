@@ -26,8 +26,8 @@ export default function BlogList({ blogs, onTogglePublish, onToggleFavourite }: 
               <button
                 onClick={() => onToggleFavourite(blog._id, blog.favourite)}
                 className={`p-2 transition-all ${blog.favourite
-                    ? 'bg-accent text-background'
-                    : 'border border-foreground/10 text-foreground/40 hover:text-foreground'
+                  ? 'bg-accent text-background'
+                  : 'border border-foreground/10 text-foreground/40 hover:text-foreground'
                   }`}
                 title={blog.favourite ? 'Remove from favourites' : 'Add to favourites'}
               >
@@ -35,8 +35,8 @@ export default function BlogList({ blogs, onTogglePublish, onToggleFavourite }: 
               </button>
               <span
                 className={`text-xs font-bold px-3 py-1.5 uppercase tracking-wider ${blog.published
-                    ? 'bg-accent/20 text-accent'
-                    : 'bg-foreground/10 text-foreground/40'
+                  ? 'bg-accent/20 text-accent'
+                  : 'bg-foreground/10 text-foreground/40'
                   }`}
               >
                 {blog.published ? 'Published' : 'Draft'}
@@ -55,7 +55,7 @@ export default function BlogList({ blogs, onTogglePublish, onToggleFavourite }: 
               </span>
               <span className="flex items-center gap-1 text-xs font-mono text-foreground/40">
                 <Calendar size={12} />
-                {new Date(blog.createdAt).toLocaleDateString()}
+                {new Date(blog.customDate || blog.createdAt).toLocaleDateString()}
               </span>
             </div>
 

@@ -31,6 +31,7 @@ interface GoogleIndexingCredentials {
 interface IndexingResponse {
   success: boolean;
   message: string;
+  url: string;
   urlNotification?: {
     url: string;
     type: 'URL_UPDATED' | 'URL_DELETED';
@@ -151,7 +152,19 @@ export async function notifyGoogleIndexing(
       return {
         success: false,
         message: 'Google Indexing API not configured. Content will be indexed through normal crawling.',
+        url,
         error: 'CREDENTIALS_NOT_FOUND'
+      };
+    }
+
+    // Skip localhost/127.0.0.1 URLs
+    if (url.includes('localhost') || url.includes('127.0.0.1')) {
+      console.log(`[Google Indexing API] Skipping invalid URL for indexing: ${url}`);
+      return {
+        success: false,
+        message: 'Skipped: Google Indexing API does not support localhost URLs.',
+        url,
+        error: 'INVALID_URL_HOST'
       };
     }
 
@@ -161,6 +174,7 @@ export async function notifyGoogleIndexing(
       return {
         success: false,
         message: 'Failed to authenticate with Google Indexing API',
+        url,
         error: 'AUTH_FAILED'
       };
     }
@@ -179,13 +193,21 @@ export async function notifyGoogleIndexing(
     });
 
     if (!response.ok) {
-      const error = await response.text();
-      console.error('[Google Indexing API] Notification failed:', error);
+      const errorText = await response.text();
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch {
+        errorData = errorText;
+      }
+
+      console.error('[Google Indexing API] Notification failed:', JSON.stringify(errorData, null, 2));
 
       return {
         success: false,
         message: `Failed to notify Google: ${response.statusText}`,
-        error: error
+        url,
+        error: errorText
       };
     }
 
@@ -196,6 +218,7 @@ export async function notifyGoogleIndexing(
     return {
       success: true,
       message: `Google notified successfully for ${url}`,
+      url,
       urlNotification: data
     };
   } catch (error) {
@@ -204,6 +227,7 @@ export async function notifyGoogleIndexing(
     return {
       success: false,
       message: error instanceof Error ? error.message : 'Unknown error',
+      url,
       error: error instanceof Error ? error.toString() : 'UNKNOWN_ERROR'
     };
   }

@@ -8,6 +8,7 @@ export interface Blog {
   tags: string[];
   published: boolean;
   favourite: boolean;
+  customDate?: string | Date;
   createdAt: string;
 }
 

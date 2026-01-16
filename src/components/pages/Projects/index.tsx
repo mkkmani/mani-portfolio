@@ -4,13 +4,16 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Star, Calendar, ExternalLink, Github } from 'lucide-react';
 import Link from 'next/link';
+import CreateProjectModal from './CreateProjectModal';
 import type { Project, FilterType } from './types';
+import { Plus } from 'lucide-react';
 
 export default function ProjectsManagement() {
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterType>('all');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -60,6 +63,14 @@ export default function ProjectsManagement() {
             </h1>
             <p className="text-foreground/60 text-lg">Manage your portfolio projects ({projects.length})</p>
           </div>
+
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="flex items-center gap-2 px-6 py-3 bg-accent text-background font-bold uppercase tracking-widest text-xs hover:bg-accent/90 transition-colors"
+          >
+            <Plus size={16} />
+            Add Project
+          </button>
         </div>
 
         <div className="flex items-center gap-3 mb-8">
@@ -130,6 +141,12 @@ export default function ProjectsManagement() {
             )}
           </div>
         )}
+
+        <CreateProjectModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onSuccess={fetchProjects}
+        />
       </div>
     </div>
   );

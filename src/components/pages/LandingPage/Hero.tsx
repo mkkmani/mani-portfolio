@@ -13,7 +13,7 @@ export default function Hero() {
           <div className="animate-fade-in-up">
             <div className="flex items-center gap-4 mb-6">
               <div className="h-[1px] w-12 bg-accent" />
-              <span className="text-accent uppercase tracking-[0.2em] text-sm font-medium">Portfolio 2025</span>
+              <span className="text-accent uppercase tracking-[0.2em] text-sm font-medium">Portfolio 2026</span>
             </div>
 
             {/* Visually Hidden H1 for SEO */}

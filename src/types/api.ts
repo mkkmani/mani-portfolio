@@ -43,6 +43,7 @@ export interface IBlog {
   published: boolean;
   favourite?: boolean;
   userId?: string;
+  customDate?: string | Date;
   publishRequests?: IPublishRequest[];
   // Access metadata (returned by API)
   userRole?: 'admin' | 'owner' | 'viewer';

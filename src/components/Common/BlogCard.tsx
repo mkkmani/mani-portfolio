@@ -9,6 +9,7 @@ interface BlogCardProps {
     slug: string;
     excerpt: string;
     createdAt: string;
+    customDate?: string;
     tags: string[];
   };
   index: number;
@@ -29,7 +30,7 @@ export default function BlogCard({ blog, index }: BlogCardProps) {
 
         <div className="relative z-10 flex flex-col h-full">
           <div className="text-[10px] font-mono text-accent uppercase tracking-widest mb-4">
-            {new Date(blog.createdAt).toLocaleDateString('en-US', {
+            {new Date(blog.customDate || blog.createdAt).toLocaleDateString('en-US', {
               month: 'long',
               day: 'numeric',
               year: 'numeric'

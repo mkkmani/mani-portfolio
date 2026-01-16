@@ -23,6 +23,7 @@ export interface IBlog extends Document {
   discarded?: boolean; // Soft delete flag
   userId?: mongoose.Types.ObjectId;
   publishRequests?: IPublishRequest[];
+  customDate?: Date;
   createdAt: string;
   updatedAt: string;
 }
@@ -49,6 +50,7 @@ const BlogSchema: Schema = new mongoose.Schema({
   discarded: { type: Boolean, default: false },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   publishRequests: [PublishRequestSchema],
+  customDate: { type: Date },
 }, { timestamps: true });
 
 const Blog: Model<IBlog> = mongoose.models.Blog || mongoose.model<IBlog>('Blog', BlogSchema);
