@@ -9,7 +9,7 @@ interface BlogCardProps {
     slug: string;
     excerpt: string;
     createdAt: string;
-    customDate?: string;
+    customDate?: string | Date;
     tags: string[];
   };
   index: number;
