@@ -1,119 +1,193 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Menu, X, User } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-
+import { Github, Linkedin, Mail, Menu, X, User } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { SOCIAL_LINKS } from "@/lib/config";
 
 export default function Navbar() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
-  const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const isAuthenticated = status === 'authenticated';
-
-  if (pathname?.startsWith('/get-access')) return null;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isAuthenticated = status === "authenticated";
 
   const navItems = [
-    { name: 'Home', path: '/' },
-    { name: 'About', path: '/about' },
-    { name: 'Work', path: '/work' },
-    { name: 'Projects', path: '/projects' },
-    { name: 'Notelogs', path: '/notelogs' },
-    { name: 'Interview Prep', path: '/interview-prep' },
-    { name: 'Contact', path: '/contact' },
+    { name: "Home", path: "/", index: "00" },
+    { name: "Work", path: "/work", index: "01" },
+    { name: "Projects", path: "/projects", index: "02" },
+    { name: "About", path: "/about", index: "03" },
+    { name: "Notelogs", path: "/notelogs", index: "04" },
+    { name: "Interview Prep", path: "/interview-prep", index: "05" },
+    { name: "Contact", path: "/contact", index: "06" },
   ];
 
+  if (pathname?.startsWith("/get-access")) return null;
+
   return (
-    <nav className="fixed top-6 left-0 right-0 z-50 px-6">
-      <div className="max-w-7xl mx-auto bg-black border border-white/10 px-8 h-16 flex items-center justify-between relative group">
-        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/20 group-hover:border-accent transition-colors" />
-        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/20 group-hover:border-accent transition-colors" />
-        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/20 group-hover:border-accent transition-colors" />
-        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/20 group-hover:border-accent transition-colors" />
-
-        <Link href="/" className="text-xl font-bold tracking-tight hover:text-accent transition-colors flex items-center gap-2">
-          <div className="w-8 h-8 bg-accent flex items-center justify-center">
-            <span className="text-black font-black">M</span>
-          </div>
-          MANI
-        </Link>
-
-        <div className="hidden md:flex items-center gap-8">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              href={item.path}
-              className={`text-sm font-bold uppercase tracking-wider transition-colors ${pathname === item.path ? 'text-accent' : 'text-foreground/80 hover:text-accent'
-                }`}
-            >
-              {item.name}
-            </Link>
-          ))}
-
-          {/* Show Profile Link when authenticated */}
-          {isAuthenticated && (
-            <Link
-              href="/profile"
-              className={`flex items-center gap-2 px-4 py-2 bg-accent/10 hover:bg-accent/20 border border-accent/20 transition-all ${pathname === '/profile' ? 'bg-accent/20 border-accent/40' : ''
-                }`}
-            >
-              <User size={16} className="text-accent" />
-              <span className="text-xs font-bold uppercase tracking-wider text-accent">Profile</span>
-            </Link>
-          )}
+    <>
+      {/* Desktop Sidebar (Fixed Drawer) */}
+      <nav className="fixed left-0 top-0 h-screen z-50 bg-black border-r border-white/5 hidden md:flex flex-col group/sidebar w-20 hover:w-80 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden">
+        {/* Logo / Index */}
+        <div className="p-8 h-32 flex items-center shrink-0">
+          <Link href="/" className="flex items-center gap-6">
+            <div className="w-4 h-4 flex items-center justify-center shrink-0">
+              <span className="text-[8px] font-black text-accent">mk</span>
+            </div>
+            <span className="text-[10px] font-black tracking-[0.5em] text-white opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-500 delay-200">
+              MANI // PORTFOLIO
+            </span>
+          </Link>
         </div>
 
+        {/* Navigation Items */}
+        <div className="flex-1 flex flex-col justify-center gap-2 px-6">
+          {navItems.map((item) => {
+            const isActive = pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                href={item.path}
+                className="group/item flex items-center gap-6 py-4 relative"
+              >
+                <span
+                  className={`text-[10px] font-black tracking-widest shrink-0 w-8 transition-colors duration-300 ${
+                    isActive
+                      ? "text-accent"
+                      : "text-foreground/20 group-hover/item:text-foreground/40"
+                  }`}
+                >
+                  {item.index}
+                </span>
+                <span
+                  className={`text-[10px] font-black uppercase tracking-[0.3em] whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-all duration-500 delay-100 ${
+                    isActive
+                      ? "text-white"
+                      : "text-foreground/20 group-hover/item:text-foreground/40"
+                  }`}
+                >
+                  [ {item.name} ]
+                </span>
+                {isActive && (
+                  <div className="absolute left-[-24px] w-1 h-4 bg-accent" />
+                )}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Social / Auth Links */}
+        <div className="p-8 flex flex-col gap-8 shrink-0 border-t border-white/5">
+          <div className="flex flex-col gap-6">
+            <a
+              href={SOCIAL_LINKS.github}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-6 group/soc"
+            >
+              <Github
+                size={16}
+                className="shrink-0 text-foreground/20 group-hover/soc:text-white transition-colors"
+              />
+              <span className="text-[8px] font-black tracking-[0.5em] text-foreground/20 group-hover/soc:text-white opacity-0 group-hover/sidebar:opacity-100 transition-all duration-500">
+                GITHUB
+              </span>
+            </a>
+            <a
+              href={SOCIAL_LINKS.linkedin}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-6 group/soc"
+            >
+              <Linkedin
+                size={16}
+                className="shrink-0 text-foreground/20 group-hover/soc:text-white transition-colors"
+              />
+              <span className="text-[8px] font-black tracking-[0.5em] text-foreground/20 group-hover/soc:text-white opacity-0 group-hover/sidebar:opacity-100 transition-all duration-500">
+                LINKEDIN
+              </span>
+            </a>
+            {isAuthenticated ? (
+              <Link
+                href="/profile"
+                className="flex items-center gap-6 group/soc"
+              >
+                <User size={16} className="shrink-0 text-accent" />
+                <span className="text-[8px] font-black tracking-[0.5em] text-accent opacity-0 group-hover/sidebar:opacity-100 transition-all duration-500">
+                  PROFILE
+                </span>
+              </Link>
+            ) : (
+              <Link
+                href="/api/auth/signin"
+                className="flex items-center gap-6 group/soc"
+              >
+                <User
+                  size={16}
+                  className="shrink-0 text-foreground/20 group-hover/soc:text-white transition-colors"
+                />
+                <span className="text-[8px] font-black tracking-[0.5em] text-foreground/20 group-hover/soc:text-white opacity-0 group-hover/sidebar:opacity-100 transition-all duration-500">
+                  SIGN_IN
+                </span>
+              </Link>
+            )}
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Header */}
+      <nav className="fixed top-0 left-0 right-0 h-20 z-50 bg-black/80 backdrop-blur-xl border-b border-white/5 md:hidden flex items-center justify-between px-6">
+        <Link href="/" className="w-10 h-px bg-white/20" />
         <button
-          className="md:hidden p-2 text-foreground/80 hover:text-accent transition-colors"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="text-white"
         >
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
+          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
-      </div>
+      </nav>
 
-      {isOpen && (
-        <div
-          className="md:hidden absolute top-24 left-6 right-6 bg-black border-2 border-white/20 p-6 flex flex-col gap-4"
-        >
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              href={item.path}
-              onClick={() => setIsOpen(false)}
-              className={`text-lg font-bold uppercase ${pathname === item.path ? 'text-accent' : 'text-foreground/70 hover:text-accent'
-                }`}
-            >
-              {item.name}
-            </Link>
-          ))}
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-[49] bg-black flex flex-col pt-32 px-12 md:hidden">
+          <div className="flex flex-col gap-8">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                href={item.path}
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-baseline gap-4 group"
+              >
+                <span className="text-[10px] font-black text-accent">
+                  {item.index}
+                </span>
+                <span
+                  className={`text-4xl font-serif uppercase tracking-tighter ${
+                    pathname === item.path ? "text-white" : "text-foreground/20"
+                  }`}
+                >
+                  {item.name}
+                </span>
+              </Link>
+            ))}
+          </div>
 
-          {/* Mobile Profile Link */}
-          {isAuthenticated && (
-            <Link
-              href="/profile"
-              onClick={() => setIsOpen(false)}
-              className={`text-lg font-bold uppercase flex items-center gap-2 ${pathname === '/profile' ? 'text-accent' : 'text-foreground/70 hover:text-accent'
-                }`}
+          <div className="mt-auto mb-12 flex gap-8 border-t border-white/5 pt-8">
+            <a
+              href={SOCIAL_LINKS.github}
+              className="text-[10px] font-black tracking-[0.3em] text-foreground/40"
             >
-              <User size={20} />
-              Profile
-            </Link>
-          )}
+              GITHUB
+            </a>
+            <a
+              href={SOCIAL_LINKS.linkedin}
+              className="text-[10px] font-black tracking-[0.3em] text-foreground/40"
+            >
+              LINKEDIN
+            </a>
+          </div>
         </div>
       )}
-    </nav>
+    </>
   );
 }

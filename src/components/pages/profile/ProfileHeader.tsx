@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { User as UserIcon, Mail, LogOut, Plus, Settings } from 'lucide-react';
+import { User as UserIcon, Mail, LogOut, Plus } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 
@@ -17,10 +17,10 @@ interface ProfileHeaderProps {
 
 export default function ProfileHeader({ user }: ProfileHeaderProps) {
   return (
-    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-white/10">
-      <div className="flex items-center gap-6">
-        <div className="relative shrink-0">
-          <div className="w-20 h-20 rounded-full bg-zinc-800 overflow-hidden relative">
+    <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-12 pb-12 border-b border-white/5">
+      <div className="flex items-end gap-8">
+        <div className="relative">
+          <div className="w-32 h-32 bg-white/5 border border-white/5 overflow-hidden relative grayscale hover:grayscale-0 transition-all duration-700">
             {user.image ? (
               <Image
                 src={user.image}
@@ -29,46 +29,47 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                 className="object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-zinc-500">
-                <UserIcon size={32} />
+              <div className="w-full h-full flex items-center justify-center text-foreground/20">
+                <UserIcon size={48} />
               </div>
             )}
           </div>
+          <div className="absolute -top-3 -left-3 px-3 py-1 bg-accent text-black text-[8px] font-black uppercase tracking-[0.3em]">
+            Identity
+          </div>
         </div>
 
-        <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">
-            {user.name || 'User'}
-          </h1>
-          <div className="flex items-center gap-2 text-zinc-400 mt-1">
-            <Mail size={14} />
-            <span className="text-sm">{user.email}</span>
+        <div className="space-y-4">
+          <div className="space-y-1">
+            <span className="text-[10px] font-black tracking-[0.5em] text-accent uppercase">
+              [ {user.role || 'User'} ]
+            </span>
+            <h1 className="text-4xl md:text-5xl font-serif uppercase tracking-tighter text-white">
+              {user.name || 'User'}
+            </h1>
           </div>
-          <div className="flex gap-2 mt-3">
-            <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider bg-zinc-800 text-zinc-400">
-              {user.role || 'User'}
-            </span>
-            <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider bg-emerald-950 text-emerald-500">
-              {user.status || 'Active'}
-            </span>
+
+          <div className="flex items-center gap-4 text-foreground/40">
+            <Mail size={12} />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em]">{user.email}</span>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-3 w-full md:w-auto">
+      <div className="flex flex-col md:flex-row items-stretch gap-4 w-full md:w-auto">
         <Link
           href="/interview-prep/new"
-          className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white text-black text-sm font-medium rounded hover:bg-zinc-200 transition-colors"
+          className="group flex items-center justify-center gap-4 px-8 py-4 bg-white text-black text-[10px] font-black uppercase tracking-[0.3em] hover:bg-accent transition-all duration-500"
         >
-          <Plus size={16} />
-          <span>New Session</span>
+          <Plus size={14} className="group-hover:rotate-90 transition-transform duration-500" />
+          Initialize Session
         </Link>
         <button
           onClick={() => signOut({ callbackUrl: '/' })}
-          className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 border border-white/10 text-zinc-400 text-sm font-medium rounded hover:bg-white/5 hover:text-white transition-colors"
+          className="flex items-center justify-center gap-4 px-8 py-4 border border-white/10 text-foreground/40 text-[10px] font-black uppercase tracking-[0.3em] hover:border-white hover:text-white transition-all duration-500"
         >
-          <LogOut size={16} />
-          <span>Sign Out</span>
+          <LogOut size={14} />
+          Terminate
         </button>
       </div>
     </div>

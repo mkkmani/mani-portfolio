@@ -2,7 +2,8 @@
 
 import ProjectCard from '@/components/Common/ProjectCard';
 import { IProject } from '@/types/api';
-import { LayoutGrid } from 'lucide-react';
+import { LayoutGrid, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
 interface PublicProjectsProps {
   projects: IProject[];
@@ -10,28 +11,42 @@ interface PublicProjectsProps {
 
 export default function PublicProjects({ projects }: PublicProjectsProps) {
   return (
-    <div className="min-h-screen bg-background py-24 px-6">
+    <div className="min-h-screen bg-black pt-48 pb-24 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-16">
-          <div className="flex items-center gap-2 text-accent font-bold tracking-widest mb-4 uppercase text-sm">
-            <LayoutGrid size={16} />
-            <span>Showcase</span>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-32 gap-12">
+          <div className="space-y-4">
+            <span className="text-[10px] uppercase tracking-[0.5em] text-accent font-black block">
+              [ ARCHIVE.01 // WORKS ]
+            </span>
+            <h1 className="text-6xl md:text-9xl font-serif uppercase tracking-tighter text-white">
+              Selected<br />Works
+            </h1>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            My <span className="text-accent">Projects</span>
-          </h1>
-          <p className="text-foreground/60 text-lg max-w-2xl leading-relaxed">
-            A collection of my work, ranging from full-stack applications to open-source tools and experimental projects.
+
+          <Link
+            href="/"
+            className="group flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 hover:text-accent border-b border-white/5 pb-2 transition-all duration-500"
+          >
+            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+            Home
+          </Link>
+        </div>
+
+        <div className="mb-32">
+          <p className="text-xl md:text-2xl text-foreground/50 leading-[1.3] font-light lowercase max-w-2xl italic">
+            a curated collection of digital monoliths. exploring the intersection of <span className="text-white italic">technical depth</span> and visual <span className="text-white/80">precision</span>.
           </p>
         </div>
 
         {projects.length === 0 ? (
-          <div className="text-center py-20 border border-foreground/10 bg-foreground/[0.02]">
-            <p className="text-foreground/40 text-lg italic">No projects found. Check back later!</p>
+          <div className="py-24 border-t border-white/5">
+            <p className="text-[10px] uppercase tracking-[0.3em] font-black text-foreground/20 italic">
+              // NO_PROJECTS_FOUND_IN_REGISTRY
+            </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5 border border-white/5">
+            {projects.reverse().map((project, index) => (
               <ProjectCard
                 key={project._id}
                 title={project.title}

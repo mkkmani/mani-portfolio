@@ -12,39 +12,35 @@ export default async function LandingPageNotelogs() {
   return (
     <>
       {blogs.length > 0 && (
-        <section className="py-24 px-6 relative border-t border-white/5">
+        <section className="py-48 px-6 relative border-t border-white/5 bg-black">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-end justify-between mb-16">
-              <div>
-                <h2 className="text-accent font-bold tracking-widest mb-2 uppercase text-sm">Writing</h2>
-                <h3 className="text-4xl md:text-5xl font-bold text-foreground">Recent Notelogs</h3>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-32 gap-12">
+              <div className="space-y-4">
+                <span className="text-[10px] uppercase tracking-[0.5em] text-accent font-black block">
+                  [ LOG.03 // WRITING ]
+                </span>
+                <h3 className="text-6xl md:text-9xl font-serif uppercase tracking-tighter text-white">
+                  Notes &<br />Insights
+                </h3>
               </div>
+
               <Link
                 href="/notelogs"
-                className="hidden md:flex items-center gap-2 text-foreground/60 hover:text-accent transition-colors font-medium"
+                className="group flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 hover:text-accent border-b border-white/5 pb-2 transition-all duration-500"
               >
-                View All <ArrowRight size={20} />
+                Read All
+                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
               {blogs.map((blog: IBlog, index: number) => (
                 <BlogCard key={blog._id} blog={blog} index={index} />
               ))}
             </div>
-
-            <div className="mt-12 md:hidden flex justify-center">
-              <Link
-                href="/notelogs"
-                className="flex items-center gap-2 text-foreground/60 hover:text-accent transition-colors font-medium"
-              >
-                View All <ArrowRight size={20} />
-              </Link>
-            </div>
           </div>
         </section>
       )}
-
     </>
   )
 }

@@ -160,7 +160,9 @@ export default function RootLayout({
         <Providers>
           <Navbar />
           <Breadcrumbs />
-          {children}
+          <div className="animate-fade-in min-h-screen">
+            {children}
+          </div>
           <Footer />
         </Providers>
       </body>

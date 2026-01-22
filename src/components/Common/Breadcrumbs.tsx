@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { ChevronLeft,Home } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import Link from "next/link";
+import { Home } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 interface BreadcrumbItem {
   label: string;
@@ -12,18 +12,16 @@ interface BreadcrumbItem {
 export default function Breadcrumbs() {
   const pathname = usePathname();
 
-  // Don't show breadcrumbs on home page or get-access pages
-  if (pathname === '/' || pathname?.startsWith('/get-access')) return null;
+  if (pathname === "/" || pathname?.startsWith("/get-access")) return null;
 
-  const pathSegments = pathname.split('/').filter((segment) => segment !== '');
+  const pathSegments = pathname.split("/").filter((segment) => segment !== "");
 
   const breadcrumbs: BreadcrumbItem[] = pathSegments.map((segment, index) => {
-    const href = `/${pathSegments.slice(0, index + 1).join('/')}`;
-    // Format label: capitalize and replace hyphens with spaces
+    const href = `/${pathSegments.slice(0, index + 1).join("/")}`;
     const label = segment
-      .split('-')
+      .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+      .join(" ");
 
     return { label, href };
   });
@@ -31,28 +29,30 @@ export default function Breadcrumbs() {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="flex items-center space-x-2 text-sm text-foreground/50 pt-28 pb-4 px-6 max-w-7xl mx-auto w-full"
+      className="flex items-center gap-6 pt-32 pb-4 px-6 md:pl-24 max-w-7xl mx-auto w-full relative z-10"
     >
       <Link
         href="/"
-        className="flex items-center hover:text-accent transition-colors"
-        title="Home"
+        className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-foreground/20 hover:text-accent transition-all duration-500"
       >
-        <Home size={14} />
-        <span className="sr-only">Home</span>
+        <Home size={12} />
+        [ ROOT ]
       </Link>
 
       {breadcrumbs.map((item, index) => (
-        <div key={item.href} className="flex items-center space-x-2">
-          <ChevronLeft size={14} className="text-accent" />
+        <div key={item.href} className="flex items-center gap-6">
+          <span className="text-[10px] text-accent font-black tracking-widest">//</span>
           {index === breadcrumbs.length - 1 ? (
-            <span className="text-foreground/80 font-medium" aria-current="page">
-              {item.label}
+            <span
+              className="text-[10px] font-black uppercase tracking-[0.3em] text-white"
+              aria-current="page"
+            >
+              [ {item.label} ]
             </span>
           ) : (
             <Link
               href={item.href}
-              className="hover:text-accent transition-colors"
+              className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/20 hover:text-white transition-all duration-500"
             >
               {item.label}
             </Link>

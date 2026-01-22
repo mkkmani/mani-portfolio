@@ -1,120 +1,63 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { Github, Linkedin, Mail, ArrowUp } from 'lucide-react';
-import { SOCIAL_LINKS } from '@/lib/config';
-import { getSiteConfig } from '@/lib/seo-config';
-import { generatePersonSchema, generateOrganizationSchema } from '@/lib/structured-data';
+import { Github, Linkedin, Mail, ArrowUp } from "lucide-react";
+import Link from "next/link";
+import { SOCIAL_LINKS } from "@/lib/config";
 
 export default function Footer() {
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const siteConfig = getSiteConfig();
-  const personSchema = generatePersonSchema(siteConfig);
-  const organizationSchema = generateOrganizationSchema(siteConfig);
-
   return (
-    <footer className="bg-black border-t-2 border-white/10 px-6 py-16" role="contentinfo">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
-      />
+    <footer className="bg-black border-t border-white/5 py-24 px-6 md:pl-24">
       <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-4 gap-12 mb-16" role="navigation">
-          {/* Brand */}
-          <div className="md:col-span-2">
-            <h3 className="text-3xl font-black mb-4">
-              MANI<span className="text-accent">.</span>
+        <div className="grid lg:grid-cols-12 gap-16 mb-24">
+          <div className="lg:col-span-6 space-y-8">
+            <h3 className="text-4xl md:text-6xl font-serif uppercase tracking-tighter text-white">
+              Manikanta<br />Ketha
             </h3>
-            <p className="text-foreground/60 mb-6 max-w-md leading-relaxed">
-              Full-stack developer Manikanta Ketha (Mani Kanta) crafting exceptional digital experiences with modern web technologies including Next.js, React, Node.js, and MongoDB.
+            <p className="text-xl text-foreground/40 font-light lowercase italic leading-relaxed max-w-md">
+              architecting digital monoliths at the intersection of <span className="text-white italic">design</span> and <span className="text-white italic">engineering</span>.
             </p>
-            <div className="flex gap-4">
-              <a
-                href={SOCIAL_LINKS.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Visit GitHub profile"
-                className="p-3 border-2 border-white/10 hover:border-accent hover:text-accent transition-all"
-              >
-                <Github size={20} />
-              </a>
-              <a
-                href={SOCIAL_LINKS.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Visit LinkedIn profile"
-                className="p-3 border-2 border-white/10 hover:border-accent hover:text-accent transition-all"
-              >
-                <Linkedin size={20} />
-              </a>
-              <Link
-                href="/contact"
-                aria-label="Visit contact page"
-                className="p-3 border-2 border-white/10 hover:border-accent hover:text-accent transition-all"
-              >
-                <Mail size={20} />
-              </Link>
+          </div>
+
+          <div className="lg:col-span-3 space-y-8">
+            <span className="text-[10px] uppercase tracking-[0.3em] font-black text-accent">[ NAVIGATION ]</span>
+            <ul className="space-y-4">
+              <li><Link href="/" className="text-[10px] uppercase tracking-[0.3em] font-black text-foreground/40 hover:text-white transition-colors">Home // 00</Link></li>
+              <li><Link href="/work" className="text-[10px] uppercase tracking-[0.3em] font-black text-foreground/40 hover:text-white transition-colors">Work // 01</Link></li>
+              <li><Link href="/projects" className="text-[10px] uppercase tracking-[0.3em] font-black text-foreground/40 hover:text-white transition-colors">Projects // 02</Link></li>
+              <li><Link href="/notelogs" className="text-[10px] uppercase tracking-[0.3em] font-black text-foreground/40 hover:text-white transition-colors">Notelogs // 04</Link></li>
+            </ul>
+          </div>
+
+          <div className="lg:col-span-3 space-y-8 text-right md:text-left">
+            <span className="text-[10px] uppercase tracking-[0.3em] font-black text-accent">[ CONNECT ]</span>
+            <div className="flex gap-8 justify-end md:justify-start">
+              <a href={SOCIAL_LINKS.github} target="_blank" rel="noreferrer" className="text-foreground/40 hover:text-accent transition-colors"><Github size={20} /></a>
+              <a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noreferrer" className="text-foreground/40 hover:text-accent transition-colors"><Linkedin size={20} /></a>
+              <a href={`mailto:${SOCIAL_LINKS.email}`} className="text-foreground/40 hover:text-accent transition-colors"><Mail size={20} /></a>
             </div>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-lg mb-4 text-white">Quick Links</h4>
-            <ul className="space-y-3">
-              <li>
-                <Link href="/" className="text-foreground/60 hover:text-accent transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link href="/projects" className="text-foreground/60 hover:text-accent transition-colors">
-                  Projects
-                </Link>
-              </li>
-              <li>
-                <Link href="/notelogs" className="text-foreground/60 hover:text-accent transition-colors">
-                  Notelogs
-                </Link>
-              </li>
-              <li>
-                <Link href="/interview-prep" className="text-foreground/60 hover:text-accent transition-colors">
-                  Interview Prep
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div aria-labelledby="footer-contact">
-            <h4 id="footer-contact" className="font-bold text-lg mb-4 text-white">Get In Touch</h4>
-            <ul className="space-y-3 text-foreground/60">
-              <li>
-                <Link href="/contact" className="hover:text-accent transition-colors" aria-label="Contact Manikanta Ketha">
-                  Contact Me
-                </Link>
-              </li>
-              <li aria-label="Available for freelance opportunities">Available for freelance</li>
-              <li aria-label="Available for remote work worldwide">Remote worldwide</li>
-            </ul>
           </div>
         </div>
 
-        <div className="pt-8 border-t-2 border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-foreground/40 text-sm">
-            © {new Date().getFullYear()} Manikanta. All rights reserved.
-          </p>
+        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-12">
+          <div className="space-y-2">
+            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-foreground/20">
+              © {new Date().getFullYear()} Manikanta Ketha // Build_4.1.0
+            </p>
+            <p className="text-[8px] font-black tracking-[0.2em] text-foreground/10 uppercase">
+              All Protocol Rights Reserved.
+            </p>
+          </div>
 
           <button
             onClick={scrollToTop}
-            className="p-3 border-2 border-white/10 hover:border-accent hover:text-accent transition-all group"
-            aria-label="Scroll to top"
+            className="group flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 hover:text-white transition-all duration-500"
           >
-            <ArrowUp size={20} className="group-hover:-translate-y-1 transition-transform" />
+            Terminal Return
+            <ArrowUp size={16} className="group-hover:-translate-y-1 transition-transform" />
           </button>
         </div>
       </div>

@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/server/db';
-import Contact from '@/server/models/Contact';
-import nodemailer from 'nodemailer';
-import { SMTP_CONFIG } from '@/lib/config';
+import { NextRequest, NextResponse } from "next/server";
+import dbConnect from "@/server/db";
+import Contact from "@/server/models/Contact";
+import nodemailer from "nodemailer";
+import { SMTP_CONFIG } from "@/lib/config";
 
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
@@ -27,14 +27,13 @@ function generateOTP(length = 6): string {
   const array = new Uint32Array(length);
   crypto.getRandomValues(array);
 
-  let otp = '';
-  array.forEach(value => {
+  let otp = "";
+  array.forEach((value) => {
     otp += (value % 10).toString();
   });
 
   return otp.slice(0, length);
 }
-
 
 async function sendOTPEmail(email: string, otp: string) {
   const transporter = nodemailer.createTransport({
@@ -53,45 +52,71 @@ async function sendOTPEmail(email: string, otp: string) {
 
   try {
     await transporter.verify();
-    console.log('SMTP connection verified successfully');
+    console.log("SMTP connection verified successfully");
   } catch (verifyError) {
     console.error('SMTP verification failed:', verifyError);
     throw verifyError;
   }
 
-  await transporter.sendMail({
-    from: SMTP_CONFIG.from,
-    to: email,
-    subject: 'Verify Your Contact Request',
-    html: `
-      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #f9ce20;">Verification Code</h2>
-        <p>Your verification code is:</p>
-        <div style="background: #000; color: #f9ce20; padding: 20px; text-align: center; font-size: 32px; letter-spacing: 8px; font-weight: bold;">
-          ${otp}
+  try {
+    await transporter.sendMail({
+      from: SMTP_CONFIG.from,
+      to: email,
+      subject: "Verify Your Contact Request",
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #f9ce20;">Verification Code</h2>
+          <p>Your verification code is:</p>
+          <div style="background: #000; color: #f9ce20; padding: 20px; text-align: center; font-size: 32px; letter-spacing: 8px; font-weight: bold;">
+            ${otp}
+          </div>
+          <p style="color: #666; margin-top: 20px;">This code will expire in 10 minutes.</p>
+          <p style="color: #666;">If you didn't request this code, please ignore this email.</p>
         </div>
-        <p style="color: #666; margin-top: 20px;">This code will expire in 10 minutes.</p>
-        <p style="color: #666;">If you didn't request this code, please ignore this email.</p>
-      </div>
-    `,
-  });
+      `,
+    });
+  } catch (emailError) {
+    console.error("Failed to send OTP email:", emailError);
+    throw emailError;
+  }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+    const ip =
+      req.headers.get("x-forwarded-for") ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
 
     if (!checkRateLimit(ip)) {
       return NextResponse.json(
-        { error: 'Too many requests. Please try again later.' },
+        { error: "Too many requests. Please try again later." },
         { status: 429 }
       );
     }
 
-    const { name, contactMethod, contactValue, message, privacyAccepted } = await req.json();
+    const { name, contactMethod, contactValue, message, privacyAccepted } =
+      await req.json();
 
-    if (!name || !contactMethod || !contactValue || !message || !privacyAccepted) {
-      return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
+    if (
+      !name ||
+      !contactMethod ||
+      !contactValue ||
+      !message ||
+      !privacyAccepted
+    ) {
+      return NextResponse.json(
+        { error: "All fields are required" },
+        { status: 400 }
+      );
+    }
+
+    if (!process.env.MONGODB_URI) {
+      console.error("MONGODB_URI not configured");
+      return NextResponse.json(
+        { error: "Server configuration error. Please contact support." },
+        { status: 500 }
+      );
     }
 
     await dbConnect();
@@ -109,15 +134,39 @@ export async function POST(req: NextRequest) {
       verified: false,
     });
 
-    if (contactMethod === 'email') {
+    if (contactMethod === "email") {
       await sendOTPEmail(contactValue, otp);
+      console.log(`OTP for ${contactValue}: ${otp} (expires in 10 minutes)`);
     } else {
-      console.log('OTP for phone:', otp);
+      console.log("OTP for phone:", otp);
     }
 
     return NextResponse.json({ contactId: contact._id.toString() });
   } catch (error) {
-    console.error('Contact submission error:', error);
-    return NextResponse.json({ error: 'Failed to submit contact form' }, { status: 500 });
+    console.error("Contact submission error:", error);
+
+    // Handle specific database connection errors
+    if (error instanceof Error) {
+      if (error.message.includes("MONGODB_URI")) {
+        return NextResponse.json(
+          { error: "Database configuration error. Please contact support." },
+          { status: 500 }
+        );
+      }
+      if (
+        error.message.includes("ECONNREFUSED") ||
+        error.message.includes("timeout")
+      ) {
+        return NextResponse.json(
+          { error: "Service temporarily unavailable. Please try again later." },
+          { status: 503 }
+        );
+      }
+    }
+
+    return NextResponse.json(
+      { error: "Failed to submit contact form. Please try again." },
+      { status: 500 }
+    );
   }
 }

@@ -1,128 +1,172 @@
-import { getPreparations } from '@/services/api/preparation';
-import Link from 'next/link';
-import { BrainCircuit, ArrowRight, BookOpen, User } from 'lucide-react';
-import FAQSection from '@/components/FAQ/FAQSection';
-import { interviewPrepFAQs } from '@/lib/faq-data';
-import { auth } from '@/lib/auth';
-import { Metadata } from 'next';
-import { generatePageMetadata, getSiteConfig } from '@/lib/seo-config';
-import { generateBreadcrumbSchema } from '@/lib/structured-data';
-import PreparationsPagination from '@/components/PreparationsPagination';
+import { getPreparations } from "@/services/api/preparation";
+import Link from "next/link";
+import {
+  BrainCircuit,
+  ArrowRight,
+  BookOpen,
+  User,
+  ArrowLeft,
+} from "lucide-react";
+import FAQSection from "@/components/FAQ/FAQSection";
+import { interviewPrepFAQs } from "@/lib/faq-data";
+import { auth } from "@/lib/auth";
+import { Metadata } from "next";
+import { generatePageMetadata, getSiteConfig } from "@/lib/seo-config";
+import { generateBreadcrumbSchema } from "@/lib/structured-data";
+import PreparationsPagination from "@/components/PreparationsPagination";
 
 export const metadata: Metadata = generatePageMetadata({
-  title: 'AI Interview Preparation | Manikanta Ketha',
-  description: 'Master your technical interviews with AI-powered preparation guides by Manikanta Ketha. Interactive interview coaching for MERN Stack, JavaScript, React, and software engineering roles.',
+  title: "AI Interview Preparation | Manikanta Ketha",
+  description:
+    "Master your technical interviews with AI-powered preparation guides by Manikanta Ketha. Interactive interview coaching for MERN Stack, JavaScript, React, and software engineering roles.",
   keywords: [
-    'Manikanta Ketha interview prep',
-    'AI interview coach',
-    'technical interview preparation',
-    'MERN Stack interview',
-    'JavaScript interview questions',
-    'React interview prep',
-    'coding interview practice',
+    "Manikanta Ketha interview prep",
+    "AI interview coach",
+    "technical interview preparation",
+    "MERN Stack interview",
+    "JavaScript interview questions",
+    "React interview prep",
+    "coding interview practice",
   ],
-  path: '/interview-prep',
+  path: "/interview-prep",
 });
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function PreparationPage() {
   const session = await auth();
   const allPreparations = await getPreparations();
   const config = getSiteConfig();
-  const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: 'Home', url: '/' },
-    { name: 'Interview Prep', url: '/interview-prep' }
-  ], config);
+  const breadcrumbSchema = generateBreadcrumbSchema(
+    [
+      { name: "Home", url: "/" },
+      { name: "Interview Prep", url: "/interview-prep" },
+    ],
+    config
+  );
 
-  const preparations = session?.user
-    ? allPreparations.filter((prep: any) =>
-      prep.userId?.toString() === session.user.id
-    )
-    : allPreparations.filter((prep: any) => !prep.userId); // Show only anonymous preps when not logged in
-
+  // const preparations = session?.user
+  //   ? allPreparations // Show all sessions when user is logged in
+  //   : allPreparations.filter((prep: any) => !prep.userId); // Show only public sessions when not logged in
+ const preparations = allPreparations
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <main className="max-w-7xl mx-auto px-6 md:px-0 py-12 md:py-16">
-        <div className="mb-20 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-accent/10 text-accent text-xs font-bold uppercase tracking-wider mb-6 border border-accent/20">
-            <BrainCircuit size={14} />
-            AI Interview Prep
+      <main className="min-h-screen bg-black pt-48 pb-24 px-6 md:pl-24">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-32 gap-12">
+            <div className="space-y-4">
+              <span className="text-[10px] uppercase tracking-[0.5em] text-accent font-black block">
+                [ SERVICE.01 // INTELLIGENCE ]
+              </span>
+              <h1 className="text-6xl md:text-9xl font-serif uppercase tracking-tighter text-white">
+                Interview
+                <br />
+                Prep
+              </h1>
+            </div>
+
+            <Link
+              href="/"
+              className="group flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 hover:text-accent border-b border-white/5 pb-2 transition-all duration-500"
+            >
+              <ArrowLeft
+                size={14}
+                className="group-hover:-translate-x-1 transition-transform"
+              />
+              Home
+            </Link>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight">
-            Master Your <span className="text-accent">Interview</span>
-          </h1>
-          <p className="text-xl text-foreground/60 max-w-2xl mx-auto leading-relaxed">
-            Explore curated preparation guides or start a new interactive session with our AI interviewer.
-          </p>
 
-          {/* Auth Status */}
-          {session?.user ? (
-            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-foreground/60">
-              <User size={16} className="text-accent" />
-              <span>Signed in as <span className="text-accent font-semibold">{session.user.email}</span></span>
-              <span className="mx-2">•</span>
-              <Link href="/profile" className="text-accent hover:underline">
-                View Profile
+          <div className="mb-32">
+            <p className="text-xl md:text-2xl text-foreground/50 leading-[1.3] font-light lowercase max-w-2xl italic">
+              advanced diagnostic tools for technical recruitment.{" "}
+              <span className="text-white italic">ai-powered</span> simulations
+              to sharpen your structural logic.
+            </p>
+
+            {session?.user ? (
+              <div className="mt-12 flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-accent">
+                <User size={14} />
+                <span>USER_ACTIVE: {session.user.email}</span>
+                <span className="text-foreground/20">//</span>
+                <Link
+                  href="/profile"
+                  className="hover:text-white transition-colors"
+                >
+                  REGISTRY
+                </Link>
+              </div>
+            ) : (
+              <div className="mt-12">
+                <Link
+                  href="/sign-in"
+                  className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/20 hover:text-accent transition-all"
+                >
+                  // AUTHENTICATE TO PERSIST SESSION DATA
+                </Link>
+              </div>
+            )}
+          </div>
+
+          <div className="mb-48">
+            <PreparationsPagination
+              preparations={preparations}
+              isUserSession={!!session?.user}
+            />
+          </div>
+
+          <div className="grid md:grid-cols-12 gap-12 items-center mb-48">
+            <div className="md:col-span-8 md:col-start-3">
+              <Link
+                href="/interview-prep/new"
+                className="group block relative p-12 md:p-24 bg-white/5 border border-white/5 overflow-hidden transition-all duration-700 hover:border-accent"
+              >
+                <div className="relative z-10 space-y-12">
+                  <div className="space-y-4">
+                    <span className="text-[10px] uppercase tracking-[0.5em] text-accent font-black block">
+                      [ INITIATE.01 // NEW SESSION ]
+                    </span>
+                    <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white group-hover:text-accent transition-colors">
+                      Custom AI
+                      <br />
+                      Diagnostic
+                    </h3>
+                  </div>
+
+                  <p className="text-xl text-foreground/40 font-light lowercase italic max-w-xl">
+                    launch a high-fidelity simulation tailored to your specific
+                    technical stack and difficulty preference.
+                  </p>
+
+                  <div className="flex items-center gap-8 pt-12">
+                    <span className="flex items-center gap-6 px-12 py-6 bg-white text-black font-black text-[10px] uppercase tracking-[0.4em] group-hover:bg-accent transition-all duration-500">
+                      Start Session
+                      <ArrowRight
+                        size={16}
+                        className="group-hover:translate-x-2 transition-transform duration-500"
+                      />
+                    </span>
+                  </div>
+                </div>
+
+                {/* Decorative AI Icon */}
+                <div className="absolute -right-12 -bottom-12 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity duration-1000 grayscale">
+                  <BrainCircuit size={400} />
+                </div>
               </Link>
             </div>
-          ) : (
-            <div className="mt-6">
-              <Link href="/sign-in" className="text-sm text-foreground/60 hover:text-accent transition-colors">
-                Sign in to save and track your sessions →
-              </Link>
-            </div>
-          )}
+          </div>
+
+          <FAQSection
+            faqs={interviewPrepFAQs}
+            title="SOP/FAQ"
+            description="// OPERATIONAL PROCEDURES."
+          />
         </div>
-
-        <PreparationsPagination
-          preparations={preparations}
-          isUserSession={!!session?.user}
-        />
-
-        <div className="mb-16 mt-16">
-          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
-            <BrainCircuit size={24} className="text-accent" />
-            Start a New Practice Session
-          </h2>
-          <Link
-            href="/interview-prep/new"
-            className="group relative overflow-hidden bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 transition-all hover:border-accent/50 hover:shadow-xl hover:shadow-accent/5"
-          >
-            <div className="relative z-10 text-center md:text-left flex-1">
-              <h3 className="text-xl md:text-2xl font-bold mb-3 tracking-tight text-foreground group-hover:text-accent transition-colors">
-                Custom AI Interview Session
-              </h3>
-              <p className="text-foreground/60 font-medium leading-relaxed">
-                Launch a personalized interview session tailored to your topic and difficulty level.
-              </p>
-
-              <div className="flex items-center justify-center md:justify-start gap-3 font-bold mt-6 text-accent uppercase tracking-wider text-sm">
-                <span className="bg-accent text-black px-5 py-2.5 hover:bg-white transition-colors flex items-center gap-2">
-                  Start Session <ArrowRight size={16} />
-                </span>
-              </div>
-            </div>
-
-            <div className="relative z-10">
-              <div className="w-20 h-20 md:w-24 md:h-24 bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 border border-accent/20">
-                <BrainCircuit size={40} className="text-accent" />
-              </div>
-            </div>
-
-            <div className="absolute inset-0 bg-gradient-to-r from-accent/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </Link>
-        </div>
-
-        <FAQSection
-          faqs={interviewPrepFAQs}
-          title="Interview Prep FAQs"
-          description="Common questions about AI-powered interview preparation."
-        />
       </main>
     </>
   );

@@ -39,30 +39,33 @@ export default function PrivateSession({
     if (requestStatus === 'pending' || submitted) {
       return {
         icon: Clock,
-        title: 'Under Review',
-        description: 'This content is currently under review by our team',
+        label: 'PENDING_REVIEW',
+        title: 'Diagnostic Under Review',
+        description: 'your request for public dissemination is currently being audited by the architectural board.',
         color: 'text-yellow-400',
-        bgColor: 'bg-yellow-500/10',
         borderColor: 'border-yellow-500/20',
+        id: '02'
       };
     }
     if (requestStatus === 'rejected') {
       return {
         icon: AlertCircle,
-        title: 'Review Completed',
-        description: 'This content was reviewed but not approved for publication',
+        label: 'AUDIT_COMPLETED',
+        title: 'Dissemination Denied',
+        description: 'the diagnostic was reviewed but failed to meet the public dissemination protocols.',
         color: 'text-red-400',
-        bgColor: 'bg-red-500/10',
         borderColor: 'border-red-500/20',
+        id: '03'
       };
     }
     return {
       icon: Lock,
-      title: 'Private Session',
-      description: `This ${contentType === 'blog' ? 'blog post' : 'interview preparation session'} is currently private`,
+      label: 'ENCRYPTED_SESSION',
+      title: 'Private Diagnostic',
+      description: `this ${contentType === 'blog' ? 'mission log' : 'technical diagnostic'} is currently isolated from the public registry.`,
       color: 'text-accent',
-      bgColor: 'bg-accent/10',
-      borderColor: 'border-accent/20',
+      borderColor: 'border-white/5',
+      id: '01'
     };
   };
 
@@ -70,69 +73,66 @@ export default function PrivateSession({
   const StatusIcon = status.icon;
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6">
-      <div className="max-w-2xl w-full">
-        {/* Icon */}
-        <div className="flex justify-center mb-8">
-          <div className="relative">
-            <div className={`absolute inset-0 ${status.bgColor} blur-3xl rounded-full`} />
-            <div className={`relative w-24 h-24 bg-gradient-to-br ${status.bgColor} border-2 ${status.borderColor} rounded-full flex items-center justify-center`}>
-              <StatusIcon size={40} className={status.color} />
-            </div>
-          </div>
+    <div className="min-h-screen flex items-center justify-center px-6 bg-black">
+      <div className="max-w-2xl w-full border border-white/5 p-12 md:p-24 relative bg-black overflow-hidden">
+        {/* Index */}
+        <div className="mb-12">
+          <span className="text-[10px] uppercase tracking-[0.5em] text-accent font-black block">
+            [ STATUS.{status.id} // {status.label} ]
+          </span>
         </div>
 
         {/* Content */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+        <div className="space-y-8 mb-16">
+          <h1 className="text-4xl md:text-6xl font-serif uppercase tracking-tighter text-white">
             {status.title}
           </h1>
-          <p className="text-xl text-foreground/60 mb-2">
+          <p className="text-xl text-foreground/40 font-light lowercase italic leading-relaxed">
             {status.description}
           </p>
           {!submitted && !hasExistingRequest && (
-            <p className="text-sm text-foreground/40">
-              Want this content to be public? Request publication below
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/20">
+              // INITIALIZE PUBLIC DISSEMINATION PROTOCOL?
             </p>
           )}
         </div>
 
-        {/* Action Button - Show for all users if no request exists */}
+        {/* Action Button */}
         {!submitted && !hasExistingRequest && onRequestPublish && (
-          <div className="mb-8">
+          <div className="mb-12">
             <button
               onClick={handleRequestPublish}
               disabled={isSubmitting}
-              className="w-full px-6 py-4 bg-accent text-black hover:bg-white transition-all font-bold text-center disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full flex items-center justify-between px-8 py-6 bg-white text-black hover:bg-accent transition-all duration-500 group disabled:opacity-50"
             >
-              {isSubmitting ? (
-                <>Processing...</>
-              ) : (
-                <>
-                  <CheckCircle2 size={20} />
-                  Request Publication
-                </>
-              )}
+              <span className="text-[10px] font-black uppercase tracking-[0.4em]">
+                {isSubmitting ? 'Processing...' : 'Request Dissemination'}
+              </span>
+              <CheckCircle2 size={20} className="group-hover:rotate-12 transition-transform duration-500" />
             </button>
           </div>
         )}
 
-        {/* Status Info */}
+        {/* Status Info Badge */}
         {(submitted || hasExistingRequest) && (
-          <div className={`${status.bgColor} border ${status.borderColor} p-6 mb-8`}>
-            <div className="flex items-start gap-3">
+          <div className={`p-8 border ${status.borderColor} bg-white/[0.02]`}>
+            <div className="flex items-start gap-4">
               <StatusIcon size={20} className={`${status.color} mt-0.5`} />
-              <div>
-                <h3 className="font-bold mb-1">Publication Request Submitted</h3>
-                <p className="text-sm text-foreground/70">
+              <div className="space-y-2">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white">Transmission Received</h3>
+                <p className="text-[10px] text-foreground/40 font-light lowercase italic leading-relaxed">
                   {requestStatus === 'pending' || submitted
-                    ? 'A request has been submitted and is awaiting review by our team. You\'ll be notified once it\'s been processed.'
-                    : 'This content has been reviewed. Thank you for your interest.'}
+                    ? 'your request has been successfully queued. further status updates will be logged in this terminal.'
+                    : 'operational review is complete. no further actions required.'}
                 </p>
               </div>
             </div>
           </div>
         )}
+
+        {/* Decorative corner elements */}
+        <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-white/10" />
+        <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-white/10" />
       </div>
     </div>
   );

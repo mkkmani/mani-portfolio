@@ -22,71 +22,81 @@ export default function ProjectCard({
   github,
   index,
 }: ProjectCardProps) {
-  const delay = index * 100;
+  const projectNumber = (index + 1).toString().padStart(2, '0');
+
   return (
-    <div className={`h-full animate-fade-in-up animation-delay-${delay}`}>
-      <div className="h-full flex flex-col bg-background border border-foreground/10 overflow-hidden">
+    <div className="group relative bg-black flex flex-col h-full border-white/5 overflow-hidden transition-all duration-700">
+      <div className="relative h-64 md:h-80 w-full overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+        {image && (
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-700"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        )}
+        <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-all duration-700" />
 
-        <div className="relative h-[220px] bg-foreground/5">
-          {image && (
-            <Image
-              src={image}
-              alt={`${title} project by Manikanta Ketha - Full Stack Developer`}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          )}
+        {/* Project Index Overlay */}
+        <div className="absolute top-6 right-6 mix-blend-difference">
+          <span className="text-4xl font-black text-white/20 group-hover:text-accent transition-colors duration-500">
+            {projectNumber}
+          </span>
         </div>
+      </div>
 
-        <div className="flex-1 flex flex-col p-6">
-
-          <h3 className="text-xl font-bold text-foreground mb-3 line-clamp-2">
-            {title}
-          </h3>
-
-          <p className="text-sm text-foreground/60 leading-relaxed mb-4 line-clamp-3">
-            {description}
-          </p>
-
-          <div className="flex flex-wrap gap-2 mb-4 min-h-[32px]">
-            {tags.slice(0, 5).map((tag) => (
-              <span
-                key={tag}
-                className="px-2 py-1 text-xs text-foreground/50 bg-foreground/5 border border-foreground/10"
-              >
+      <div className="p-8 flex flex-col flex-1 gap-6 bg-black z-10 transition-transform duration-500">
+        <div className="space-y-2">
+          <div className="flex flex-wrap gap-2">
+            {tags.slice(0, 3).map((tag) => (
+              <span key={tag} className="text-[8px] font-black tracking-[0.2em] text-foreground/20 uppercase">
                 {tag}
               </span>
             ))}
           </div>
+          <h4 className="text-2xl md:text-3xl font-black uppercase tracking-tight group-hover:text-accent transition-colors duration-300">
+            {title}
+          </h4>
+        </div>
 
-          <div className="mt-auto flex items-center gap-3 pt-4 border-t border-foreground/10">
+        <p className="text-foreground/40 text-sm leading-relaxed lowercase italic flex-1">
+          {description}
+        </p>
+
+        <div className="flex items-center justify-between pt-6 border-t border-white/5">
+          <div className="flex gap-4">
             {link && (
               <a
                 href={link}
                 target="_blank"
-                rel="noopener noreferrer"
-                title={`Visit ${title} - Manikanta Ketha Project`}
-                aria-label={`Visit ${title} live demo`}
-                className="text-sm text-foreground/70 hover:text-foreground flex items-center gap-1"
+                rel="noreferrer"
+                className="text-foreground/40 hover:text-accent transition-colors duration-300"
               >
-                View Project
-                <ExternalLink size={14} />
+                <ExternalLink size={16} />
               </a>
             )}
             {github && (
               <a
                 href={github}
                 target="_blank"
-                rel="noopener noreferrer"
-                title={`GitHub Repository for ${title}`}
-                aria-label={`View ${title} source code on GitHub`}
-                className="text-foreground/50 hover:text-foreground"
+                rel="noreferrer"
+                className="text-foreground/40 hover:text-accent transition-colors duration-300"
               >
                 <Github size={16} />
               </a>
             )}
           </div>
+
+          <a
+            href={link}
+            target="_blank"
+            rel="noreferrer"
+            className="group/link flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-accent/40 group-hover:text-accent transition-colors duration-300"
+          >
+            VIEW CASE
+            <ArrowUpRight size={14} className="group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
+          </a>
         </div>
       </div>
     </div>

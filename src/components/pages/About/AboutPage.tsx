@@ -1,139 +1,160 @@
 'use client';
 
-import { ArrowLeft, User, Code, Rocket, Brain, Heart, Globe } from 'lucide-react';
+import { ArrowLeft, User, Code, Rocket, Brain, Heart, Globe, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
 const skills = [
-  { name: 'MERN Stack', icon: Code, color: 'text-green-500' },
-  { name: 'Next.js 15+', icon: Rocket, color: 'text-blue-500' },
-  { name: 'TypeScript', icon: Brain, color: 'text-blue-400' },
-  { name: 'AI Integration', icon: Brain, color: 'text-purple-500' },
-  { name: 'UI/UX Design', icon: Heart, color: 'text-red-500' },
-  { name: 'Cloud Architecture', icon: Globe, color: 'text-cyan-500' },
+  { name: 'MERN Stack', icon: Code },
+  { name: 'Next.js 15+', icon: Rocket },
+  { name: 'TypeScript', icon: Brain },
+  { name: 'AI Integration', icon: Brain },
+  { name: 'UI/UX Design', icon: Heart },
+  { name: 'Cloud Arch', icon: Globe },
 ];
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-background pt-32 pb-20 px-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-16">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-foreground/40 hover:text-accent transition-colors mb-8 text-sm font-bold uppercase tracking-widest"
-          >
-            <ArrowLeft size={16} />
-            Back to Home
-          </Link>
-          <h1 className="text-4xl md:text-7xl font-bold uppercase tracking-tighter mb-4">
-            About <span className="text-accent">Me</span>
-          </h1>
-          <p className="text-xl text-foreground/60 max-w-2xl leading-relaxed">
-            Full-stack developer architecting scalable digital solutions with a focus on modern aesthetics and high performance.
-          </p>
+    <main className="min-h-screen bg-black pt-32 pb-24 px-6 md:pl-24 overflow-hidden relative">
+      {/* Decorative Background Grid */}
+      <div className="absolute inset-0 architectural-grid opacity-20 pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto relative">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-12 border-b border-white/5 pb-12">
+          <div className="space-y-4">
+            <span className="text-[10px] uppercase tracking-[0.5em] text-accent font-black block">
+              [ PROFILE.01 // IDENTITY ]
+            </span>
+            <h1 className="text-6xl md:text-[10rem] font-serif uppercase tracking-tighter text-white leading-[0.8]">
+              About<br />Mani
+            </h1>
+          </div>
+          <div className="text-right hidden md:block">
+            <span className="text-[10px] uppercase tracking-[0.5em] text-foreground/20 font-black block mb-4">
+              // VERSION_2.0
+            </span>
+            <span className="text-[10px] uppercase tracking-[0.5em] text-foreground/20 font-black block">
+              // UPDATED_JAN_2026
+            </span>
+          </div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-start mb-32">
-          {/* Bio Section */}
-          <div className="space-y-8 animate-fade-in-up">
-            <div className="relative aspect-square md:aspect-video grayscale border border-white/10 p-3 bg-white/5 overflow-hidden group">
+        {/* Main Content Grid */}
+        <div className="grid lg:grid-cols-12 gap-px bg-white/5 border border-white/5 mb-24">
+          {/* Column 1: Core Narrative */}
+          <div className="lg:col-span-4 bg-black p-8 md:p-12 space-y-12">
+            <div className="space-y-6">
+              <span className="text-[10px] uppercase tracking-[0.3em] font-black text-accent">[ 01 // ORIGIN ]</span>
+              <p className="text-xl text-foreground/60 leading-relaxed font-light lowercase italic">
+                I am <span className="text-white font-black">Manikanta Ketha</span>, a Software Engineer based in India specializing in the architecture of high-performance digital monoliths.
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              <span className="text-[10px] uppercase tracking-[0.3em] font-black text-accent">[ 02 // CURRENT ]</span>
+              <p className="text-lg text-foreground/40 leading-relaxed font-light lowercase italic">
+                Presently engineering AI-driven developer tools at <span className="text-white underline underline-offset-8 decoration-accent/20">PureCode Software</span>. My central mission is the synthesis of complex systems and refined aesthetics.
+              </p>
+            </div>
+
+            <div className="pt-12 border-t border-white/5">
+              <Link
+                href="/"
+                className="group flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 hover:text-accent transition-all duration-500"
+              >
+                <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+                Return to Root
+              </Link>
+            </div>
+          </div>
+
+          {/* Column 2: The Visual Monolith (Image) */}
+          <div className="lg:col-span-4 bg-black relative group">
+            <div className="absolute inset-0 overflow-hidden">
               <Image
                 src="/mani.png"
                 alt="Manikanta Ketha"
                 fill
-                className="object-cover group-hover:grayscale-0 transition-all duration-700"
+                className="object-cover object-top grayscale hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100"
+                priority
               />
-              <div className="absolute inset-0 bg-accent/5 mix-blend-overlay" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
             </div>
 
-            <div className="prose prose-invert prose-lg max-w-none">
-              <p className="text-foreground/80 leading-relaxed font-serif text-lg italic border-l-4 border-accent pl-6 py-2">
-                "I believe that code is an art form, and every pixel should serve a purpose. My goal is to build digital experiences that are not just functional, but also beautiful and intuitive."
-              </p>
-
-              <p className="text-foreground/70 leading-relaxed mt-8">
-                I am <span className="text-white font-bold">Manikanta Ketha</span>, a passionate Software Engineer based in India. With a deep expertise in the MERN stack and Next.js, I specialize in building robust applications that solve real-world problems.
-              </p>
-
-              <p className="text-foreground/70 leading-relaxed">
-                Currently, I'm working at <span className="text-accent">PureCode Software</span>, where I architect AI tools and extensions that empower developers to build faster and better. My journey has been driven by a constant desire to learn and push the boundaries of modern web technologies.
-              </p>
-
-              <p className="text-foreground/70 leading-relaxed">
-                When I'm not coding, I contribute to open-source projects, write technical blogs (Notelogs), and explore the latest advancements in AI and cloud computing.
-              </p>
+            {/* Image Overlay Elements */}
+            <div className="absolute bottom-8 left-8 right-8 flex justify-between items-end">
+              <div className="space-y-1">
+                <span className="text-[8px] font-black tracking-widest text-white/50 block font-mono">X: 82.34</span>
+                <span className="text-[8px] font-black tracking-widest text-white/50 block font-mono">Y: 19.12</span>
+              </div>
+              <div className="w-12 h-12 border-r border-b border-accent/40" />
             </div>
           </div>
 
-          {/* Skills Section */}
-          <div className="space-y-12 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-            <div>
-              <h2 className="text-2xl font-bold uppercase tracking-widest mb-8 border-b border-white/10 pb-4">
-                Core <span className="text-accent">Expertise</span>
-              </h2>
-              <div className="grid grid-cols-2 gap-4">
-                {skills.map((skill, index) => (
-                  <div key={index} className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 hover:border-accent/30 transition-all group">
-                    <div className={`p-2 bg-white/5 ${skill.color} group-hover:scale-110 transition-transform`}>
-                      <skill.icon size={20} />
+          {/* Column 3: Philosophy & Expertise */}
+          <div className="lg:col-span-4 bg-black p-8 md:p-12 flex flex-col justify-between gap-16">
+            <div className="space-y-12">
+              <div className="space-y-6">
+                <span className="text-[10px] uppercase tracking-[0.3em] font-black text-accent">[ 03 // PHILOSOPHY ]</span>
+                <p className="text-2xl text-white font-serif italic border-l-2 border-accent/40 pl-8 leading-tight">
+                  "code is not just functional; it is structural architecture. every pixel must serve a purpose."
+                </p>
+              </div>
+
+              <div className="space-y-8">
+                <span className="text-[10px] uppercase tracking-[0.3em] font-black text-accent">[ 04 // EXPERTISE ]</span>
+                <div className="grid grid-cols-2 gap-4">
+                  {skills.map((skill, index) => (
+                    <div key={index} className="flex flex-col gap-2 group">
+                      <skill.icon size={16} className="text-foreground/20 group-hover:text-accent transition-colors" />
+                      <span className="text-[10px] font-black tracking-widest uppercase text-foreground/40 group-hover:text-white transition-colors">
+                        {skill.name}
+                      </span>
                     </div>
-                    <span className="font-bold text-sm tracking-wide uppercase">{skill.name}</span>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div className="bg-accent/5 border border-accent/20 p-8 relative overflow-hidden group">
-              <h2 className="text-2xl font-bold uppercase tracking-widest mb-6 relative z-10">
-                The <span className="text-accent">Approach</span>
-              </h2>
-              <ul className="space-y-4 relative z-10">
-                <li className="flex gap-4">
-                  <span className="text-accent font-mono">01.</span>
-                  <div>
-                    <span className="block font-bold uppercase text-xs mb-1">Architecture First</span>
-                    <p className="text-sm text-foreground/60 leading-relaxed">Planning scalable systems before writing a single line of code.</p>
-                  </div>
-                </li>
-                <li className="flex gap-4">
-                  <span className="text-accent font-mono">02.</span>
-                  <div>
-                    <span className="block font-bold uppercase text-xs mb-1">Performance Oriented</span>
-                    <p className="text-sm text-foreground/60 leading-relaxed">Optimizing for Core Web Vitals and lightning-fast load times.</p>
-                  </div>
-                </li>
-                <li className="flex gap-4">
-                  <span className="text-accent font-mono">03.</span>
-                  <div>
-                    <span className="block font-bold uppercase text-xs mb-1">AI Enhanced</span>
-                    <p className="text-sm text-foreground/60 leading-relaxed">Leveraging the latest AI models to deliver intelligent user experiences.</p>
-                  </div>
-                </li>
-              </ul>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-3xl -z-10" />
+            <div className="space-y-8 pt-12 border-t border-white/5">
+              <div className="grid grid-cols-3 gap-px bg-white/10">
+                <div className="h-1 bg-accent" />
+                <div className="h-1 bg-white/20" />
+                <div className="h-1 bg-white/20" />
+              </div>
+              <p className="text-[8px] font-black uppercase tracking-[0.5em] text-foreground/20">
+                Operational Efficiency: 100%
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Action Section */}
-        <div className="text-center py-20 border-t border-white/10">
-          <h2 className="text-3xl font-bold mb-8 uppercase tracking-widest">Available for Remote Opportunities</h2>
-          <div className="flex flex-wrap justify-center gap-6">
-            <Link
-              href="/contact"
-              className="px-8 py-4 bg-accent text-background font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all"
-            >
-              Start a Project
-            </Link>
-            <Link
-              href="/work"
-              className="px-8 py-4 border border-white/20 hover:border-accent hover:text-accent font-bold uppercase tracking-widest transition-all"
-            >
-              View Work Log
-            </Link>
+        {/* Footer Link Section */}
+        <div className="flex flex-col md:flex-row justify-between items-center py-24 gap-12 border-t border-white/5">
+          <div className="space-y-4 max-w-xl">
+            <h2 className="text-4xl md:text-6xl font-serif uppercase tracking-tighter text-white leading-[0.9]">
+              Deploy the next<br />Digital Monolith.
+            </h2>
+            <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-foreground/20 leading-relaxed italic lowercase">
+              // waiting for command initiation.<br />
+              // active status: available for collaboration.
+            </p>
           </div>
+
+          <Link
+            href="/contact"
+            className="group flex items-center gap-8 py-8 px-16 bg-white text-black hover:bg-accent hover:text-black transition-all duration-700"
+          >
+            <span className="text-[10px] font-black uppercase tracking-[0.5em]">Initiate Contact</span>
+            <ArrowRight size={20} className="group-hover:translate-x-4 transition-transform duration-700" />
+          </Link>
         </div>
       </div>
+
+      {/* Decorative vertical lines */}
+      <div className="absolute top-0 right-12 w-px h-full bg-white/5 hidden md:block" />
+      <div className="absolute top-0 right-24 w-px h-full bg-white/5 hidden md:block" />
     </main>
   );
 }

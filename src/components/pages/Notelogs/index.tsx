@@ -4,6 +4,8 @@ import { getBlogs } from '@/services/api';
 import { IBlog } from '@/types/api';
 import FAQSection from '@/components/FAQ/FAQSection';
 import { notelogsFAQs } from '@/lib/faq-data';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 interface PageProps {
   searchParams: { page?: string };
@@ -17,39 +19,59 @@ export default async function AllNotelogs({ searchParams }: PageProps) {
   const { data: blogs, pagination } = response;
 
   return (
-    <main className="min-h-screen bg-background pt-4 px-6">
+    <main className="min-h-screen bg-black pt-48 pb-24 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-16 pt-8">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
-            Notelogs<span className="text-accent">.</span>
-          </h1>
-          <p className="text-xl text-foreground/60 max-w-2xl font-light">
-            Thoughts, tutorials, and insights for everyday learning.
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-32 gap-12">
+          <div className="space-y-4">
+            <span className="text-[10px] uppercase tracking-[0.5em] text-accent font-black block">
+              [ JOURNAL.01 // INSIGHTS ]
+            </span>
+            <h1 className="text-6xl md:text-9xl font-serif uppercase tracking-tighter text-white">
+              Note<br />logs
+            </h1>
+          </div>
+
+          <Link
+            href="/"
+            className="group flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 hover:text-accent border-b border-white/5 pb-2 transition-all duration-500"
+          >
+            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+            Home
+          </Link>
+        </div>
+
+        <div className="mb-32">
+          <p className="text-xl md:text-2xl text-foreground/50 leading-[1.3] font-light lowercase max-w-2xl italic">
+            technical documentation and editorial reflections. <span className="text-white italic">logic</span> captured in <span className="text-white/80">notations</span>.
           </p>
         </div>
 
         {blogs.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-foreground/60">No blog posts found.</p>
+          <div className="py-24 border-t border-white/5">
+            <p className="text-[10px] uppercase tracking-[0.3em] font-black text-foreground/20 italic">
+              // NO_LOGS_FOUND_IN_REGISTRY
+            </p>
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
               {blogs.map((blog: IBlog, index: number) => (
                 <BlogCard key={blog._id} blog={blog} index={index} />
               ))}
             </div>
 
-            <Pagination
-              currentPage={pagination.currentPage}
-              totalPages={pagination.totalPages}
-              basePath="/notelogs"
-            />
+            <div className="mt-24">
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                basePath="/notelogs"
+              />
+            </div>
 
             <FAQSection
               faqs={notelogsFAQs}
               title="Notelogs FAQs"
-              description="Common questions about technical articles and tutorials."
+              description="// TECHNICAL KNOWLEDGE BASE."
             />
           </>
         )}

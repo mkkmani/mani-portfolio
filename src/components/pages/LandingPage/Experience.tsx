@@ -7,115 +7,87 @@ const experiences = [
     role: 'SOFTWARE ENGINEER',
     company: 'PURECODE SOFTWARE',
     period: '2025.01 - PRESENT',
-    focus: 'ARCHITECTING AI TOOLS',
-    description: 'Developing PureCode VS Code extension with Copilot-like AI integration. Architecting real-time MERN stack backends and React frontends for code suggestions. Implementing advanced full-stack analytics to track user engagement.',
-    tags: ['VS CODE EXTENSION', 'AI INTEGRATION', 'ANALYTICS'],
+    focus: 'AI ARCHITECTURE',
+    description: 'developing purecode vs code extension with copilot-grade ai interaction. architecting real-time systems and advanced full-stack analytics.',
+    tags: ['VS CODE EXTENSION', 'MERN STACK', 'ANALYTICS'],
     current: true,
-    colSpan: 'md:col-span-2',
-    icon: Code2,
   },
   {
     role: 'FRONTEND DEVELOPER',
     company: 'PURECODE SOFTWARE',
     period: '2024.10 - 2024.12',
     focus: 'AI COMPONENT ENGINE',
-    description: 'Engineered the AI component generation flow, enabling text-to-UI transformation. Built the custom theme engine allowing users to apply design systems instantly.',
-    tags: ['GENERATIVE AI', 'THEME ENGINE', 'SEO', 'NEXT.JS', 'TYPESCRIPT'],
+    description: 'engineered text-to-ui transformation engine. built custom theme systems allowing instant application of design tokens.',
+    tags: ['GENERATIVE AI', 'THEME ENGINE', 'NEXT.JS', 'TYPESCRIPT'],
     current: false,
-    colSpan: 'md:col-span-1',
-    icon: Cpu,
   },
   {
     role: 'QA ENGINEER',
     company: 'PURECODE SOFTWARE',
     period: '2024.05 - 2024.09',
-    focus: 'RELIABILITY & TESTING',
-    description: 'Tested the accuracy of AI-generated React and Tailwind components. Ensuring high stability standards.',
-    tags: ['AUTOMATION', 'REGRESSION TESTING', 'QUALITY'],
+    focus: 'RELIABILITY',
+    description: 'automated accuracy testing for ai-generated react components. ensuring high stability and performance standards.',
+    tags: ['AUTOMATION', 'REGRESSION', 'QUALITY'],
     current: false,
-    colSpan: 'md:col-span-1',
-    icon: Terminal,
-  },
-  {
-    role: 'FRONTEND INTERN',
-    company: 'PURECODE SOFTWARE',
-    period: '2024.01 - 2024.04',
-    focus: 'UI FOUNDATIONS',
-    description: 'Contributed to the initial dashboard UI and component library. Learned modern React patterns, state management, and industry best practices.',
-    tags: ['REACT', 'UI LIBRARY', 'DASHBOARD'],
-    current: false,
-    colSpan: 'md:col-span-2',
-    icon: GitBranch,
   },
 ];
 
 export default function Experience() {
   return (
-    <section className="py-32 px-6 bg-background border-t border-white/5 ">
+    <section className="py-48 px-6 bg-black">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-end justify-between mb-16">
-          <div>
-            <h2 className="text-accent font-mono text-sm tracking-widest mb-4">[ CAREER_LOG ]</h2>
-            <h3 className="text-4xl md:text-6xl font-bold uppercase tracking-tighter">
-              Experience
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-32 gap-8">
+          <div className="space-y-4">
+            <span className="text-[10px] uppercase tracking-[0.5em] text-accent font-black block">
+              [ LOG.01 // EXPERIENCE ]
+            </span>
+            <h3 className="text-5xl md:text-8xl font-black uppercase tracking-tighter">
+              Career Path
             </h3>
           </div>
-          <div className="hidden md:block text-right">
-            <p className="text-sm text-foreground/40 font-mono">
-              // LATEST_UPDATE: 2025.01<br />
-              // STATUS: ACTIVE
-            </p>
-          </div>
+          <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-foreground/20 md:text-right leading-relaxed">
+            // LATEST_UPDATE: 2025.01<br />
+            // STATUS: SYSTEM_ACTIVE
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-1">
           {experiences.map((exp, index) => {
-            const Icon = exp.icon;
-            const delay = index * 100;
             return (
               <div
                 key={index}
-                className={`group relative bg-white/[0.02] border border-white/10 hover:border-accent/50 transition-colors duration-300 p-8 ${exp.colSpan} animate-fade-in-up animation-delay-${delay}`}
+                className="group border-t border-white/5 py-12 flex flex-col md:grid md:grid-cols-12 gap-8 hover:bg-white/[0.01] transition-all duration-500 px-4"
               >
-                {/* Corner Accents */}
-                <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/20 group-hover:border-accent transition-colors" />
-                <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/20 group-hover:border-accent transition-colors" />
-                <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/20 group-hover:border-accent transition-colors" />
-                <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/20 group-hover:border-accent transition-colors" />
+                <div className="md:col-span-2 flex flex-col gap-2">
+                  <span className="font-black text-[10px] tracking-widest text-foreground/20">
+                    {exp.period}
+                  </span>
+                  {exp.current && (
+                    <span className="flex items-center gap-2 text-accent text-[8px] font-black tracking-widest uppercase">
+                      <span className="w-1 h-1 bg-accent" />
+                      Current
+                    </span>
+                  )}
+                </div>
 
-                <div className="flex flex-col h-full justify-between gap-8">
-                  <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-white/5 border border-white/10  text-accent">
-                        <Icon size={20} />
-                      </div>
-                      <span className="font-mono text-xs text-foreground/40 tracking-wider">
-                        {exp.period}
-                      </span>
-                    </div>
-                    {exp.current && (
-                      <span className="flex items-center gap-2 px-3 py-1 bg-accent/10 border border-accent/20 text-accent text-[10px] font-bold tracking-widest uppercase">
-                        <span className="w-1.5 h-1.5 bg-accent  animate-pulse" />
-                        Current
-                      </span>
-                    )}
+                <div className="md:col-span-6 flex flex-col gap-4">
+                  <h4 className="text-2xl md:text-3xl font-black uppercase tracking-tight group-hover:text-accent transition-colors duration-300">
+                    {exp.role}
+                  </h4>
+                  <p className="text-foreground/40 text-sm leading-relaxed max-w-xl lowercase italic">
+                    {exp.description}
+                  </p>
+                </div>
+
+                <div className="md:col-span-4 flex flex-col md:items-end justify-between gap-8 md:text-right">
+                  <div className="space-y-1">
+                    <span className="block text-[8px] uppercase tracking-[0.3em] font-black text-foreground/40">Company</span>
+                    <span className="block text-sm font-black uppercase tracking-widest text-white/80">@{exp.company}</span>
                   </div>
 
-                  <div>
-                    <h4 className="text-2xl font-bold mb-1 group-hover:text-accent transition-colors">
-                      {exp.role}
-                    </h4>
-                    <p className="text-sm font-mono text-foreground/60 mb-6">
-                      @{exp.company} // {exp.focus}
-                    </p>
-                    <p className="text-foreground/80 leading-relaxed max-w-2xl">
-                      {exp.description}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2 pt-6 border-t border-white/5">
+                  <div className="flex flex-wrap md:justify-end gap-3 pt-6">
                     {exp.tags.map((tag, i) => (
-                      <span key={i} className="text-[10px] font-mono text-foreground/40 bg-white/5 px-2 py-1  uppercase tracking-wider group-hover:text-foreground/60 transition-colors">
+                      <span key={i} className="text-[8px] font-black tracking-widest text-foreground/20 border border-white/5 px-2 py-1 uppercase group-hover:border-accent/20 group-hover:text-accent transition-all duration-300">
                         {tag}
                       </span>
                     ))}

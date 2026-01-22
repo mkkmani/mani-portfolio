@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { Plus, Minus } from 'lucide-react';
 import { FAQItem } from '@/lib/faq-data';
 
 interface FAQSectionProps {
@@ -10,7 +10,7 @@ interface FAQSectionProps {
   description?: string;
 }
 
-export default function FAQSection({ faqs, title = 'Frequently Asked Questions', description }: FAQSectionProps) {
+export default function FAQSection({ faqs, title = 'FAQs', description }: FAQSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleFAQ = (index: number) => {
@@ -18,49 +18,53 @@ export default function FAQSection({ faqs, title = 'Frequently Asked Questions',
   };
 
   return (
-    <section className="max-w-4xl mx-auto px-6 py-16">
-      <div className="text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4">{title}</h2>
-        {description && (
-          <p className="text-foreground/60 text-lg">{description}</p>
-        )}
-      </div>
+    <section className="py-48 px-6 bg-black border-t border-white/5">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-32 gap-12">
+          <div className="space-y-4">
+            <span className="text-[10px] uppercase tracking-[0.5em] text-accent font-black block">
+              [ LOG.04 // KNOWLEDGE ]
+            </span>
+            <h3 className="text-5xl md:text-8xl font-black uppercase tracking-tighter">
+              Common<br />Queries
+            </h3>
+          </div>
 
-      <div className="space-y-4">
-        {faqs.map((faq, index) => (
-          <div
-            key={index}
-            className="bg-white/5 border border-white/10 overflow-hidden transition-all hover:border-accent/30"
-          >
-            <button
-              onClick={() => toggleFAQ(index)}
-              className="w-full px-6 py-5 flex items-center justify-between gap-4 text-left transition-colors hover:bg-white/5"
-              aria-expanded={openIndex === index}
-              aria-controls={`faq-answer-${index}`}
-            >
-              <h3 className="text-lg md:text-xl font-bold pr-8">
-                {faq.question}
-              </h3>
-              <ChevronDown
-                size={24}
-                className={`flex-shrink-0 text-accent transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''
-                  }`}
-              />
-            </button>
+          <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-foreground/20 md:text-right leading-relaxed max-w-xs">
+            {description || "// ANSWERS TO COMMON QUESTIONS ABOUT MY PROCESS AND SERVICES."}
+          </p>
+        </div>
 
+        <div className="max-w-4xl">
+          {faqs.map((faq, index) => (
             <div
-              id={`faq-answer-${index}`}
-              className={`overflow-hidden transition-all duration-300 ${openIndex === index ? 'max-h-96' : 'max-h-0'
-                }`}
+              key={index}
+              className="border-b border-white/5 overflow-hidden group"
             >
-              <div className="px-6 pb-5 pt-2">
-                <p className="text-foreground/70 leading-relaxed">
+              <button
+                onClick={() => toggleFAQ(index)}
+                className="w-full py-10 flex items-center justify-between gap-8 text-left transition-all hover:pl-4"
+                aria-expanded={openIndex === index}
+              >
+                <h3 className={`text-xl md:text-2xl font-black uppercase tracking-tight transition-colors duration-300 ${openIndex === index ? 'text-accent' : 'text-white/80 group-hover:text-white'}`}>
+                  {faq.question}
+                </h3>
+                <div className="flex-shrink-0 text-accent transition-transform duration-500">
+                  {openIndex === index ? <Minus size={20} /> : <Plus size={20} />}
+                </div>
+              </button>
+
+              <div
+                className={`overflow-hidden transition-all duration-700 ease-in-out ${openIndex === index ? 'max-h-96 pb-12 opacity-100' : 'max-h-0 opacity-0'
+                  }`}
+              >
+                <p className="text-foreground/40 text-lg leading-relaxed lowercase italic max-w-2xl pl-0 md:pl-4 transition-all">
                   {faq.answer}
                 </p>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

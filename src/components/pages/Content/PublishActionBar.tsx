@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle2, Send, Clock, Trash2, ChevronDown } from 'lucide-react';
+import { CheckCircle2, Send, Clock, Trash2, ChevronDown, ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 
 interface PublishActionBarProps {
@@ -65,12 +65,12 @@ export default function PublishActionBar({
   // Admin view - show publish button and delete options
   if (userRole === 'admin' && onPublish) {
     return (
-      <div className="sticky top-20 z-10 bg-accent/10 border-b border-accent/20 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
-            <span className="font-semibold text-sm uppercase tracking-wide">
-              Draft Content - Admin View
+      <div className="sticky top-0 md:top-0 z-40 bg-black border-b border-white/10 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-6 py-4 md:pl-24 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <ShieldAlert size={16} className="text-accent animate-pulse" />
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white">
+              [ SYSTEM.ADMIN // DRAFT_OVERRIDE ]
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -78,29 +78,29 @@ export default function PublishActionBar({
             <div className="relative">
               <button
                 onClick={() => setShowDeleteMenu(!showDeleteMenu)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-400 transition-all font-semibold text-sm uppercase tracking-wide"
+                className="flex items-center gap-2 px-6 py-3 border border-red-500/20 text-red-500 hover:bg-red-500/5 transition-all text-[10px] font-black uppercase tracking-[0.2em]"
                 disabled={isProcessing}
               >
-                <Trash2 size={18} />
+                <Trash2 size={14} />
                 Delete
-                <ChevronDown size={16} />
+                <ChevronDown size={14} className={`transition-transform duration-300 ${showDeleteMenu ? 'rotate-180' : ''}`} />
               </button>
 
               {showDeleteMenu && (
-                <div className="absolute top-full right-0 mt-2 w-64 bg-background border border-white/10 shadow-lg z-20">
+                <div className="absolute top-full right-0 mt-2 w-72 bg-black border border-white/10 p-2 z-50">
                   <button
                     onClick={() => setShowConfirmDialog('discard')}
-                    className="w-full px-4 py-3 text-left hover:bg-white/5 transition-colors border-b border-white/10"
+                    className="w-full px-4 py-4 text-left hover:bg-white/5 transition-colors border-b border-white/5 group"
                   >
-                    <div className="font-semibold text-sm">Discard</div>
-                    <div className="text-xs text-foreground/60 mt-1">Mark as discarded (soft delete)</div>
+                    <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white group-hover:text-accent">Discard</div>
+                    <div className="text-[8px] text-foreground/40 mt-1 font-light italic lowercase">// move to recycle bin</div>
                   </button>
                   <button
                     onClick={() => setShowConfirmDialog('permanent')}
-                    className="w-full px-4 py-3 text-left hover:bg-white/5 transition-colors text-red-400"
+                    className="w-full px-4 py-4 text-left hover:bg-red-500/10 transition-colors group"
                   >
-                    <div className="font-semibold text-sm">Permanent Delete</div>
-                    <div className="text-xs text-red-400/80 mt-1">Remove from database forever</div>
+                    <div className="text-[10px] font-black uppercase tracking-[0.2em] text-red-500">Permanent Delete</div>
+                    <div className="text-[8px] text-red-500/40 mt-1 font-light italic lowercase">// erase from registry forever</div>
                   </button>
                 </div>
               )}
@@ -110,49 +110,49 @@ export default function PublishActionBar({
             <button
               onClick={() => handleAction(onPublish)}
               disabled={isProcessing}
-              className="flex items-center gap-2 px-6 py-2.5 bg-accent text-black hover:bg-white transition-all font-bold text-sm uppercase tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-4 px-8 py-3 bg-white text-black hover:bg-accent transition-all duration-500 text-[10px] font-black uppercase tracking-[0.4em] disabled:opacity-50"
             >
-              {isProcessing ? (
-                'Publishing...'
-              ) : (
-                <>
-                  <CheckCircle2 size={18} />
-                  Publish Now
-                </>
-              )}
+              {isProcessing ? 'Processing' : 'Initialize Publish'}
+              <CheckCircle2 size={16} />
             </button>
           </div>
         </div>
 
         {/* Confirmation Dialog */}
         {showConfirmDialog && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-background border border-white/10 p-6 max-w-md w-full mx-4">
-              <h3 className="text-xl font-bold mb-2">
-                {showConfirmDialog === 'discard' ? 'Discard Content?' : 'Permanently Delete?'}
-              </h3>
-              <p className="text-foreground/70 mb-6">
-                {showConfirmDialog === 'discard'
-                  ? 'This will mark the content as discarded. You can restore it later from the admin dashboard.'
-                  : 'This action is IRREVERSIBLE. The content will be permanently removed from the database.'}
-              </p>
-              <div className="flex gap-3">
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-6">
+            <div className="bg-black border border-white/10 p-12 max-w-lg w-full relative">
+              <div className="mb-8">
+                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-accent block mb-4">[ CRITICAL.ACTION ]</span>
+                <h3 className="text-3xl font-serif uppercase tracking-tighter text-white mb-4">
+                  Confirm {showConfirmDialog === 'discard' ? 'Discard' : 'Purge'}?
+                </h3>
+                <p className="text-lg text-foreground/40 font-light lowercase italic leading-relaxed">
+                  {showConfirmDialog === 'discard'
+                    ? 'this state change will isolate the content from public view but retain the data in the backup registry.'
+                    : 'this intervention is irreversible. the specific data entry will be permanently purged from the system.'}
+                </p>
+              </div>
+              <div className="flex gap-4">
                 <button
                   onClick={() => setShowConfirmDialog(null)}
-                  className="flex-1 px-4 py-2 bg-white/10 hover:bg-white/15 transition-colors"
+                  className="flex-1 px-8 py-4 border border-white/10 hover:border-white transition-all text-[10px] font-black uppercase tracking-[0.3em] text-white"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleDelete(showConfirmDialog)}
-                  className={`flex-1 px-4 py-2 transition-colors ${showConfirmDialog === 'permanent'
-                      ? 'bg-red-500 hover:bg-red-600 text-white'
-                      : 'bg-accent hover:bg-white text-black'
+                  className={`flex-1 px-8 py-4 transition-all text-[10px] font-black uppercase tracking-[0.3em] ${showConfirmDialog === 'permanent'
+                    ? 'bg-red-500 text-white hover:bg-red-600'
+                    : 'bg-white text-black hover:bg-accent'
                     }`}
                 >
-                  {showConfirmDialog === 'discard' ? 'Discard' : 'Delete Forever'}
+                  {showConfirmDialog === 'discard' ? 'Discard' : 'Purge Entry'}
                 </button>
               </div>
+
+              <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-white/20" />
+              <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-white/20" />
             </div>
           </div>
         )}
@@ -164,22 +164,22 @@ export default function PublishActionBar({
   if (userRole === 'owner') {
     if (hasPublishRequest && publishRequestStatus === 'pending') {
       return (
-        <div className="sticky top-20 z-10 bg-yellow-500/10 border-b border-yellow-500/20 backdrop-blur-sm">
-          <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Clock size={20} className="text-yellow-400" />
+        <div className="sticky top-0 z-40 bg-black border-b border-yellow-500/20 backdrop-blur-xl">
+          <div className="max-w-7xl mx-auto px-6 py-4 md:pl-24 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Clock size={16} className="text-yellow-500 animate-pulse" />
               <div>
-                <span className="font-semibold text-sm uppercase tracking-wide block">
-                  Publish Request Submitted
+                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white block">
+                  [ TRANS.STATUS // PENDING_REVIEW ]
                 </span>
-                <span className="text-xs text-foreground/60">
-                  Awaiting admin review
+                <span className="text-[8px] text-foreground/40 font-light italic lowercase block mt-1">
+                  awaiting administrative authorization
                 </span>
               </div>
             </div>
-            <span className="text-xs font-bold px-3 py-1.5 bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider">
-              Under Review
-            </span>
+            <div className="px-4 py-2 border border-yellow-500/20 bg-yellow-500/5 text-[8px] font-black uppercase tracking-[0.3em] text-yellow-500">
+              In Review
+            </div>
           </div>
         </div>
       );
@@ -187,27 +187,21 @@ export default function PublishActionBar({
 
     if (canRequestPublish && onRequestPublish) {
       return (
-        <div className="sticky top-20 z-10 bg-white/5 border-b border-white/10 backdrop-blur-sm">
-          <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-3 h-3 bg-accent rounded-full"></div>
-              <span className="font-semibold text-sm uppercase tracking-wide">
-                Your Draft - Owner View
+        <div className="sticky top-0 z-40 bg-black border-b border-white/10 backdrop-blur-xl">
+          <div className="max-w-7xl mx-auto px-6 py-4 md:pl-24 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-2 h-2 bg-accent" />
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white">
+                [ USER.DRAFT // PERSISTENT ]
               </span>
             </div>
             <button
               onClick={() => handleAction(onRequestPublish)}
               disabled={isProcessing}
-              className="flex items-center gap-2 px-6 py-2.5 bg-white/10 hover:bg-white/15 border border-white/20 transition-all font-semibold text-sm uppercase tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-4 px-8 py-3 bg-white text-black hover:bg-accent transition-all duration-500 text-[10px] font-black uppercase tracking-[0.4em]"
             >
-              {isProcessing ? (
-                'Submitting...'
-              ) : (
-                <>
-                  <Send size={18} />
-                  Request Publish
-                </>
-              )}
+              {isProcessing ? 'Submitting' : 'Request Publish'}
+              <Send size={16} />
             </button>
           </div>
         </div>
