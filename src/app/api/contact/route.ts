@@ -136,9 +136,6 @@ export async function POST(req: NextRequest) {
 
     if (contactMethod === "email") {
       await sendOTPEmail(contactValue, otp);
-      console.log(`OTP for ${contactValue}: ${otp} (expires in 10 minutes)`);
-    } else {
-      console.log("OTP for phone:", otp);
     }
 
     return NextResponse.json({ contactId: contact._id.toString() });

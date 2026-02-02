@@ -41,7 +41,7 @@ export interface PageMetadata {
 const siteConfig: SiteConfig = {
   name: 'Manikanta Ketha',
   title: 'Manikanta Ketha - Full Stack Developer | MERN Stack Expert',
-  description: 'Full-stack MERN developer Manikanta Ketha (Mani Kanta) specializing in building exceptional digital experiences with Next.js, React, Node.js, and MongoDB. Based in India, available worldwide.',
+  description: 'Full-stack MERN developer Manikanta Ketha specializing in building exceptional digital experiences with Next.js, React, Node.js, and MongoDB. Based in India, available worldwide.',
   url: process.env.NEXT_PUBLIC_APP_URL || 'https://manikantaketha.in',
   ogImage: '/og/og-image.svg',
   author: {

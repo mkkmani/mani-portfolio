@@ -51,11 +51,8 @@ async function sendOTPEmail(email: string, otp: string) {
         </div>
       `,
     });
-    console.log("Resend OTP email sent successfully to:", email);
   } catch (emailError) {
     console.error("Failed to send resend OTP email:", emailError);
-    // Don't throw the error - just log it and continue
-    console.log("Resend OTP for manual testing:", otp);
   }
 }
 

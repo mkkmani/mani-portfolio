@@ -206,7 +206,7 @@ export function generatePersonSchema(config: SiteConfig): WithContext<Person> {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: 'Manikanta Ketha',
-    alternateName: 'Mani Kanta',
+    alternateName: 'Manikanta',
     url: config.url,
     jobTitle: config.author.jobTitle,
     email: config.author.email,

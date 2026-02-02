@@ -102,8 +102,8 @@ export default function ContactForm() {
 
   if (step === 'success') {
     return (
-      <section className="py-48 px-6 bg-black min-h-screen flex items-center justify-center">
-        <div className="max-w-xl w-full text-center space-y-12">
+      <section className="py-24 px-6 bg-black min-h-screen flex items-center justify-center">
+        <div className="max-w-xl w-full text-center space-y-8">
           <div className="inline-flex p-8 border border-accent/20 bg-accent/5">
             <CheckCircle className="text-accent" size={48} />
           </div>
@@ -126,44 +126,46 @@ export default function ContactForm() {
   }
 
   return (
-    <section className="py-24 md:py-20 px-6 bg-black md:pl-24">
+    <section className="py-24 px-6 bg-black md:pl-24 flex items-center min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-12">
-          <div className="space-y-4">
-            <span className="text-[10px] uppercase tracking-[0.5em] text-accent font-black block">
-              [ CONTACT.01 // INQUIRY ]
-            </span>
-            <h2 className="text-6xl md:text-8xl font-serif uppercase tracking-tighter text-white leading-[0.8]">
-              Connect<br />Together
-            </h2>
-          </div>
+        <div className="grid lg:grid-cols-12 gap-16 items-start">
+          {/* Left Column: Heading & Info */}
+          <div className="lg:col-span-5 space-y-12">
+            <div className="space-y-4">
+              <span className="text-[10px] uppercase tracking-[0.5em] text-accent font-black block">
+                [ CONTACT.01 // INQUIRY ]
+              </span>
+              <h2 className="text-6xl md:text-8xl font-serif uppercase tracking-tighter text-white leading-[0.8]">
+                Connect<br />Together
+              </h2>
+            </div>
 
-          <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-foreground/20 md:text-right leading-relaxed max-w-xs">
-            // OPENING DIRECT CHANNEL.<br />
-            // STATUS: LISTENING
-          </p>
-        </div>
+            <div className="space-y-8">
+              <p className="text-xl md:text-2xl text-foreground/50 leading-[1.3] font-light lowercase italic">
+                have a vision for a <span className="text-white italic">digital monolith</span>?
+                initiate contact to begin the architectural process.
+              </p>
 
-        <div className="grid lg:grid-cols-12 gap-12 items-start">
-          <div className="lg:col-span-5 space-y-8">
-            <p className="text-xl md:text-2xl text-foreground/50 leading-[1.3] font-light lowercase italic">
-              have a vision for a <span className="text-white italic">digital monolith</span>?
-              initiate contact to begin the architectural process.
-            </p>
-
-            <div className="space-y-6 pt-6 border-t border-white/5">
-              <div className="space-y-2">
-                <span className="text-[8px] font-black tracking-[0.5em] text-foreground/20 uppercase">Availability</span>
-                <p className="text-sm text-foreground/40 lowercase italic font-light">worldwide // remote preferred</p>
-              </div>
-              <div className="space-y-2">
-                <span className="text-[8px] font-black tracking-[0.5em] text-foreground/20 uppercase">Response Time</span>
-                <p className="text-sm text-foreground/40 lowercase italic font-light">&lt; 24 hours</p>
+              <div className="space-y-6 pt-6 border-t border-white/5">
+                <div className="space-y-2">
+                  <span className="text-[8px] font-black tracking-[0.5em] text-foreground/20 uppercase">Availability</span>
+                  <p className="text-sm text-foreground/40 lowercase italic font-light">worldwide // remote preferred</p>
+                </div>
+                <div className="space-y-2">
+                  <span className="text-[8px] font-black tracking-[0.5em] text-foreground/20 uppercase">Response Time</span>
+                  <p className="text-sm text-foreground/40 lowercase italic font-light">&lt; 24 hours</p>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="lg:col-span-6 lg:col-start-7">
+          {/* Right Column: Status & Form */}
+          <div className="lg:col-span-6 lg:col-start-7 space-y-8">
+            <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-foreground/20 md:text-right leading-relaxed max-w-xs ml-auto">
+              // OPENING DIRECT CHANNEL.<br />
+              // STATUS: LISTENING
+            </p>
+
             {step === 'form' ? (
               <form onSubmit={handleSubmit} className="space-y-px bg-white/5 border border-white/5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-px">

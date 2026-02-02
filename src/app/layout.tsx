@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   keywords: [
     'Manikanta Ketha',
-    'Mani Kanta',
+    'Manikanta',
     'Full Stack Developer',
     'MERN Stack Developer',
     'Next.js Developer',

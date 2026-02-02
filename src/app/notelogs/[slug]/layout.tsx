@@ -56,7 +56,7 @@ export async function generateMetadata({
     return {
       title: `${blog.title.substring(0, 50)} | Notelogs`,
       description: description.substring(0, 160),
-      keywords: [...blog.tags, 'Manikanta Ketha', 'Mani Kanta', 'technical blog'],
+      keywords: [...blog.tags, 'Manikanta Ketha', 'Manikanta', 'technical blog'],
       authors: [
         {
           name: config.author.name,

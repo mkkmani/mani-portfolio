@@ -73,7 +73,7 @@ export default function AboutPage() {
           <div className="lg:col-span-4 bg-black relative group">
             <div className="absolute inset-0 overflow-hidden">
               <Image
-                src="/mani.png"
+                src="/mani.webp"
                 alt="Manikanta Ketha"
                 fill
                 className="object-cover object-top grayscale hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100"
