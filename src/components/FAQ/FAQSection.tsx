@@ -43,7 +43,7 @@ export default function FAQSection({ faqs, title = 'FAQs', description }: FAQSec
             >
               <button
                 onClick={() => toggleFAQ(index)}
-                className="w-full py-10 flex items-center justify-between gap-8 text-left transition-all hover:pl-4"
+                className="w-full py-10 flex items-center justify-between gap-8 text-left transition-all hover:pl-4 cursor-pointer"
                 aria-expanded={openIndex === index}
               >
                 <h3 className={`text-xl md:text-2xl font-black uppercase tracking-tight transition-colors duration-300 ${openIndex === index ? 'text-accent' : 'text-white/80 group-hover:text-white'}`}>

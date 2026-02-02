@@ -6,10 +6,10 @@ import { generateBreadcrumbSchema, generateProfilePageSchema } from '@/lib/struc
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'Manikanta Ketha - Full Stack Developer | MERN Stack Expert',
-  description: 'Full-stack developer Manikanta Ketha (Mani Kanta) specializing in MERN Stack, Next.js, React, and modern web technologies. Building exceptional digital experiences. Based in India, available worldwide.',
+  description: 'Full-stack developer Manikanta Ketha specializing in MERN Stack, Next.js, React, and modern web technologies. Building exceptional digital experiences. Based in India, available worldwide.',
   keywords: [
     'Manikanta Ketha',
-    'Mani Kanta',
+    'Manikanta',
     'Full Stack Developer',
     'MERN Stack Developer',
     'Next.js Developer',

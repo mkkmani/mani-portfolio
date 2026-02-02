@@ -14,10 +14,10 @@ export default function Hero() {
       {/* Profile Image - Background Style */}
       <div className="absolute top-0 right-0 w-full md:w-[65%] h-full z-0 group">
         <Image
-          src="/mani.png"
+          src="/mani.webp"
           alt="Manikanta Ketha"
           fill
-          className="object-cover object-top grayscale-[0.3] group-hover:grayscale-0 transition-all duration-1000 opacity-50 group-hover:opacity-100"
+          className="object-cover object-top  transition-all duration-1000"
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />

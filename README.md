@@ -1,6 +1,6 @@
 <div align="center">
 
-# ✨ MANI KANTA ✨
+# ✨ MANIKANTA ✨
 
 ### 🚀 Full Stack Developer | MERN Stack Specialist | Digital Craftsman
 
@@ -261,7 +261,7 @@ This project is **MIT Licensed** - feel free to use it as inspiration for your o
 
 ---
 
-<sub>**Crafted with ❤️ by Mani Kanta** | Powered by ☕ & 🎵</sub>
+<sub>**Crafted with ❤️ by Manikanta** | Powered by ☕ & 🎵</sub>
 
 <br>
 

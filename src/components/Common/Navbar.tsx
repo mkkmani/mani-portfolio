@@ -33,10 +33,10 @@ export default function Navbar() {
         <div className="p-8 h-32 flex items-center shrink-0">
           <Link href="/" className="flex items-center gap-6">
             <div className="w-4 h-4 flex items-center justify-center shrink-0">
-              <span className="text-[8px] font-black text-accent">mk</span>
+              <span className="text-[18px] font-black text-accent">MK</span>
             </div>
             <span className="text-[10px] font-black tracking-[0.5em] text-white opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-500 delay-200">
-              MANI // PORTFOLIO
+              MANIKANTA
             </span>
           </Link>
         </div>
@@ -52,20 +52,18 @@ export default function Navbar() {
                 className="group/item flex items-center gap-6 py-4 relative"
               >
                 <span
-                  className={`text-[10px] font-black tracking-widest shrink-0 w-8 transition-colors duration-300 ${
-                    isActive
-                      ? "text-accent"
-                      : "text-foreground/20 group-hover/item:text-foreground/40"
-                  }`}
+                  className={`text-[10px] font-black tracking-widest shrink-0 w-8 transition-colors duration-300 ${isActive
+                    ? "text-accent"
+                    : "text-foreground/60 group-hover/item:text-white"
+                    }`}
                 >
                   {item.index}
                 </span>
                 <span
-                  className={`text-[10px] font-black uppercase tracking-[0.3em] whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-all duration-500 delay-100 ${
-                    isActive
-                      ? "text-white"
-                      : "text-foreground/20 group-hover/item:text-foreground/40"
-                  }`}
+                  className={`text-[10px] font-black uppercase tracking-[0.3em] whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-all duration-500 delay-100 ${isActive
+                    ? "text-white"
+                    : "text-foreground/60 group-hover/item:text-white"
+                    }`}
                 >
                   [ {item.name} ]
                 </span>
@@ -88,9 +86,9 @@ export default function Navbar() {
             >
               <Github
                 size={16}
-                className="shrink-0 text-foreground/20 group-hover/soc:text-white transition-colors"
+                className="shrink-0 text-foreground/60 group-hover/soc:text-white transition-colors"
               />
-              <span className="text-[8px] font-black tracking-[0.5em] text-foreground/20 group-hover/soc:text-white opacity-0 group-hover/sidebar:opacity-100 transition-all duration-500">
+              <span className="text-[8px] font-black tracking-[0.5em] text-foreground/60 group-hover/soc:text-white opacity-0 group-hover/sidebar:opacity-100 transition-all duration-500">
                 GITHUB
               </span>
             </a>
@@ -102,9 +100,9 @@ export default function Navbar() {
             >
               <Linkedin
                 size={16}
-                className="shrink-0 text-foreground/20 group-hover/soc:text-white transition-colors"
+                className="shrink-0 text-foreground/60 group-hover/soc:text-white transition-colors"
               />
-              <span className="text-[8px] font-black tracking-[0.5em] text-foreground/20 group-hover/soc:text-white opacity-0 group-hover/sidebar:opacity-100 transition-all duration-500">
+              <span className="text-[8px] font-black tracking-[0.5em] text-foreground/60 group-hover/soc:text-white opacity-0 group-hover/sidebar:opacity-100 transition-all duration-500">
                 LINKEDIN
               </span>
             </a>
@@ -125,9 +123,9 @@ export default function Navbar() {
               >
                 <User
                   size={16}
-                  className="shrink-0 text-foreground/20 group-hover/soc:text-white transition-colors"
+                  className="shrink-0 text-foreground/60 group-hover/soc:text-white transition-colors"
                 />
-                <span className="text-[8px] font-black tracking-[0.5em] text-foreground/20 group-hover/soc:text-white opacity-0 group-hover/sidebar:opacity-100 transition-all duration-500">
+                <span className="text-[8px] font-black tracking-[0.5em] text-foreground/60 group-hover/soc:text-white opacity-0 group-hover/sidebar:opacity-100 transition-all duration-500">
                   SIGN_IN
                 </span>
               </Link>
@@ -162,9 +160,8 @@ export default function Navbar() {
                   {item.index}
                 </span>
                 <span
-                  className={`text-4xl font-serif uppercase tracking-tighter ${
-                    pathname === item.path ? "text-white" : "text-foreground/20"
-                  }`}
+                  className={`text-4xl font-serif uppercase tracking-tighter ${pathname === item.path ? "text-white" : "text-foreground/20"
+                    }`}
                 >
                   {item.name}
                 </span>
