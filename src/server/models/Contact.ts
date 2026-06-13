@@ -38,10 +38,9 @@ const contactSchema = new mongoose.Schema({
   repliedAt: {
     type: Date,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+}, { timestamps: true });
+
+contactSchema.index({ createdAt: -1 });
+contactSchema.index({ contactValue: 1 });
 
 export default mongoose.models.Contact || mongoose.model('Contact', contactSchema);

@@ -1,16 +1,12 @@
 import { MetadataRoute } from 'next';
-import { getSiteConfig, getBaseUrl } from '@/lib/seo-config';
-import dbConnect from '@/server/db';
-import Blog from '@/server/models/Blog';
-import Preparation from '@/server/models/Preparation';
+import { getBaseUrl } from '@/lib/seo-config';
+import { getPublishedBlogSlugs } from '@/lib/data/blogs';
+import { getPublishedPreparationSlugs } from '@/lib/data/preparations';
 
-// Sitemap updates only on manual trigger via /api/revalidate-sitemap
-// No automatic ISR revalidation
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getBaseUrl();
-
-  // Skip database queries during CI builds
   const isCIBuild = process.env.CI === 'true' || process.env.MONGODB_URI?.includes('dummy');
 
   const routes = [
@@ -19,7 +15,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/work', changeFreq: 'weekly' as const, priority: 0.9 },
     { path: '/projects', changeFreq: 'weekly' as const, priority: 0.9 },
     { path: '/notelogs', changeFreq: 'daily' as const, priority: 0.9 },
-    { path: '/notelogs/search', changeFreq: 'daily' as const, priority: 0.6 },
     { path: '/interview-prep', changeFreq: 'daily' as const, priority: 1.0 },
     { path: '/contact', changeFreq: 'monthly' as const, priority: 0.8 },
   ].map((route) => ({
@@ -29,46 +24,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route.priority,
   }));
 
+  if (isCIBuild) return routes;
+
   let blogRoutes: MetadataRoute.Sitemap = [];
-
-  // Only fetch blogs if not in CI build
-  if (!isCIBuild) {
-    try {
-      await dbConnect();
-      const blogs = await Blog.find({ published: true })
-        .select('slug updatedAt createdAt')
-        .sort({ updatedAt: -1 });
-
-      blogRoutes = blogs.map((blog) => ({
-        url: `${baseUrl}/notelogs/${blog.slug}`,
-        lastModified: blog.updatedAt || blog.createdAt || new Date(),
-        changeFrequency: 'monthly' as const,
-        priority: 0.7,
-      }));
-    } catch (error) {
-      console.error('Error generating blog sitemap:', error);
-    }
-  }
-
   let preparationRoutes: MetadataRoute.Sitemap = [];
 
-  // Only fetch preparations if not in CI build
-  if (!isCIBuild) {
-    try {
-      await dbConnect();
-      const preparations = await Preparation.find({ published: true })
-        .select('slug updatedAt createdAt')
-        .sort({ updatedAt: -1 });
+  try {
+    const [blogs, preparations] = await Promise.all([
+      getPublishedBlogSlugs(),
+      getPublishedPreparationSlugs(),
+    ]);
 
-      preparationRoutes = preparations.map((prep) => ({
-        url: `${baseUrl}/interview-prep/${prep.slug}`,
-        lastModified: prep.updatedAt || prep.createdAt || new Date(),
-        changeFrequency: 'monthly' as const,
-        priority: 0.7,
-      }));
-    } catch (error) {
-      console.error('Error generating preparation sitemap:', error);
-    }
+    blogRoutes = blogs.map((b) => ({
+      url: `${baseUrl}/notelogs/${b.slug}`,
+      lastModified: b.updatedAt ? new Date(b.updatedAt) : new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    }));
+
+    preparationRoutes = preparations.map((p) => ({
+      url: `${baseUrl}/interview-prep/${p.slug}`,
+      lastModified: p.updatedAt ? new Date(p.updatedAt) : new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    }));
+  } catch (error) {
+    console.error('Error generating sitemap:', error);
   }
 
   return [...routes, ...blogRoutes, ...preparationRoutes];

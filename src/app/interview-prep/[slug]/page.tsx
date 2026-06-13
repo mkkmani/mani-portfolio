@@ -1,5 +1,5 @@
 import { getPreparationBySlugServer } from '@/services/api/preparation.server';
-import { togglePreparationPublish, requestPublish } from '@/services/api/preparation';
+import { getPublishedPreparationSlugs } from '@/lib/data/preparations';
 import { notFound } from 'next/navigation';
 import AIInteraction from '@/components/pages/Preparation/AIInteraction';
 import ClientPrivateSession from '@/components/pages/Content/ClientPrivateSession';
@@ -8,7 +8,12 @@ import { Metadata } from 'next';
 import { getSiteConfig, getAbsoluteUrl } from '@/lib/seo-config';
 import { generateBreadcrumbSchema, generateQAPageSchema } from '@/lib/structured-data';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 600;
+
+export async function generateStaticParams() {
+  const slugs = await getPublishedPreparationSlugs();
+  return slugs.map((s) => ({ slug: s.slug }));
+}
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -40,6 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: {
       canonical: getAbsoluteUrl(`/interview-prep/${slug}`),
     },
+    robots: preparation.published ? undefined : { index: false, follow: false },
   };
 }
 
@@ -48,7 +54,7 @@ export default async function PreparationSlugPage({ params }: Props) {
   const config = getSiteConfig();
 
   let initialData = null;
-  let structuredDataScripts = [];
+  const structuredDataScripts = [];
 
   if (slug !== 'new') {
     initialData = await getPreparationBySlugServer(slug);

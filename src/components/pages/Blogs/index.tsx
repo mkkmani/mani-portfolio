@@ -15,6 +15,7 @@ export default function BlogsManagement() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterType>('all');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [editSlug, setEditSlug] = useState<string | null>(null);
 
   useEffect(() => {
     fetchBlogs();
@@ -138,12 +139,21 @@ export default function BlogsManagement() {
             blogs={filteredBlogs}
             onTogglePublish={handleTogglePublish}
             onToggleFavourite={handleToggleFavourite}
+            onEdit={(slug) => setEditSlug(slug)}
           />
         )}
 
         <CreateBlogModal
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
+          onSuccess={fetchBlogs}
+        />
+
+        {/* Edit (same modal, prefilled from the selected post) */}
+        <CreateBlogModal
+          isOpen={!!editSlug}
+          editSlug={editSlug}
+          onClose={() => setEditSlug(null)}
           onSuccess={fetchBlogs}
         />
       </div>

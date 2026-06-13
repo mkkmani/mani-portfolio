@@ -346,6 +346,15 @@ export function generateBlogPostingSchema(
 ): WithContext<BlogPosting> {
   const blogUrl = `${config.url}/notelogs/${blog.slug}`;
 
+  const ogAbsolute = `${config.url}${config.ogImage}`;
+  const imageUrl = !blog.image
+    ? ogAbsolute
+    : blog.image.startsWith('http')
+      ? blog.image
+      : blog.image.startsWith('/')
+        ? `${config.url}${blog.image}`
+        : ogAbsolute;
+
   const articleBody = blog.content
     ? blog.content
       .replace(/[#*`_~\[\]()]/g, '')
@@ -374,7 +383,7 @@ export function generateBlogPostingSchema(
       logo: `${config.url}${config.ogImage}`,
     },
     articleBody,
-    image: blog.image ? `${config.url}${blog.image}` : `${config.url}${config.ogImage}`,
+    image: imageUrl,
     keywords: blog.tags.join(', '),
     url: blogUrl,
     mainEntityOfPage: blogUrl,

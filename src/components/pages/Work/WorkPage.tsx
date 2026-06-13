@@ -1,5 +1,3 @@
-'use client';
-
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
@@ -44,21 +42,21 @@ const experiences = [
 
 export default function WorkPage() {
   return (
-    <main className="min-h-screen bg-black pt-48 pb-24 px-6 md:pl-24">
+    <main className="min-h-screen bg-black pt-8 md:pt-12 pb-24 px-6 md:pl-24">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-32 gap-12">
           <div className="space-y-4">
             <span className="text-[10px] uppercase tracking-[0.5em] text-accent font-black block">
               [ LOG.02 // CAREER ]
             </span>
-            <h1 className="text-6xl md:text-9xl font-serif uppercase tracking-tighter text-white">
-              Work<br />History
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-serif uppercase tracking-tighter text-white whitespace-nowrap">
+              Work History
             </h1>
           </div>
 
           <Link
             href="/"
-            className="group flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 hover:text-accent border-b border-white/5 pb-2 transition-all duration-500"
+            className="group flex items-center gap-3 shrink-0 px-5 py-3 border border-white/10 hover:border-accent hover:bg-accent/5 text-[10px] font-black uppercase tracking-[0.3em] text-foreground/50 hover:text-accent transition-all duration-500"
           >
             <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
             Home
@@ -75,7 +73,7 @@ export default function WorkPage() {
           {experiences.map((exp, index) => (
             <div
               key={index}
-              className="group bg-black p-12 hover:bg-white/[0.02] transition-all relative overflow-hidden"
+              className="group bg-black p-12 hover:bg-white/2 transition-all relative overflow-hidden"
             >
               <div className="flex justify-between items-start mb-12">
                 <span className="text-[8px] font-black tracking-[0.5em] text-foreground/20 uppercase">

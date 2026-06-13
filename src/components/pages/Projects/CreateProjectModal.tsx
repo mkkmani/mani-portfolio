@@ -47,6 +47,7 @@ export default function CreateProjectModal({ isOpen, onClose, onSuccess }: Creat
     try {
       const res = await fetch('/api/projects', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,

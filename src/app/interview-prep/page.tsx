@@ -1,4 +1,4 @@
-import { getPreparations } from "@/services/api/preparation";
+import { getPublishedPreparations } from "@/lib/data/preparations";
 import Link from "next/link";
 import {
   BrainCircuit,
@@ -33,9 +33,18 @@ export const metadata: Metadata = generatePageMetadata({
 
 export const dynamic = "force-dynamic";
 
-export default async function PreparationPage() {
-  const session = await auth();
-  const allPreparations = await getPreparations();
+interface PageProps {
+  searchParams: Promise<{ page?: string }>;
+}
+
+export default async function PreparationPage({ searchParams }: PageProps) {
+  const { page } = await searchParams;
+  const currentPage = Math.max(1, parseInt(page || "1", 10));
+
+  const [session, prepResult] = await Promise.all([
+    auth(),
+    getPublishedPreparations(currentPage, 9),
+  ]);
   const config = getSiteConfig();
   const breadcrumbSchema = generateBreadcrumbSchema(
     [
@@ -45,33 +54,27 @@ export default async function PreparationPage() {
     config
   );
 
-  // const preparations = session?.user
-  //   ? allPreparations // Show all sessions when user is logged in
-  //   : allPreparations.filter((prep: any) => !prep.userId); // Show only public sessions when not logged in
- const preparations = allPreparations
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <main className="min-h-screen bg-black pt-48 pb-24 px-6 md:pl-24">
+      <main className="min-h-screen bg-black pt-8 md:pt-12 pb-24 px-6 md:pl-24">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-32 gap-12">
             <div className="space-y-4">
               <span className="text-[10px] uppercase tracking-[0.5em] text-accent font-black block">
                 [ SERVICE.01 // INTELLIGENCE ]
               </span>
-              <h1 className="text-6xl md:text-9xl font-serif uppercase tracking-tighter text-white">
-                Interview
-                <br />
-                Prep
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-serif uppercase tracking-tighter text-white whitespace-nowrap">
+                Interview Prep
               </h1>
             </div>
 
             <Link
               href="/"
-              className="group flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 hover:text-accent border-b border-white/5 pb-2 transition-all duration-500"
+              className="group flex items-center gap-3 shrink-0 px-5 py-3 border border-white/10 hover:border-accent hover:bg-accent/5 text-[10px] font-black uppercase tracking-[0.3em] text-foreground/50 hover:text-accent transition-all duration-500"
             >
               <ArrowLeft
                 size={14}
@@ -114,7 +117,10 @@ export default async function PreparationPage() {
 
           <div className="mb-48">
             <PreparationsPagination
-              preparations={preparations}
+              preparations={prepResult.data}
+              total={prepResult.pagination.total}
+              currentPage={prepResult.pagination.currentPage}
+              totalPages={prepResult.pagination.totalPages}
               isUserSession={!!session?.user}
             />
           </div>

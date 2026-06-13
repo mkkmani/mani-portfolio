@@ -3,6 +3,7 @@ import Experience from '@/components/pages/LandingPage/Experience';
 import LandingPageProjects from '@/components/pages/LandingPage/LandingPageProjects';
 import LandingPageNotelogs from '@/components/pages/LandingPage/LandingPageNotelogs';
 import GetInTouch from '@/components/pages/LandingPage/GetInTouch';
+import Reveal from '@/components/Common/Reveal';
 import FAQSection from '@/components/FAQ/FAQSection';
 import { homepageFAQs } from '@/lib/faq-data';
 import { getSiteConfig } from '@/lib/seo-config';
@@ -20,14 +21,16 @@ export default async function Home() {
       />
 
       <Hero />
-      <Experience />
-      <LandingPageProjects />
-      <LandingPageNotelogs />
-      <FAQSection
-        faqs={homepageFAQs}
-        description="Common questions about my services, expertise, and how I can help you."
-      />
-      <GetInTouch />
+      <Reveal><Experience /></Reveal>
+      <Reveal><LandingPageProjects /></Reveal>
+      <Reveal><LandingPageNotelogs /></Reveal>
+      <Reveal>
+        <FAQSection
+          faqs={homepageFAQs}
+          description="Common questions about my services, expertise, and how I can help you."
+        />
+      </Reveal>
+      <Reveal><GetInTouch /></Reveal>
     </main>
   );
 }

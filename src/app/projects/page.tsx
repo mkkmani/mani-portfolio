@@ -2,7 +2,7 @@ import PublicProjects from '@/components/pages/Projects/PublicProjects';
 import { Metadata } from 'next';
 import { generatePageMetadata, getSiteConfig } from '@/lib/seo-config';
 import { generateBreadcrumbSchema, generateSoftwareSourceCodeSchema } from '@/lib/structured-data';
-import { getProjects } from '@/services/api';
+import { getPublishedProjects } from '@/lib/data/projects';
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'Projects - Web Development Portfolio | Manikanta Ketha',
@@ -20,12 +20,11 @@ export const metadata: Metadata = generatePageMetadata({
   path: '/projects',
 });
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 300;
 
 export default async function ProjectsPage() {
   const config = getSiteConfig();
-  const projects = await getProjects();
+  const projects = await getPublishedProjects();
 
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', url: '/' },

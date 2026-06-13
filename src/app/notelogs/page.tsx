@@ -19,8 +19,8 @@ export const metadata: Metadata = generatePageMetadata({
   path: '/notelogs',
 });
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// ISR: cached pages served instantly; tag-based revalidation busts them on publish.
+export const revalidate = 300;
 
 interface PageProps {
   searchParams: Promise<{ page?: string }>;

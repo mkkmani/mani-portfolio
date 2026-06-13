@@ -1,15 +1,18 @@
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
+import { CACHE_TAGS } from '@/lib/cache';
 
 /**
  * Revalidate the sitemap to include newly added content
  * Call this after creating or publishing new blogs/interview prep content
- * 
+ *
  * @returns {Promise<{ success: boolean; message: string }>}
  */
 export async function revalidateSitemap(): Promise<{ success: boolean; message: string }> {
   try {
-    // Revalidate the sitemap route
+    revalidateTag(CACHE_TAGS.blogs, 'max');
+    revalidateTag(CACHE_TAGS.preparations, 'max');
     revalidatePath('/sitemap.xml');
+    revalidatePath('/feed.xml');
 
     console.log('[SEO] Sitemap revalidated successfully');
 

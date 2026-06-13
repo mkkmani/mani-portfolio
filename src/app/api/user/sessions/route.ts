@@ -7,29 +7,23 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
-    console.log('[User Sessions API] Request received');
-
-    // Verify user authentication
     const session = await auth();
-
-    console.log('[User Sessions API] Session:', session?.user?.id || 'No session');
-
     if (!session?.user?.id) {
-      console.log('[User Sessions API] Unauthorized - no user session');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     await dbConnect();
 
-    // Fetch only sessions belonging to the authenticated user
-    const userSessions = await Preparation.find({
-      userId: session.user.id
-    })
-      .sort({ createdAt: -1 })
-      .lean();
+    const { searchParams } = new URL(req.url);
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+    const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '20', 10)));
 
-    console.log(`[User Sessions API] Found ${userSessions.length} sessions for user ${session.user.id}`);
-    console.log('[User Sessions API] Sample session userId:', userSessions[0]?.userId);
+    const userSessions = await Preparation.find({ userId: session.user.id })
+      .select('topic slug difficulty published excerpt sessionMetadata createdAt updatedAt')
+      .sort({ updatedAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean();
 
     return NextResponse.json(userSessions);
   } catch (error) {

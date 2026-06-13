@@ -4,166 +4,179 @@ import Preparation from '@/server/models/Preparation';
 import { INTERVIEW_PREP_SYSTEM_PROMPT } from '@/lib/prompts/interview-prep';
 import { OPENROUTER_CONFIG } from '@/lib/config';
 import { auth } from '@/lib/auth';
-
+import { makeSlug } from '@/lib/validation';
+import { rateLimit, tooManyRequests } from '@/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(req: NextRequest) {
-  try {
-    const session = await auth();
+interface ChatMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  feedback?: 'like' | 'dislike' | null;
+}
 
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized. Please sign in to continue.' }, { status: 401 });
+const DIFFICULTIES = ['beginner', 'intermediate', 'advanced', 'expert'] as const;
+type Difficulty = (typeof DIFFICULTIES)[number];
+
+function normalizeDifficulty(value: unknown): Difficulty {
+  const v = String(value || '').toLowerCase();
+  return (DIFFICULTIES as readonly string[]).includes(v) ? (v as Difficulty) : 'intermediate';
+}
+
+function buildExcerpt(text: string, topic: string): string {
+  let excerpt = '';
+  const tag = text.match(/EXCERPT:\s*(.+?)(?:\n|$)/i);
+  if (tag?.[1]) {
+    excerpt = tag[1].trim();
+  } else {
+    const overview = text.match(/#+\s*Overview\s*\n+([\s\S]{0,300}?)(?:\n#+|$)/i);
+    if (overview?.[1]) {
+      const clean = overview[1].trim().replace(/\*\*/g, '').replace(/\n/g, ' ');
+      excerpt = clean.match(/^[^.!?]+[.!?]/)?.[0] ?? clean.substring(0, 150);
+    } else {
+      excerpt = `Comprehensive interview preparation guide for ${topic}`;
     }
+  }
+  return excerpt.length > 160 ? excerpt.substring(0, 157) + '...' : excerpt;
+}
 
-    const { topic, messages, difficulty, existingId, interviewType, focusArea } = await req.json();
-
-    const systemPrompt = INTERVIEW_PREP_SYSTEM_PROMPT
-      .replace('{{TOPIC}}', topic)
-      .replace('{{DIFFICULTY}}', difficulty || 'Intermediate')
-      .replace('{{INTERVIEW_TYPE}}', interviewType || 'Mock Interview')
-      .replace('{{FOCUS_AREA}}', focusArea || 'General');
-
-    const apiMessages = [
-      { role: 'system', content: systemPrompt },
-      ...messages.map((m: any) => ({ role: m.role, content: m.content }))
-    ];
-
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+async function streamWithFallback(apiMessages: ChatMessage[]): Promise<Response> {
+  let lastError: Response | null = null;
+  for (const model of OPENROUTER_CONFIG.models) {
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENROUTER_CONFIG.apiKey}`,
+        Authorization: `Bearer ${OPENROUTER_CONFIG.apiKey}`,
         'Content-Type': 'application/json',
         'HTTP-Referer': 'https://manikantaketha.in',
         'X-Title': 'Manikanta Ketha',
       },
-      body: JSON.stringify({
-        model: OPENROUTER_CONFIG.model,
-        messages: apiMessages,
-        stream: true,
-      }),
+      body: JSON.stringify({ model, messages: apiMessages, stream: true }),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('OpenRouter error:', errorText);
+    if (res.ok && res.body) return res;
+
+    lastError = res;
+    const detail = await res.clone().text().catch(() => '');
+    console.error(`[generate] model ${model} failed (${res.status}): ${detail.slice(0, 300)}`);
+    // Retry the next model on rate-limit / server errors; bail on auth/quota (401/402/403).
+    if (![429, 500, 502, 503, 504].includes(res.status)) break;
+  }
+  return lastError ?? new Response('No model available', { status: 502 });
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized. Please sign in to continue.' }, { status: 401 });
+    }
+
+    const limit = await rateLimit('ai-generate', session.user.id, 30, '1 h');
+    if (!limit.success) return tooManyRequests(limit.reset);
+
+    const body = await req.json();
+    const { topic, messages, difficulty, existingId, interviewType, focusArea } = body;
+
+    if (typeof topic !== 'string' || !topic.trim()) {
+      return NextResponse.json({ error: 'A topic is required' }, { status: 400 });
+    }
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return NextResponse.json({ error: 'messages must be a non-empty array' }, { status: 400 });
+    }
+
+    const normalizedDifficulty = normalizeDifficulty(difficulty);
+    const incoming: ChatMessage[] = messages
+      .filter((m): m is ChatMessage => m && typeof m.content === 'string' && typeof m.role === 'string')
+      .map((m) => ({ role: m.role, content: m.content, feedback: m.feedback ?? null }));
+
+    const systemPrompt = INTERVIEW_PREP_SYSTEM_PROMPT
+      .replaceAll('{{TOPIC}}', topic)
+      .replaceAll('{{DIFFICULTY}}', difficulty || 'Intermediate')
+      .replaceAll('{{INTERVIEW_TYPE}}', interviewType || 'Mock Interview')
+      .replaceAll('{{FOCUS_AREA}}', focusArea || 'General');
+
+    const apiMessages: ChatMessage[] = [
+      { role: 'system', content: systemPrompt },
+      ...incoming.map((m) => ({ role: m.role, content: m.content })),
+    ];
+
+    const response = await streamWithFallback(apiMessages);
+    if (!response.ok || !response.body) {
+      const errorText = await response.text().catch(() => '');
+      let message = 'AI generation is temporarily unavailable. Please try again shortly.';
       try {
-        const errorJson = JSON.parse(errorText);
-        return NextResponse.json({ error: errorJson.error?.message || 'AI generation failed' }, { status: response.status });
+        message = JSON.parse(errorText).error?.message || message;
       } catch {
-        return NextResponse.json({ error: `AI generation failed: ${response.statusText}` }, { status: response.status });
+        /* keep generic message */
       }
+      return NextResponse.json({ error: message }, { status: 503 });
     }
 
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
     let fullResponse = '';
 
-    const stream = new TransformStream({
-      async transform(chunk, controller) {
-        const text = decoder.decode(chunk);
-        const lines = text.split('\n');
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const data = line.slice(6);
-            if (data === '[DONE]') continue;
-
-            try {
-              const json = JSON.parse(data);
-              const content = json.choices[0]?.delta?.content || '';
-              if (content) {
-                fullResponse += content;
-                controller.enqueue(encoder.encode(content));
-              }
-            } catch (e) {
-              // Ignore parse errors for partial chunks
+    const stream = new TransformStream<Uint8Array, Uint8Array>({
+      transform(chunk, controller) {
+        const text = decoder.decode(chunk, { stream: true });
+        for (const line of text.split('\n')) {
+          if (!line.startsWith('data: ')) continue;
+          const data = line.slice(6);
+          if (data === '[DONE]') continue;
+          try {
+            const content = JSON.parse(data).choices?.[0]?.delta?.content || '';
+            if (content) {
+              fullResponse += content;
+              controller.enqueue(encoder.encode(content));
             }
+          } catch {
+            // Partial/non-JSON SSE chunk - skip.
           }
         }
       },
       async flush() {
-        await dbConnect();
+        // Persist the transcript. Errors here are logged, never swallowed silently,
+        // and never affect the already-streamed client response.
+        try {
+          if (!fullResponse.trim()) return;
+          await dbConnect();
+          const now = new Date();
+          const assistantMessage = { role: 'assistant' as const, content: fullResponse, feedback: null, createdAt: now };
+          const transcript = [...incoming.map((m) => ({ ...m, createdAt: now })), assistantMessage];
 
-        const newMessage = {
-          role: 'assistant' as const,
-          content: fullResponse,
-          createdAt: new Date(),
-        };
-
-        const now = new Date();
-
-        if (existingId) {
-          // Update existing preparation - just update metadata
-          await Preparation.findByIdAndUpdate(existingId, {
-            $set: {
-              'sessionMetadata.lastActivityAt': now,
-            },
-            $inc: {
-              'sessionMetadata.messageCount': 1,
-            },
-          });
-        } else {
-          // Create new preparation linked to authenticated user
-          let baseSlug = topic.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-          const uniqueId = Math.random().toString(36).substring(2, 8);
-          let slug = `${baseSlug}-${uniqueId}`;
-
-          // Extract excerpt from the AI response
-          let excerpt = '';
-
-          // Try to find EXCERPT: tag first
-          const excerptMatch = fullResponse.match(/EXCERPT:\s*(.+?)(?:\n|$)/i);
-          if (excerptMatch && excerptMatch[1]) {
-            excerpt = excerptMatch[1].trim();
+          if (existingId) {
+            await Preparation.findOneAndUpdate(
+              { _id: existingId, userId: session.user!.id },
+              {
+                $set: {
+                  messages: transcript,
+                  'sessionMetadata.lastActivityAt': now,
+                  'sessionMetadata.messageCount': transcript.length,
+                },
+              }
+            );
           } else {
-            // Fallback: Extract from Overview section
-            const overviewMatch = fullResponse.match(/#+\s*Overview\s*\n+([\s\S]{0,300}?)(?:\n#+|$)/i);
-            if (overviewMatch && overviewMatch[1]) {
-              // Get first sentence or up to 150 characters
-              const overviewText = overviewMatch[1].trim().replace(/\*\*/g, '').replace(/\n/g, ' ');
-              const firstSentence = overviewText.match(/^[^.!?]+[.!?]/);
-              excerpt = firstSentence ? firstSentence[0] : overviewText.substring(0, 150);
-            } else {
-              // Ultimate fallback: Use topic description
-              excerpt = `Comprehensive interview preparation guide for ${topic}`;
-            }
+            await Preparation.create({
+              topic,
+              slug: makeSlug(topic),
+              excerpt: buildExcerpt(fullResponse, topic),
+              difficulty: normalizedDifficulty,
+              userId: session.user!.id,
+              messages: transcript,
+              sessionMetadata: { startedAt: now, lastActivityAt: now, messageCount: transcript.length },
+              published: false,
+            });
           }
-
-          // Ensure excerpt is not too long
-          if (excerpt.length > 160) {
-            excerpt = excerpt.substring(0, 157) + '...';
-          }
-
-          const newPrep = await Preparation.create({
-            topic,
-            slug,
-            excerpt,
-            difficulty,
-            userId: session.user.id,
-            preparationData: {
-              coreTopics: messages.filter((m: any) => m.role === 'user'),
-              commonQuestions: [],
-              practicalExamples: [newMessage],
-            },
-            sessionMetadata: {
-              startedAt: now,
-              lastActivityAt: now,
-              messageCount: messages.length + 1,
-            },
-            published: false,
-          });
+        } catch (err) {
+          console.error('[generate] failed to persist preparation:', err);
         }
-      }
-    });
-
-    return new NextResponse(response.body?.pipeThrough(stream), {
-      headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Transfer-Encoding': 'chunked',
       },
     });
 
+    return new NextResponse(response.body.pipeThrough(stream), {
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    });
   } catch (error) {
     console.error('Generate error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

@@ -17,6 +17,8 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import { getSiteConfig } from '@/lib/seo-config';
+import { generateBlogPostingSchema, generateBreadcrumbSchema } from '@/lib/structured-data';
 
 SyntaxHighlighter.registerLanguage('javascript', js);
 SyntaxHighlighter.registerLanguage('typescript', ts);
@@ -56,8 +58,30 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
     year: 'numeric'
   });
 
+  const config = getSiteConfig();
+  const jsonLd = blog.published
+    ? [
+        generateBlogPostingSchema(blog, config),
+        generateBreadcrumbSchema(
+          [
+            { name: 'Home', url: '/' },
+            { name: 'Notelogs', url: '/notelogs' },
+            { name: blog.title, url: `/notelogs/${blog.slug}` },
+          ],
+          config
+        ),
+      ]
+    : [];
+
   return (
-    <main className="min-h-screen bg-black pt-48 pb-24 px-6 md:pl-24">
+    <main className="min-h-screen bg-black pt-8 md:pt-12 pb-24 px-6 md:pl-24">
+      {jsonLd.map((schema, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
       <div className="max-w-4xl mx-auto">
         {/* Publish action bar for admin/owner viewing unpublished content */}
         {!blog.published && blog.userRole && (

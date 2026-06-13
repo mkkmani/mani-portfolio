@@ -1,5 +1,5 @@
 import ProjectCard from "@/components/Common/ProjectCard";
-import { getFeaturedProjects } from "@/services/api";
+import { getFeaturedProjects } from "@/lib/data/projects";
 import { IProject } from "@/types/api";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -32,7 +32,7 @@ export default async function LandingPageProjects() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5 border border-white/5">
-              {projects.reverse().map((project: IProject, index: number) => (
+              {[...projects].reverse().map((project: IProject, index: number) => (
                 <ProjectCard
                   key={project._id}
                   title={project.title}

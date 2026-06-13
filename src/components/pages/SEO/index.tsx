@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Globe, RefreshCw } from 'lucide-react';
 import SingleCheck from './SingleCheck';
 import BulkResults from './BulkResults';
 import ContentSelector from './ContentSelector';
@@ -41,7 +42,7 @@ export default function SEODashboard() {
     try {
       const [blogsRes, prepsRes] = await Promise.all([
         fetch('/api/blogs?all=true'),
-        fetch('/api/interview-prep')
+        fetch('/api/interview-prep?all=true')
       ]);
 
       if (blogsRes.ok) {
@@ -247,10 +248,51 @@ export default function SEODashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-3">SEO Verification</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-3">SEO Tools</h1>
           <p className="text-foreground/60 text-lg">
-            Check and verify SEO configuration for your content
+            Verify SEO configuration and keep search engines up to date
           </p>
+        </div>
+
+        {/* Global SEO actions */}
+        <div className="grid sm:grid-cols-2 gap-4 mb-10">
+          <div className="border border-foreground/10 bg-foreground/2 p-5 flex items-start gap-4">
+            <div className="p-2.5 bg-accent/10 text-accent shrink-0">
+              <Globe size={20} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-bold mb-1">Notify Google Indexing</h3>
+              <p className="text-sm text-foreground/50 mb-4">
+                Submit all published URLs to the Google Indexing API.
+              </p>
+              <button
+                onClick={handleNotifyGoogleIndexing}
+                disabled={indexingLoading}
+                className="px-4 py-2 bg-accent text-background text-xs font-bold uppercase tracking-wider hover:bg-accent/90 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                {indexingLoading ? 'Notifying...' : 'Notify Google'}
+              </button>
+            </div>
+          </div>
+
+          <div className="border border-foreground/10 bg-foreground/2 p-5 flex items-start gap-4">
+            <div className="p-2.5 bg-accent/10 text-accent shrink-0">
+              <RefreshCw size={20} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-bold mb-1">Revalidate Sitemap</h3>
+              <p className="text-sm text-foreground/50 mb-4">
+                Regenerate sitemap.xml with all current published content.
+              </p>
+              <button
+                onClick={handleTriggerRevalidation}
+                disabled={loading}
+                className="px-4 py-2 border border-foreground/20 text-foreground/80 text-xs font-bold uppercase tracking-wider hover:bg-foreground/5 transition-colors disabled:opacity-30"
+              >
+                Revalidate
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Tabs */}
@@ -276,23 +318,24 @@ export default function SEODashboard() {
         </div>
 
         {/* Content */}
-        <div className="bg-foreground/[0.02] border border-foreground/10 p-6 md:p-8">
+        <div className="bg-foreground/2 border border-foreground/10 p-6 md:p-8">
           {activeTab === 'content' && (
             <div className="space-y-6">
-              {/* Content Verification Actions */}
-              <div className="flex gap-3 flex-wrap pb-6 border-b border-foreground/10">
+              <div className="flex items-center justify-between gap-3 flex-wrap pb-6 border-b border-foreground/10">
+                <div>
+                  <h2 className="font-bold uppercase tracking-wider text-sm text-foreground/70">
+                    Content Verification
+                  </h2>
+                  <p className="text-sm text-foreground/50 mt-1">
+                    Select content and verify its canonical URLs and SEO config.
+                  </p>
+                </div>
                 <button
                   onClick={handleBulkCheck}
                   disabled={selectedUrls.length === 0 || loading}
                   className="px-6 py-3 bg-accent text-background font-bold uppercase tracking-wider hover:bg-accent/90 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   {loading ? 'Verifying...' : `Verify ${selectedUrls.length} Selected`}
-                </button>
-                <button
-                  onClick={() => setActiveTab('single')}
-                  className="px-6 py-3 border border-foreground/10 text-foreground/70 font-bold uppercase tracking-wider hover:bg-foreground/5 transition-colors"
-                >
-                  Single Check
                 </button>
               </div>
 
@@ -304,34 +347,6 @@ export default function SEODashboard() {
                 onSelectAll={handleSelectAll}
                 onClearSelection={() => setSelectedUrls([])}
               />
-
-              {/* SEO Tools Section - Separated */}
-              <div className="mt-8 pt-8 border-t-2 border-accent/20">
-                <h2 className="text-2xl font-bold uppercase tracking-wider mb-4 text-accent">
-                  SEO Tools
-                </h2>
-                <p className="text-foreground/60 mb-6">
-                  Manage sitemap and notify search engines about content updates
-                </p>
-
-                <div className="flex gap-3 flex-wrap">
-                  <button
-                    onClick={handleNotifyGoogleIndexing}
-                    disabled={indexingLoading}
-                    className="px-6 py-3 border border-accent/20 text-accent font-bold uppercase tracking-wider hover:bg-accent/5 transition-colors disabled:opacity-30"
-                    title="Notify Google Indexing API about all published content"
-                  >
-                    {indexingLoading ? 'Notifying...' : 'Notify Google Indexing'}
-                  </button>
-                  <button
-                    onClick={handleTriggerRevalidation}
-                    disabled={loading}
-                    className="px-6 py-3 border border-accent/20 text-accent font-bold uppercase tracking-wider hover:bg-accent/5 transition-colors disabled:opacity-30"
-                  >
-                    Revalidate Sitemap
-                  </button>
-                </div>
-              </div>
             </div>
           )}
 

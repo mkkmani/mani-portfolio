@@ -26,8 +26,12 @@ export async function apiRequest<T>(
   }
 
   try {
+    const method = (fetchOptions.method || 'GET').toUpperCase();
+    const cacheDefaults =
+      method === 'GET' ? { next: { revalidate: 3600 } } : { cache: 'no-store' as const };
+
     const response = await fetch(url, {
-      next: { revalidate: 3600 },
+      ...cacheDefaults,
       ...fetchOptions,
       headers: {
         'Content-Type': 'application/json',

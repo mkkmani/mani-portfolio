@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { seoRedirects } from "./src/lib/seo-redirects";
 
 const nextConfig: NextConfig = {
   images: {
@@ -15,34 +16,14 @@ const nextConfig: NextConfig = {
     ],
   },
   async redirects() {
-    return [
-      {
-        source: '/blog',
-        destination: '/notelogs',
-        permanent: true,
-      },
-      {
-        source: '/blogs',
-        destination: '/notelogs',
-        permanent: true,
-      },
-      {
-        source: '/login',
-        destination: '/sign-in',
-        permanent: true,
-      },
-      {
-        source: '/signup',
-        destination: '/sign-in',
-        permanent: true,
-      },
-    ];
+    return seoRedirects();
   },
   experimental: {
     optimizePackageImports: ['lucide-react'],
   },
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole:
+      process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
   },
   reactStrictMode: true,
 };
