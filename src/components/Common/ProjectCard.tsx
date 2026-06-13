@@ -1,5 +1,3 @@
-'use client';
-
 import { ExternalLink, Github, ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 
@@ -88,15 +86,17 @@ export default function ProjectCard({
             )}
           </div>
 
-          <a
-            href={link}
-            target="_blank"
-            rel="noreferrer"
-            className="group/link flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-accent/40 group-hover:text-accent transition-colors duration-300"
-          >
-            VIEW CASE
-            <ArrowUpRight size={14} className="group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
-          </a>
+          {link && (
+            <a
+              href={link}
+              target="_blank"
+              rel="noreferrer"
+              className="group/link flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-accent/40 group-hover:text-accent transition-colors duration-300"
+            >
+              VIEW CASE
+              <ArrowUpRight size={14} className="group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
+            </a>
+          )}
         </div>
       </div>
     </div>

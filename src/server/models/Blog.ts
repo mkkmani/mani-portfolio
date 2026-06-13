@@ -53,6 +53,10 @@ const BlogSchema: Schema = new mongoose.Schema({
   customDate: { type: Date },
 }, { timestamps: true });
 
+BlogSchema.index({ published: 1, discarded: 1, createdAt: -1 });
+BlogSchema.index({ published: 1, updatedAt: -1 });
+BlogSchema.index({ favourite: 1, published: 1 });
+
 const Blog: Model<IBlog> = mongoose.models.Blog || mongoose.model<IBlog>('Blog', BlogSchema);
 
 export default Blog;

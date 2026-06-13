@@ -126,7 +126,7 @@ export default function ContactForm() {
   }
 
   return (
-    <section className="py-24 px-6 bg-black md:pl-24 flex items-center min-h-screen">
+    <section className="min-h-screen bg-black pt-8 md:pt-12 pb-24 px-6 md:pl-24">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-12 gap-16 items-start">
           {/* Left Column: Heading & Info */}
@@ -135,7 +135,7 @@ export default function ContactForm() {
               <span className="text-[10px] uppercase tracking-[0.5em] text-accent font-black block">
                 [ CONTACT.01 // INQUIRY ]
               </span>
-              <h2 className="text-6xl md:text-8xl font-serif uppercase tracking-tighter text-white leading-[0.8]">
+              <h2 className="text-5xl md:text-7xl font-serif uppercase tracking-tighter text-white leading-[0.8]">
                 Connect<br />Together
               </h2>
             </div>

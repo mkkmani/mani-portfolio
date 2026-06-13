@@ -1,35 +1,37 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/server/db';
-import Blog from '@/server/models/Blog';
+import { getPublishedBlogs } from '@/lib/data/blogs';
 import { getSiteConfig } from '@/lib/seo-config';
+import { escapeXml, safeCdata } from '@/lib/escape';
+
+export const revalidate = 3600;
 
 export async function GET() {
   try {
-    await dbConnect();
     const config = getSiteConfig();
-    const blogs = await Blog.find({ published: true }).sort({ createdAt: -1 });
+    const { data: blogs } = await getPublishedBlogs(1, 50);
+
+    const items = blogs
+      .map(
+        (blog) => `
+    <item>
+      <title><![CDATA[${safeCdata(blog.title)}]]></title>
+      <link>${escapeXml(`${config.url}/notelogs/${blog.slug}`)}</link>
+      <guid isPermaLink="true">${escapeXml(`${config.url}/notelogs/${blog.slug}`)}</guid>
+      <pubDate>${new Date(blog.createdAt).toUTCString()}</pubDate>
+      <description><![CDATA[${safeCdata(blog.excerpt)}]]></description>
+    </item>`
+      )
+      .join('');
 
     const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>${config.title}</title>
-    <link>${config.url}</link>
-    <description>${config.description}</description>
+    <title>${escapeXml(config.title)}</title>
+    <link>${escapeXml(config.url)}</link>
+    <description>${escapeXml(config.description)}</description>
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <atom:link href="${config.url}/feed.xml" rel="self" type="application/rss+xml" />
-    ${blogs
-        .map(
-          (blog) => `
-    <item>
-      <title><![CDATA[${blog.title}]]></title>
-      <link>${config.url}/notelogs/${blog.slug}</link>
-      <guid isPermaLink="true">${config.url}/notelogs/${blog.slug}</guid>
-      <pubDate>${new Date(blog.createdAt).toUTCString()}</pubDate>
-      <description><![CDATA[${blog.excerpt}]]></description>
-    </item>`
-        )
-        .join('')}
+    <atom:link href="${escapeXml(`${config.url}/feed.xml`)}" rel="self" type="application/rss+xml" />${items}
   </channel>
 </rss>`;
 

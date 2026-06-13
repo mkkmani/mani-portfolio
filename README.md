@@ -20,9 +20,9 @@
 
 ## 🎯 What's This?
 
-This isn't just another portfolio—it's a **carefully crafted digital showcase** built with cutting-edge technologies. A space where design meets functionality, and every pixel has a purpose.
+This isn't just another portfolio-it's a **carefully crafted digital showcase** built with cutting-edge technologies. A space where design meets functionality, and every pixel has a purpose.
 
-> 💡 **Fun Fact:** This portfolio is built with the latest Next.js 16, React 19, and Tailwind CSS v4—because staying ahead isn't optional!
+> 💡 **Fun Fact:** This portfolio is built with the latest Next.js 16, React 19, and Tailwind CSS v4-because staying ahead isn't optional!
 
 ---
 

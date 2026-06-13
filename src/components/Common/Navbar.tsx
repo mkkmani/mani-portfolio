@@ -1,6 +1,6 @@
 "use client";
 
-import { Github, Linkedin, Mail, Menu, X, User } from "lucide-react";
+import { Github, Linkedin, Mail, Menu, X, User, FileText } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -31,7 +31,7 @@ export default function Navbar() {
       <nav className="fixed left-0 top-0 h-screen z-50 bg-black border-r border-white/5 hidden md:flex flex-col group/sidebar w-20 hover:w-80 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden">
         {/* Logo / Index */}
         <div className="p-8 h-32 flex items-center shrink-0">
-          <Link href="/" className="flex items-center gap-6">
+          <Link href="/" aria-label="Manikanta Ketha - home" className="flex items-center gap-6">
             <div className="w-4 h-4 flex items-center justify-center shrink-0">
               <span className="text-[18px] font-black text-accent">MK</span>
             </div>
@@ -106,6 +106,21 @@ export default function Navbar() {
                 LINKEDIN
               </span>
             </a>
+            <a
+              href="/Manikanta-Ketha-Resume.pdf"
+              target="_blank"
+              rel="noreferrer"
+              download
+              className="flex items-center gap-6 group/soc"
+            >
+              <FileText
+                size={16}
+                className="shrink-0 text-foreground/60 group-hover/soc:text-white transition-colors"
+              />
+              <span className="text-[8px] font-black tracking-[0.5em] text-foreground/60 group-hover/soc:text-white opacity-0 group-hover/sidebar:opacity-100 transition-all duration-500">
+                RESUME
+              </span>
+            </a>
             {isAuthenticated ? (
               <Link
                 href="/profile"
@@ -136,10 +151,13 @@ export default function Navbar() {
 
       {/* Mobile Header */}
       <nav className="fixed top-0 left-0 right-0 h-20 z-50 bg-black/80 backdrop-blur-xl border-b border-white/5 md:hidden flex items-center justify-between px-6">
-        <Link href="/" className="w-10 h-px bg-white/20" />
+        <Link href="/" aria-label="Manikanta Ketha - home" className="w-10 h-px bg-white/20" />
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="text-white"
+          aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-menu"
         >
           {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -147,7 +165,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-[49] bg-black flex flex-col pt-32 px-12 md:hidden">
+        <div id="mobile-menu" className="fixed inset-0 z-[49] bg-black flex flex-col pt-32 px-12 md:hidden">
           <div className="flex flex-col gap-8">
             {navItems.map((item) => (
               <Link
@@ -181,6 +199,15 @@ export default function Navbar() {
               className="text-[10px] font-black tracking-[0.3em] text-foreground/40"
             >
               LINKEDIN
+            </a>
+            <a
+              href="/Manikanta-Ketha-Resume.pdf"
+              target="_blank"
+              rel="noreferrer"
+              download
+              className="text-[10px] font-black tracking-[0.3em] text-accent"
+            >
+              RESUME
             </a>
           </div>
         </div>

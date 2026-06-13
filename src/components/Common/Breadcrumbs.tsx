@@ -29,7 +29,7 @@ export default function Breadcrumbs() {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="flex items-center gap-6 pt-32 pb-4 px-6 md:pl-24 max-w-7xl mx-auto w-full relative z-10"
+      className="flex items-center gap-6 pt-24 pb-4 px-6 md:pl-24 max-w-7xl mx-auto w-full relative z-10"
     >
       <Link
         href="/"

@@ -1,13 +1,11 @@
-import { getFeaturedBlogs } from "@/services/api";
+import { getFeaturedBlogs } from "@/lib/data/blogs";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { IBlog } from "@/types/api";
 import BlogCard from "@/components/Common/BlogCard";
 
 export default async function LandingPageNotelogs() {
-
-  const blogsResponse = await getFeaturedBlogs();
-  const blogs = blogsResponse.data;
+  const blogs = await getFeaturedBlogs();
 
   return (
     <>

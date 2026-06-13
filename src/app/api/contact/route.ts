@@ -1,166 +1,64 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/server/db";
 import Contact from "@/server/models/Contact";
-import nodemailer from "nodemailer";
-import { SMTP_CONFIG } from "@/lib/config";
-
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const limit = rateLimitMap.get(ip);
-
-  if (!limit || now > limit.resetTime) {
-    rateLimitMap.set(ip, { count: 1, resetTime: now + 60000 });
-    return true;
-  }
-
-  if (limit.count >= 5) {
-    return false;
-  }
-
-  limit.count++;
-  return true;
-}
-
-function generateOTP(length = 6): string {
-  const array = new Uint32Array(length);
-  crypto.getRandomValues(array);
-
-  let otp = "";
-  array.forEach((value) => {
-    otp += (value % 10).toString();
-  });
-
-  return otp.slice(0, length);
-}
-
-async function sendOTPEmail(email: string, otp: string) {
-  const transporter = nodemailer.createTransport({
-    host: SMTP_CONFIG.host,
-    port: SMTP_CONFIG.port,
-    secure: false,
-    requireTLS: true,
-    auth: {
-      user: SMTP_CONFIG.user,
-      pass: SMTP_CONFIG.pass,
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
-
-  try {
-    await transporter.verify();
-    console.log("SMTP connection verified successfully");
-  } catch (verifyError) {
-    console.error('SMTP verification failed:', verifyError);
-    throw verifyError;
-  }
-
-  try {
-    await transporter.sendMail({
-      from: SMTP_CONFIG.from,
-      to: email,
-      subject: "Verify Your Contact Request",
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #f9ce20;">Verification Code</h2>
-          <p>Your verification code is:</p>
-          <div style="background: #000; color: #f9ce20; padding: 20px; text-align: center; font-size: 32px; letter-spacing: 8px; font-weight: bold;">
-            ${otp}
-          </div>
-          <p style="color: #666; margin-top: 20px;">This code will expire in 10 minutes.</p>
-          <p style="color: #666;">If you didn't request this code, please ignore this email.</p>
-        </div>
-      `,
-    });
-  } catch (emailError) {
-    console.error("Failed to send OTP email:", emailError);
-    throw emailError;
-  }
-}
+import { sendMail } from "@/lib/email";
+import { generateOtp, hashOtp } from "@/lib/otp";
+import { rateLimit, tooManyRequests, clientIp } from "@/lib/rate-limit";
+import { isEmail, isNonEmptyString } from "@/lib/validation";
+import { otpEmailHtml } from "@/lib/email-templates";
 
 export async function POST(req: NextRequest) {
   try {
-    const ip =
-      req.headers.get("x-forwarded-for") ||
-      req.headers.get("x-real-ip") ||
-      "unknown";
-
-    if (!checkRateLimit(ip)) {
-      return NextResponse.json(
-        { error: "Too many requests. Please try again later." },
-        { status: 429 }
-      );
-    }
+    const ip = clientIp(req);
+    const limit = await rateLimit("contact", ip, 5, "1 m");
+    if (!limit.success) return tooManyRequests(limit.reset);
 
     const { name, contactMethod, contactValue, message, privacyAccepted } =
       await req.json();
 
-    if (
-      !name ||
-      !contactMethod ||
-      !contactValue ||
-      !message ||
-      !privacyAccepted
-    ) {
-      return NextResponse.json(
-        { error: "All fields are required" },
-        { status: 400 }
-      );
+    if (!isNonEmptyString(name, 200) || !contactValue || !isNonEmptyString(message, 5000) || !privacyAccepted) {
+      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
-
-    if (!process.env.MONGODB_URI) {
-      console.error("MONGODB_URI not configured");
-      return NextResponse.json(
-        { error: "Server configuration error. Please contact support." },
-        { status: 500 }
-      );
+    if (!["email", "phone"].includes(contactMethod)) {
+      return NextResponse.json({ error: "Invalid contact method" }, { status: 400 });
+    }
+    if (contactMethod === "email" && !isEmail(contactValue)) {
+      return NextResponse.json({ error: "A valid email is required" }, { status: 400 });
     }
 
     await dbConnect();
 
-    const otp = generateOTP();
-    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
-
+    const otp = generateOtp();
     const contact = await Contact.create({
       name,
       contactMethod,
       contactValue,
       message,
-      otp,
-      otpExpiry,
+      otp: hashOtp(otp),
+      otpExpiry: new Date(Date.now() + 10 * 60 * 1000),
       verified: false,
     });
 
     if (contactMethod === "email") {
-      await sendOTPEmail(contactValue, otp);
+      try {
+        await sendMail({
+          to: contactValue,
+          subject: "Verify Your Contact Request",
+          html: otpEmailHtml(otp),
+        });
+      } catch (mailErr) {
+        console.error("Failed to send OTP email:", mailErr);
+        await Contact.findByIdAndDelete(contact._id);
+        return NextResponse.json(
+          { error: "Could not send the verification email. Please try again." },
+          { status: 502 }
+        );
+      }
     }
 
     return NextResponse.json({ contactId: contact._id.toString() });
   } catch (error) {
     console.error("Contact submission error:", error);
-
-    // Handle specific database connection errors
-    if (error instanceof Error) {
-      if (error.message.includes("MONGODB_URI")) {
-        return NextResponse.json(
-          { error: "Database configuration error. Please contact support." },
-          { status: 500 }
-        );
-      }
-      if (
-        error.message.includes("ECONNREFUSED") ||
-        error.message.includes("timeout")
-      ) {
-        return NextResponse.json(
-          { error: "Service temporarily unavailable. Please try again later." },
-          { status: 503 }
-        );
-      }
-    }
-
     return NextResponse.json(
       { error: "Failed to submit contact form. Please try again." },
       { status: 500 }

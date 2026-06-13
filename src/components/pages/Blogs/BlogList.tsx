@@ -1,22 +1,23 @@
 'use client';
 
 import Link from 'next/link';
-import { Star, ArrowRight, Calendar } from 'lucide-react';
+import { Star, ArrowRight, Calendar, Pencil } from 'lucide-react';
 import type { Blog } from './types';
 
 interface BlogListProps {
   blogs: Blog[];
   onTogglePublish: (id: string, currentStatus: boolean) => Promise<void>;
   onToggleFavourite: (id: string, currentStatus: boolean) => Promise<void>;
+  onEdit: (slug: string) => void;
 }
 
-export default function BlogList({ blogs, onTogglePublish, onToggleFavourite }: BlogListProps) {
+export default function BlogList({ blogs, onTogglePublish, onToggleFavourite, onEdit }: BlogListProps) {
   return (
     <div className="grid gap-4">
       {blogs.map((blog) => (
         <div
           key={blog._id}
-          className="group border border-foreground/10 bg-foreground/[0.02] p-6 hover:border-accent/30 transition-all"
+          className="group border border-foreground/10 bg-foreground/2 p-6 hover:border-accent/30 transition-all"
         >
           <div className="flex items-start justify-between mb-4">
             <h3 className="text-2xl font-bold group-hover:text-accent transition-colors">
@@ -60,6 +61,12 @@ export default function BlogList({ blogs, onTogglePublish, onToggleFavourite }: 
             </div>
 
             <div className="flex items-center gap-4">
+              <button
+                onClick={() => onEdit(blog.slug)}
+                className="text-xs font-bold uppercase tracking-wider hover:text-accent text-foreground/60 transition-colors flex items-center gap-1.5"
+              >
+                <Pencil size={12} /> Edit
+              </button>
               <button
                 onClick={() => onTogglePublish(blog._id, blog.published)}
                 className="text-xs font-bold uppercase tracking-wider hover:text-accent text-foreground/60 transition-colors"

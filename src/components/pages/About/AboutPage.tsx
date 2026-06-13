@@ -1,6 +1,4 @@
-'use client';
-
-import { ArrowLeft, User, Code, Rocket, Brain, Heart, Globe, ArrowRight } from 'lucide-react';
+import { ArrowLeft, User, Code, Rocket, Brain, Heart, Globe, ArrowRight, Download } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -15,7 +13,7 @@ const skills = [
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-black pt-32 pb-24 px-6 md:pl-24 overflow-hidden relative">
+    <main className="min-h-screen bg-black pt-8 md:pt-12 pb-24 px-6 md:pl-24 overflow-hidden relative">
       {/* Decorative Background Grid */}
       <div className="absolute inset-0 architectural-grid opacity-20 pointer-events-none" />
 
@@ -26,17 +24,29 @@ export default function AboutPage() {
             <span className="text-[10px] uppercase tracking-[0.5em] text-accent font-black block">
               [ PROFILE.01 // IDENTITY ]
             </span>
-            <h1 className="text-6xl md:text-[10rem] font-serif uppercase tracking-tighter text-white leading-[0.8]">
-              About<br />Mani
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-serif uppercase tracking-tighter text-white leading-[0.8] whitespace-nowrap">
+              About Mani
             </h1>
           </div>
-          <div className="text-right hidden md:block">
-            <span className="text-[10px] uppercase tracking-[0.5em] text-foreground/20 font-black block mb-4">
-              // VERSION_2.0
-            </span>
-            <span className="text-[10px] uppercase tracking-[0.5em] text-foreground/20 font-black block">
-              // UPDATED_JAN_2026
-            </span>
+          <div className="flex flex-col md:items-end gap-6">
+            <div className="text-left md:text-right hidden md:block">
+              <span className="text-[10px] uppercase tracking-[0.5em] text-foreground/20 font-black block mb-4">
+                // VERSION_2.0
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.5em] text-foreground/20 font-black block">
+                // UPDATED_JAN_2026
+              </span>
+            </div>
+            <a
+              href="/Manikanta-Ketha-Resume.pdf"
+              target="_blank"
+              rel="noreferrer"
+              download
+              className="group flex items-center gap-3 shrink-0 px-5 py-3 border border-white/10 hover:border-accent hover:bg-accent/5 text-[10px] font-black uppercase tracking-[0.3em] text-foreground/50 hover:text-accent transition-all duration-500"
+            >
+              <Download size={14} className="group-hover:translate-y-0.5 transition-transform" />
+              Download Resume
+            </a>
           </div>
         </div>
 

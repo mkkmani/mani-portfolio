@@ -10,6 +10,7 @@ export interface IProject extends Document {
   published: boolean;
   favourite: boolean;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const ProjectSchema: Schema = new Schema({
@@ -21,8 +22,10 @@ const ProjectSchema: Schema = new Schema({
   tags: { type: [String], default: [] },
   published: { type: Boolean, default: false },
   favourite: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now },
-});
+}, { timestamps: true });
+
+ProjectSchema.index({ published: 1, createdAt: -1 });
+ProjectSchema.index({ favourite: 1, published: 1 });
 
 const Project: Model<IProject> = mongoose.models.Project || mongoose.model<IProject>('Project', ProjectSchema);
 

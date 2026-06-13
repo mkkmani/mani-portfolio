@@ -33,6 +33,7 @@ export interface IPreparation extends Document {
   userId?: mongoose.Types.ObjectId;
   categories?: string[];
   excerpt?: string;
+  messages: IMessage[];
   preparationData?: {
     coreTopics?: IMessage[];
     commonQuestions?: IMessage[];
@@ -74,6 +75,7 @@ const PreparationSchema: Schema = new Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   categories: [String],
   excerpt: String,
+  messages: { type: [MessageSchema], default: [] },
   preparationData: {
     coreTopics: [MessageSchema],
     commonQuestions: [MessageSchema],
@@ -85,12 +87,11 @@ const PreparationSchema: Schema = new Schema({
     lastActivityAt: { type: Date },
     messageCount: { type: Number, default: 0 },
   },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+}, { timestamps: true });
 
-// Add index for efficient user-specific queries (slug already indexed via unique: true)
-PreparationSchema.index({ userId: 1 });
+// Indexes: user sessions list, public published list (slug already unique-indexed).
+PreparationSchema.index({ userId: 1, updatedAt: -1 });
+PreparationSchema.index({ published: 1, discarded: 1, createdAt: -1 });
 
 
 const Preparation: Model<IPreparation> = mongoose.models.Preparation || mongoose.model<IPreparation>('Preparation', PreparationSchema);

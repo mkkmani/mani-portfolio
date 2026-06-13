@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { generatePageMetadata, getSiteConfig } from '@/lib/seo-config';
 import { generateProjectsSchema } from '@/lib/structured-data';
-import { getProjects } from '@/services/api';
+import { getPublishedProjects } from '@/lib/data/projects';
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'Projects',
@@ -25,7 +25,7 @@ export default async function ProjectsLayout({
   children: React.ReactNode;
 }) {
   const config = getSiteConfig();
-  const projects = await getProjects();
+  const projects = await getPublishedProjects();
 
   const structuredData = generateProjectsSchema(projects, config);
 

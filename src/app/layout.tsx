@@ -1,12 +1,22 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Common/Navbar";
 import Footer from "@/components/Common/Footer";
 import Breadcrumbs from "@/components/Common/Breadcrumbs";
 import Providers from "@/components/Providers";
+import AssistantWidget from "@/components/assistant/AssistantWidget";
+import MusicPlayer from "@/components/music/MusicPlayer";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getSiteConfig } from "@/lib/seo-config";
-import { generatePersonSchema, generateOrganizationSchema, generateWebsiteSchema, generateProfessionalServiceSchema, generateNavigationSchema } from "@/lib/structured-data";
+import {
+  generatePersonSchema,
+  generateOrganizationSchema,
+  generateWebsiteSchema,
+  generateProfessionalServiceSchema,
+  generateNavigationSchema,
+} from "@/lib/structured-data";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -21,6 +31,13 @@ const inter = Inter({
 
 const siteConfig = getSiteConfig();
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#000000",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
@@ -29,22 +46,22 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   keywords: [
-    'Manikanta Ketha',
-    'Manikanta',
-    'Full Stack Developer',
-    'MERN Stack Developer',
-    'Next.js Developer',
-    'React Developer',
-    'Node.js Developer',
-    'MongoDB Expert',
-    'TypeScript Developer',
-    'JavaScript Developer',
-    'India Developer',
-    'Remote Developer',
-    'Software Engineer',
-    'Web Developer',
-    'Responsive Web Design',
-    'API Development',
+    "Manikanta Ketha",
+    "Manikanta",
+    "Full Stack Developer",
+    "MERN Stack Developer",
+    "Next.js Developer",
+    "React Developer",
+    "Node.js Developer",
+    "MongoDB Expert",
+    "TypeScript Developer",
+    "JavaScript Developer",
+    "India Developer",
+    "Remote Developer",
+    "Software Engineer",
+    "Web Developer",
+    "Responsive Web Design",
+    "API Development",
   ],
   authors: [
     {
@@ -54,8 +71,8 @@ export const metadata: Metadata = {
   ],
   creator: siteConfig.author.name,
   openGraph: {
-    type: 'website',
-    locale: 'en_US',
+    type: "website",
+    locale: "en_US",
     url: siteConfig.url,
     siteName: siteConfig.name,
     title: siteConfig.title,
@@ -70,7 +87,7 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    card: 'summary_large_image',
+    card: "summary_large_image",
     title: siteConfig.title,
     description: siteConfig.description,
     images: [siteConfig.ogImage],
@@ -82,24 +99,22 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
   icons: {
     icon: [
-      { url: '/favicon.ico' },
-      { url: '/icon.png', sizes: '192x192', type: 'image/png' },
+      { url: "/favicon.ico" },
+      { url: "/icon.png", sizes: "192x192", type: "image/png" },
     ],
-    apple: [
-      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
-  manifest: '/manifest.json',
+  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'default',
+    statusBarStyle: "default",
     title: siteConfig.name,
   },
   formatDetection: {
@@ -115,33 +130,41 @@ export default function RootLayout({
   const personSchema = generatePersonSchema(siteConfig);
   const organizationSchema = generateOrganizationSchema(siteConfig);
   const websiteSchema = generateWebsiteSchema(siteConfig);
-  const professionalServiceSchema = generateProfessionalServiceSchema(siteConfig);
-  const navigationSchema = generateNavigationSchema([
-    { name: 'Home', url: '/' },
-    { name: 'About', url: '/about' },
-    { name: 'Work', url: '/work' },
-    { name: 'Projects', url: '/projects' },
-    { name: 'Notelogs', url: '/notelogs' },
-    { name: 'Interview Prep', url: '/interview-prep' },
-    { name: 'Contact', url: '/contact' },
-  ], siteConfig);
+  const professionalServiceSchema =
+    generateProfessionalServiceSchema(siteConfig);
+  const navigationSchema = generateNavigationSchema(
+    [
+      { name: "Home", url: "/" },
+      { name: "About", url: "/about" },
+      { name: "Work", url: "/work" },
+      { name: "Projects", url: "/projects" },
+      { name: "Notelogs", url: "/notelogs" },
+      { name: "Interview Prep", url: "/interview-prep" },
+      { name: "Contact", url: "/contact" },
+    ],
+    siteConfig
+  );
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-        <meta name="theme-color" content="#000000" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <link rel="alternate" type="application/rss+xml" title="Notelogs by Manikanta Ketha" href="/feed.xml" />
-        <link rel="alternate" type="application/rss+xml" title="Notelogs by Manikanta Ketha" href="/feed.xml" />
+        <noscript>
+          <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
         />
         <script
           type="application/ld+json"
@@ -149,7 +172,9 @@ export default function RootLayout({
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(professionalServiceSchema) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(professionalServiceSchema),
+          }}
         />
         <script
           type="application/ld+json"
@@ -160,11 +185,13 @@ export default function RootLayout({
         <Providers>
           <Navbar />
           <Breadcrumbs />
-          <div className="animate-fade-in min-h-screen">
-            {children}
-          </div>
+          <div className="min-h-screen">{children}</div>
           <Footer />
+          <AssistantWidget />
+          <MusicPlayer />
         </Providers>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

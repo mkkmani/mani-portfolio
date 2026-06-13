@@ -19,7 +19,7 @@ export default function InterviewPrepManagement() {
   const fetchPreparations = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/interview-prep');
+      const res = await fetch('/api/interview-prep?all=true');
       if (res.ok) setPreparations(await res.json());
     } catch (error) {
       console.error('Error:', error);

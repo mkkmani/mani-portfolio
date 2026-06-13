@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Check, Mail } from 'lucide-react';
+import { ArrowLeft, Check, Mail, Search, X } from 'lucide-react';
 import Link from 'next/link';
 import type { Contact } from './types';
+
+type ContactFilter = 'all' | 'pending' | 'replied';
 
 export default function ContactsManagement() {
   const router = useRouter();
@@ -12,6 +14,8 @@ export default function ContactsManagement() {
   const [loading, setLoading] = useState(true);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [replyText, setReplyText] = useState('');
+  const [filter, setFilter] = useState<ContactFilter>('all');
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     fetchContacts();
@@ -51,6 +55,22 @@ export default function ContactsManagement() {
     }
   };
 
+  const pendingCount = contacts.filter(c => !c.replied).length;
+  const repliedCount = contacts.filter(c => c.replied).length;
+
+  const query = search.trim().toLowerCase();
+  const filteredContacts = contacts.filter(c => {
+    const matchesFilter =
+      filter === 'all' ? true : filter === 'pending' ? !c.replied : c.replied;
+    if (!matchesFilter) return false;
+    if (!query) return true;
+    return (
+      c.name.toLowerCase().includes(query) ||
+      c.contactValue.toLowerCase().includes(query) ||
+      c.message.toLowerCase().includes(query)
+    );
+  });
+
   return (
     <div className="min-h-screen bg-background py-12 px-6">
       <div className="max-w-7xl mx-auto">
@@ -68,20 +88,49 @@ export default function ContactsManagement() {
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="border border-foreground/10 p-4 bg-foreground/[0.02]">
-            <div className="text-2xl font-bold text-accent">{contacts.length}</div>
-            <div className="text-xs text-foreground/40 uppercase tracking-wider">Total</div>
-          </div>
-          <div className="border border-foreground/10 p-4 bg-foreground/[0.02]">
-            <div className="text-2xl font-bold text-foreground">{contacts.filter(c => !c.replied).length}</div>
-            <div className="text-xs text-foreground/40 uppercase tracking-wider">Pending</div>
-          </div>
-          <div className="border border-foreground/10 p-4 bg-foreground/[0.02]">
-            <div className="text-2xl font-bold text-foreground">{contacts.filter(c => c.replied).length}</div>
-            <div className="text-xs text-foreground/40 uppercase tracking-wider">Replied</div>
-          </div>
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          {([
+            { key: 'all', label: 'Total', value: contacts.length },
+            { key: 'pending', label: 'Pending', value: pendingCount },
+            { key: 'replied', label: 'Replied', value: repliedCount },
+          ] as const).map(({ key, label, value }) => {
+            const active = filter === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setFilter(key)}
+                className={`text-left border p-4 transition-all ${
+                  active
+                    ? 'border-accent bg-accent/5'
+                    : 'border-foreground/10 bg-foreground/2 hover:border-foreground/30'
+                }`}
+              >
+                <div className={`text-2xl font-bold ${active ? 'text-accent' : 'text-foreground'}`}>{value}</div>
+                <div className="text-xs text-foreground/40 uppercase tracking-wider">{label}</div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Search */}
+        <div className="relative mb-8">
+          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/30" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name, email or message..."
+            className="w-full bg-foreground/5 border border-foreground/20 pl-11 pr-11 py-3 text-sm focus:border-accent focus:bg-foreground/10 outline-none transition-all"
+          />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40 hover:text-accent transition-colors"
+              aria-label="Clear search"
+            >
+              <X size={16} />
+            </button>
+          )}
         </div>
 
         {loading && !selectedContact ? (
@@ -90,7 +139,7 @@ export default function ContactsManagement() {
           </div>
         ) : (
           <div className="grid gap-4">
-            {contacts.map((contact) => (
+            {filteredContacts.map((contact) => (
               <div key={contact._id} className="border border-foreground/10 bg-foreground/[0.02] p-6 hover:border-accent/30 transition-all">
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                   <div className="flex-1 space-y-4">
@@ -161,8 +210,12 @@ export default function ContactsManagement() {
                 )}
               </div>
             ))}
-            {contacts.length === 0 && (
-              <div className="text-center py-12 text-foreground/40">No contacts found</div>
+            {filteredContacts.length === 0 && (
+              <div className="text-center py-12 text-foreground/40">
+                {contacts.length === 0
+                  ? 'No contacts found'
+                  : 'No contacts match the current filter'}
+              </div>
             )}
           </div>
         )}

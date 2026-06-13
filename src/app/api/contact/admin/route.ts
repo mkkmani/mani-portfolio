@@ -1,32 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/server/db';
 import Contact from '@/server/models/Contact';
-import { jwtVerify } from 'jose';
-import { JWT_SECRET, COOKIE_CONFIG } from '@/lib/config';
-
-async function verifyAdmin(req: NextRequest): Promise<boolean> {
-  try {
-    const token = req.cookies.get(COOKIE_CONFIG.name)?.value;
-    if (!token) return false;
-
-    await jwtVerify(token, JWT_SECRET);
-    return true;
-  } catch {
-    return false;
-  }
-}
+import { verifyAdminRequest } from '@/lib/verify-admin';
 
 export async function GET(req: NextRequest) {
   try {
-    const isAdmin = await verifyAdmin(req);
-    if (!isAdmin) {
+    if (!(await verifyAdminRequest(req))) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     await dbConnect();
+    const { searchParams } = new URL(req.url);
 
-    const contacts = await Contact.find({}).sort({ createdAt: -1 });
+    let query = Contact.find({}).select('-otp -otpExpiry').sort({ createdAt: -1 });
 
+    if (searchParams.has('page') || searchParams.has('limit')) {
+      const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+      const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '50', 10)));
+      query = query.skip((page - 1) * limit).limit(limit);
+    }
+
+    const contacts = await query.lean();
     return NextResponse.json(contacts);
   } catch (error) {
     console.error('Fetch contacts error:', error);

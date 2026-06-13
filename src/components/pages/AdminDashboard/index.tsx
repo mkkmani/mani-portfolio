@@ -25,7 +25,7 @@ export default function AdminDashboard() {
       const [blogsRes, projectsRes, prepsRes, contactsRes] = await Promise.all([
         fetch('/api/blogs?all=true'),
         fetch('/api/projects?all=true'),
-        fetch('/api/interview-prep'),
+        fetch('/api/interview-prep?all=true'),
         fetch('/api/contact/admin')
       ]);
 

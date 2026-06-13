@@ -7,6 +7,7 @@ import User from '@/server/models/User';
 import dbConnect from '@/server/db';
 
 export const authConfig: NextAuthConfig = {
+  trustHost: true,
   adapter: MongoDBAdapter(clientPromise),
   providers: [
     GitHub({

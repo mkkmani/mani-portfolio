@@ -1,5 +1,3 @@
-'use client';
-
 import { Code2, Cpu, Terminal, GitBranch } from 'lucide-react';
 
 const experiences = [
